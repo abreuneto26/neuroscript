@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="pt-br" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NeuroScript - Inteligência Clínica</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    animation: { 'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite' }
+                }
+            }
+        }
+    </script>
+
+    <!-- Ícones e PDF -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <!-- Fontes -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Inter', sans-serif; touch-action: manipulation; }
+        
+        /* Scrollbar Customizada */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); }
+        ::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.5); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(156, 163, 175, 0.8); }
+
+        /* --- ESTILOS PARA TABELAS DA IA --- */
+        .ai-table-container table { 
+            width: 100%; 
+            border-collapse: separate; 
+            border-spacing: 0; 
+            margin-top: 10px; 
+            font-size: 0.875rem; 
+            border: 1px solid #e2e8f0; 
+            border-radius: 8px; 
+            overflow: hidden; 
+        }
+        .dark .ai-table-container table { border-color: #334155; }
+        
+        .ai-table-container th { 
+            background-color: #f1f5f9; 
+            text-align: left; 
+            padding: 10px; 
+            font-weight: 600; 
+            border-bottom: 1px solid #cbd5e1; 
+            color: #1e293b; 
+        }
+        .dark .ai-table-container th { 
+            background-color: #1e293b; 
+            border-bottom-color: #334155; 
+            color: #e2e8f0; 
+        }
+        
+        .ai-table-container td { 
+            padding: 10px; 
+            border-bottom: 1px solid #e2e8f0; 
+            vertical-align: top; 
+        }
+        .dark .ai-table-container td { border-bottom-color: #1e293b; }
+        .ai-table-container tr:last-child td { border-bottom: none; }
+        .ai-table-container tr:nth-child(even) { background-color: rgba(0,0,0,0.02); }
+        .dark .ai-table-container tr:nth-child(even) { background-color: rgba(255,255,255,0.02); }
+
+        /* ESCALA DO PAPEL NO MOBILE */
+        @media (max-width: 1023px) {
+            #prescriptionPaper {
+                transform: scale(0.55); /* Reduz visualmente o papel */
+                transform-origin: top center;
+                margin-bottom: -40%; /* Compensa o espaço vazio gerado pelo scale */
+            }
+            #tab-prescription {
+                overflow: hidden; /* Evita scroll horizontal indesejado */
+                align-items: flex-start;
+                padding-top: 20px;
+            }
+        }
+
+        @media print {
+            @page { margin: 0; size: portrait; }
+            body { background: white; -webkit-print-color-adjust: exact; }
+            .no-print { display: none !important; }
+            .print-container { 
+                box-shadow: none !important; border: none !important; margin: 0 !important; 
+                width: 100% !important; padding: 0 !important; height: 100vh !important;
+                transform: none !important; /* Remove a escala do mobile na impressão */
+            }
+            .print-header { background-color: #f0fdf4 !important; color: #14532d !important; border-bottom: 2px solid #bbf7d0 !important; }
+            .print-footer { background-color: #f0fdf4 !important; color: #14532d !important; border-top: 2px solid #bbf7d0 !important; }
+            
+            /* Oculta o textarea de orientações na impressão se estiver vazio */
+            #patientGuide:empty { display: none !important; }
+            #guideContainer { display: block; }
+            /* Se o textarea estiver vazio, esconde o título também na impressão */
+            #patientGuide:placeholder-shown + .no-print { display: none; }
+            
+            /* Esconder fundo animado */
+            .fixed.inset-0 { display: none; }
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .dark .glass {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        input, textarea, select { font-size: 16px !important; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300 min-h-screen overflow-x-hidden pb-20 lg:pb-0">
+
+    <!-- Background -->
+    <div class="fixed inset-0 z-0 pointer-events-none hidden dark:block">
+        <div class="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-purple-900/20 rounded-full blur-[120px] animate-pulse-slow"></div>
+        <div class="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-cyan-900/20 rounded-full blur-[120px]" style="animation-delay: 2s"></div>
+    </div>
+
+    <!-- HEADER -->
+    <header class="fixed top-0 w-full z-50 glass border-b border-slate-200 dark:border-slate-800 h-16 flex items-center justify-between px-4 md:px-8 no-print">
+        <div class="flex items-center gap-3">
+            <div class="w-8 h-8 bg-gradient-to-br from-cyan-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
+                <i data-lucide="brain-circuit" class="text-white w-5 h-5"></i>
+            </div>
+            <h1 class="text-lg md:text-xl font-bold tracking-tight">
+                Neuro<span class="text-cyan-600 dark:text-cyan-400">Script</span>
+            </h1>
+        </div>
+        <div class="flex items-center gap-2">
+            <button onclick="app.toggleTheme()" class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition">
+                <i data-lucide="sun" class="hidden dark:block text-yellow-400 w-5 h-5"></i>
+                <i data-lucide="moon" class="block dark:hidden text-slate-600 w-5 h-5"></i>
+            </button>
+            <button onclick="app.openModal('configModal')" class="p-2 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-lg transition relative">
+                <i data-lucide="settings" class="w-5 h-5"></i>
+                <span id="apiKeyStatus" class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+            </button>
+            <div class="hidden md:flex gap-2">
+                <button onclick="app.generatePDF()" class="bg-slate-800 hover:bg-slate-700 text-white px-3 py-1.5 rounded-lg text-sm font-medium flex gap-2 items-center transition">
+                    <i data-lucide="download" class="w-4 h-4"></i> PDF
+                </button>
+                <button onclick="window.print()" class="bg-gradient-to-r from-cyan-600 to-cyan-500 text-white px-3 py-1.5 rounded-lg text-sm font-bold shadow-lg flex gap-2 items-center transition">
+                    <i data-lucide="printer" class="w-4 h-4"></i> Imprimir
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="pt-20 px-4 md:px-8 flex flex-col lg:flex-row gap-6 max-w-[1800px] mx-auto min-h-screen relative z-10">
+        
+        <!-- SIDEBAR (Esquerda) -->
+        <aside id="sidebarPanel" class="no-print w-full lg:w-[450px] flex flex-col gap-6 h-full lg:h-[calc(100vh-100px)] lg:overflow-y-auto custom-scrollbar">
+            
+            <!-- Seção: Paciente & SOAP -->
+            <div id="tab-patient" class="flex flex-col gap-6">
+                <div class="glass rounded-2xl p-5 border border-slate-200 dark:border-slate-800">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xs font-bold uppercase tracking-widest flex items-center gap-2 opacity-70">
+                            <i data-lucide="user" class="w-4 h-4"></i> Paciente & SOAP
+                        </h2>
+                        <div class="flex gap-2">
+                            <button onclick="app.clearPatientData()" class="text-xs bg-red-500/10 text-red-600 dark:text-red-400 px-2 py-1 rounded hover:bg-red-500/20 transition">Limpar</button>
+                            <button onclick="app.savePatientData()" class="text-xs bg-green-500/20 text-green-600 dark:text-green-400 px-2 py-1 rounded flex gap-1 items-center hover:bg-green-500/30 transition">
+                                <i data-lucide="save" class="w-3 h-3"></i> Salvar
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="relative mb-4">
+                        <input type="text" id="patientNameInput" oninput="app.searchPatient()" placeholder="Nome do paciente..." 
+                            class="w-full rounded-xl py-3 px-4 outline-none border bg-white dark:bg-slate-900/50 border-slate-300 dark:border-slate-700 focus:border-cyan-500 transition-all">
+                        <div id="patientSearchResults" class="hidden absolute top-full left-0 right-0 mt-1 rounded-xl border shadow-xl z-50 max-h-40 overflow-y-auto bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700"></div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2">
+                        <div class="col-span-1"><label class="text-[10px] font-bold opacity-50 mb-1 block">S (Subjetivo)</label><textarea id="soapS" class="w-full h-20 rounded-lg p-2 text-xs resize-none outline-none border bg-white dark:bg-slate-900/50 border-slate-300 dark:border-slate-700" placeholder="Queixa..."></textarea></div>
+                        <div class="col-span-1"><label class="text-[10px] font-bold opacity-50 mb-1 block">O (Objetivo)</label><textarea id="soapO" class="w-full h-20 rounded-lg p-2 text-xs resize-none outline-none border bg-white dark:bg-slate-900/50 border-slate-300 dark:border-slate-700" placeholder="Exame..."></textarea></div>
+                        <div class="col-span-2"><label class="text-[10px] font-bold opacity-50 mb-1 block">A (Avaliação)</label><textarea id="soapA" class="w-full h-14 rounded-lg p-2 text-xs resize-none outline-none border bg-white dark:bg-slate-900/50 border-slate-300 dark:border-slate-700" placeholder="Diagnóstico..."></textarea></div>
+                        <div class="col-span-2"><label class="text-[10px] font-bold opacity-50 mb-1 block">P (Plano)</label><textarea id="soapP" class="w-full h-14 rounded-lg p-2 text-xs resize-none outline-none border bg-white dark:bg-slate-900/50 border-slate-300 dark:border-slate-700" placeholder="Conduta..."></textarea></div>
+                    </div>
+                </div>
+
+                <!-- Grid IA COMPLETO -->
+                <div class="glass rounded-2xl p-5 border border-slate-200 dark:border-slate-800">
+                    <h2 class="text-xs font-bold uppercase tracking-widest mb-3 flex items-center gap-2 opacity-70">
+                        <i data-lucide="sparkles" class="w-4 h-4 text-purple-500"></i> Central de IA Clínica
+                    </h2>
+                    <div id="aiButtonsGrid" class="grid grid-cols-4 gap-2">
+                        <!-- Botões injetados via JS -->
+                    </div>
+                    <!-- Botão de Orientações -->
+                    <button onclick="app.callAI('guide')" class="w-full mt-3 h-12 rounded-xl flex items-center justify-center gap-2 border border-purple-500/30 bg-purple-500/10 hover:bg-purple-500/20 text-purple-500 transition-colors">
+                        <i data-lucide="file-text" class="w-5 h-5"></i> <span class="text-xs font-bold">Gerar Orientações (IA)</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Seção: Farmácia -->
+            <div id="tab-pharmacy" class="flex-1 flex flex-col h-full glass rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 hidden lg:flex">
+                <div class="p-4 border-b border-slate-200 dark:border-slate-700/50">
+                    <div class="flex justify-between items-center mb-3">
+                        <h2 class="text-xs font-bold uppercase tracking-widest flex items-center gap-2 opacity-70"><i data-lucide="pill" class="w-4 h-4"></i> Farmácia</h2>
+                        <button onclick="app.openConfigMedModal()" class="text-xs bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 px-3 py-1.5 rounded-lg font-bold flex gap-1 items-center transition hover:bg-cyan-500/20"><i data-lucide="plus" class="w-3 h-3"></i> NOVO</button>
+                    </div>
+                    <div class="relative">
+                        <input type="text" id="medSearch" oninput="app.renderMeds()" placeholder="Buscar medicamento (200+ disponíveis)..." class="w-full rounded-lg py-2 pl-9 pr-3 text-sm outline-none border bg-white dark:bg-slate-900/50 border-slate-300 dark:border-slate-700 focus:border-cyan-500">
+                        <i data-lucide="search" class="absolute left-3 top-2.5 w-4 h-4 opacity-50"></i>
+                    </div>
+                </div>
+                <div id="medicationList" class="flex-1 overflow-y-auto p-2 space-y-2 custom-scrollbar h-96"></div>
+            </div>
+        </aside>
+
+        <!-- PREVIEW DA RECEITA (Direita) -->
+        <div id="tab-prescription" class="flex-1 flex justify-center overflow-auto py-4 hidden lg:flex transition-all duration-300">
+            <!-- Adicionado wrapper para escala em mobile se necessário -->
+            <div id="prescriptionPaper" class="print-container bg-white text-slate-900 shadow-2xl relative overflow-hidden flex flex-col w-[600px] aspect-[210/297] rounded-sm shrink-0 origin-top">
+                <div class="print-header bg-green-50/50 px-8 py-6 border-b border-green-100 flex justify-between items-center">
+                    <div class="flex items-center gap-4">
+                        <!-- Container da Logo -->
+                        <div id="docLogoContainer" class="h-32 w-32 flex items-center justify-center overflow-hidden">
+                             <img src="https://i.ibb.co/h7gJj9r/dr-alyson-melo-crm-1234.png" alt="Logo Médico" class="h-full w-full object-contain mix-blend-multiply">
+                        </div>
+                        <div class="ml-2">
+                            <h1 id="docNameDisplay" class="text-xl font-bold font-arial text-slate-900">Nome do Médico</h1>
+                            <p id="docSpecDisplay" class="text-sm text-slate-600 font-arial uppercase tracking-wide">Especialidade</p>
+                            <p id="docCrmDisplay" class="text-xs text-slate-500 font-arial mt-1">CRM</p>
+                        </div>
+                    </div>
+                    <div class="text-right"><div class="text-[10px] uppercase font-bold text-slate-400 mb-1">Data de Emissão</div><div id="dateDisplay" class="font-medium text-lg text-slate-800 font-arial"></div></div>
+                </div>
+                <div class="px-12 py-10 flex-1 flex flex-col">
+                    <div class="mb-8 border-b border-dashed border-slate-300 pb-2">
+                        <span class="text-[10px] uppercase font-bold text-slate-400 block mb-1">Paciente</span>
+                        <div id="patientNameDisplay" class="text-lg font-arial" style="font-size: 12pt;">Nome do Paciente...</div>
+                    </div>
+                    <div id="prescriptionListDisplay" class="space-y-6 flex-1"><div class="text-center text-slate-300 italic mt-10 no-print">Adicione itens da farmácia...</div></div>
+                    
+                    <!-- Container de Orientações -->
+                    <div id="guideContainer" class="mt-8">
+                        <div class="mb-2 no-print flex justify-between items-center">
+                            <span class="text-[10px] font-bold uppercase text-slate-400 tracking-widest">Orientações</span>
+                        </div>
+                        <textarea id="patientGuide" class="w-full bg-transparent text-sm text-slate-900 resize-none outline-none min-h-[80px] font-arial italic border border-transparent hover:border-slate-200 rounded p-2 transition-colors" placeholder="Digite orientações adicionais aqui..."></textarea>
+                    </div>
+                </div>
+                <footer class="print-footer mt-auto border-t border-green-100 p-8 text-center bg-green-50/30">
+                    <div class="w-64 border-t border-slate-800 mx-auto mb-4"></div>
+                    <p id="docNameFooter" class="font-bold text-sm text-slate-900 uppercase font-arial">Nome do Médico</p>
+                    <p id="docContactFooter" class="text-[10px] text-slate-500 font-arial mt-2">Endereço • Telefone</p>
+                </footer>
+            </div>
+        </div>
+    </main>
+
+    <!-- MOBILE NAV -->
+    <div class="no-print lg:hidden fixed bottom-0 left-0 right-0 glass border-t border-slate-200 dark:border-slate-800 h-16 flex justify-around items-center z-50 backdrop-blur-xl">
+        <button onclick="app.switchTab('patient')" class="nav-btn flex flex-col items-center gap-1 p-2 text-cyan-600 dark:text-cyan-500" id="nav-patient"><i data-lucide="user" class="w-5 h-5"></i><span class="text-[10px]">Paciente</span></button>
+        <button onclick="app.switchTab('pharmacy')" class="nav-btn flex flex-col items-center gap-1 p-2 text-slate-500" id="nav-pharmacy"><i data-lucide="pill" class="w-5 h-5"></i><span class="text-[10px]">Farmácia</span></button>
+        <button onclick="app.switchTab('prescription')" class="nav-btn flex flex-col items-center gap-1 p-2 text-slate-500" id="nav-prescription"><i data-lucide="file-text" class="w-5 h-5"></i><span class="text-[10px]">Receita</span></button>
+    </div>
+
+    <!-- MODAL IA -->
+    <div id="aiModal" class="hidden fixed inset-0 z-[80] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 w-full max-w-3xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh]">
+            <div class="p-4 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center shrink-0">
+                <h3 id="aiModalTitle" class="font-bold text-lg flex items-center gap-2">Resultado IA</h3>
+                <button onclick="app.closeModal('aiModal')"><i data-lucide="x" class="w-5 h-5 opacity-50"></i></button>
+            </div>
+            <div class="p-6 overflow-y-auto custom-scrollbar grow ai-table-container">
+                <div id="aiModalContent" class="text-sm leading-relaxed text-slate-700 dark:text-slate-300"></div>
+            </div>
+            <div class="p-4 border-t border-slate-200 dark:border-slate-800 flex justify-end gap-2 shrink-0">
+                <button onclick="app.copyAIContent()" class="px-4 py-2 rounded-lg bg-slate-200 text-slate-800 text-xs font-bold">Copiar</button>
+                <button onclick="app.closeModal('aiModal')" class="px-4 py-2 rounded-lg bg-cyan-600 text-white text-xs font-bold">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL CONFIG -->
+    <div id="configModal" class="hidden fixed inset-0 z-[60] bg-black/80 flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between mb-6"><h3 class="text-xl font-bold">Configurações</h3><button onclick="app.closeModal('configModal')"><i data-lucide="x" class="w-6 h-6"></i></button></div>
+            <div class="space-y-4">
+                <div class="p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg border border-purple-200 dark:border-purple-800">
+                    <label class="block text-xs font-bold text-purple-600 dark:text-purple-400 mb-1">Gemini API Key</label>
+                    <input type="password" id="apiKeyInput" placeholder="Cole sua chave aqui..." class="w-full p-2 rounded border bg-white dark:bg-slate-950 border-slate-300 dark:border-slate-700 text-sm">
+                </div>
+                
+                <div class="border-t border-slate-200 dark:border-slate-700 pt-4">
+                    <label class="block text-xs font-bold mb-2">Dados do Médico</label>
+                    <input id="cfgName" placeholder="Nome Médico" class="w-full p-2 mb-2 rounded border bg-transparent border-slate-300 dark:border-slate-700">
+                    <input id="cfgSpec" placeholder="Especialidade" class="w-full p-2 mb-2 rounded border bg-transparent border-slate-300 dark:border-slate-700">
+                    <input id="cfgCrm" placeholder="CRM" class="w-full p-2 mb-2 rounded border bg-transparent border-slate-300 dark:border-slate-700">
+                    <input id="cfgAddress" placeholder="Endereço" class="w-full p-2 mb-2 rounded border bg-transparent border-slate-300 dark:border-slate-700">
+                    <input id="cfgPhone" placeholder="Telefone" class="w-full p-2 mb-2 rounded border bg-transparent border-slate-300 dark:border-slate-700">
+                    
+                    <label class="block text-xs font-bold mt-4 mb-1">Logo (URL ou Upload)</label>
+                    <input id="cfgLogo" placeholder="URL Logo..." class="w-full p-2 mb-2 rounded border bg-transparent border-slate-300 dark:border-slate-700">
+                    <div class="flex items-center gap-2">
+                        <label class="flex-1 cursor-pointer bg-slate-200 dark:bg-slate-800 text-center py-2 rounded text-xs font-bold">
+                            Escolher Arquivo
+                            <input type="file" class="hidden" onchange="app.handleLogoUpload(this)">
+                        </label>
+                        <span id="uploadStatus" class="text-xs opacity-50"></span>
+                    </div>
+                </div>
+
+                <button onclick="app.saveConfig()" class="w-full bg-slate-800 text-white p-3 rounded-lg font-bold mt-4">Salvar Configurações</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL ADD MED -->
+    <div id="addMedModal" class="hidden fixed inset-0 z-[60] bg-black/80 flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl w-full max-w-md">
+            <h3 class="text-xl font-bold mb-4">Novo Medicamento</h3>
+            <div class="space-y-3">
+                <input id="newMedName" placeholder="Nome" class="w-full p-2 rounded border bg-transparent border-slate-300 dark:border-slate-700">
+                <input id="newMedDose" placeholder="Dose" class="w-full p-2 rounded border bg-transparent border-slate-300 dark:border-slate-700">
+                <textarea id="newMedInstr" placeholder="Instrução" class="w-full p-2 rounded border bg-transparent border-slate-300 dark:border-slate-700"></textarea>
+                <select id="newMedCat" class="w-full p-2 rounded border bg-transparent border-slate-300 dark:border-slate-700 text-slate-500">
+                    <option value="Geral">Geral</option><option value="Psiquiatria">Psiquiatria</option><option value="Cardiologia">Cardiologia</option>
+                </select>
+                <div class="flex gap-2 mt-4">
+                    <button onclick="app.closeModal('addMedModal')" class="flex-1 p-3 rounded-lg border border-slate-300 dark:border-slate-700">Cancelar</button>
+                    <button onclick="app.addNewMedication()" class="flex-1 bg-cyan-600 text-white p-3 rounded-lg font-bold">Adicionar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const app = (function() {
+            const defaultMeds = [
+                // PSIQUIATRIA
+                { id: 1, category: 'Psiquiatria', name: 'Sertralina', dose: '50mg', instruction: '1 cp pela manhã após o café.' },
+                { id: 2, category: 'Psiquiatria', name: 'Escitalopram', dose: '10mg', instruction: '1 cp pela manhã.' },
+                { id: 3, category: 'Psiquiatria', name: 'Clonazepam', dose: '0.5mg', instruction: '1 cp à noite se insônia.' },
+                { id: 4, category: 'Psiquiatria', name: 'Quetiapina', dose: '25mg', instruction: '1 cp à noite.' },
+                { id: 5, category: 'Psiquiatria', name: 'Fluoxetina', dose: '20mg', instruction: '1 cp pela manhã.' },
+                { id: 6, category: 'Psiquiatria', name: 'Venlafaxina', dose: '75mg', instruction: '1 cp pela manhã.' },
+                { id: 7, category: 'Psiquiatria', name: 'Alprazolam', dose: '0.5mg', instruction: '1 cp à noite se ansiedade.' },
+                { id: 8, category: 'Psiquiatria', name: 'Amitriptilina', dose: '25mg', instruction: '1 cp à noite.' },
+                { id: 9, category: 'Psiquiatria', name: 'Duloxetina', dose: '60mg', instruction: '1 cp pela manhã.' },
+                { id: 10, category: 'Psiquiatria', name: 'Paroxetina', dose: '20mg', instruction: '1 cp pela manhã.' },
+                { id: 11, category: 'Psiquiatria', name: 'Risperidona', dose: '1mg', instruction: '1 cp à noite.' },
+                { id: 12, category: 'Psiquiatria', name: 'Olanzapina', dose: '5mg', instruction: '1 cp à noite.' },
+                { id: 13, category: 'Psiquiatria', name: 'Lítio', dose: '300mg', instruction: '1 cp a cada 12h.' },
+                { id: 14, category: 'Psiquiatria', name: 'Ácido Valproico', dose: '500mg', instruction: '1 cp a cada 12h.' },
+                { id: 15, category: 'Psiquiatria', name: 'Bupropiona', dose: '150mg', instruction: '1 cp pela manhã.' },
+                { id: 16, category: 'Psiquiatria', name: 'Mirtazapina', dose: '30mg', instruction: '1 cp à noite.' },
+                { id: 17, category: 'Psiquiatria', name: 'Desvenlafaxina', dose: '50mg', instruction: '1 cp pela manhã.' },
+                { id: 18, category: 'Psiquiatria', name: 'Pregabalina', dose: '75mg', instruction: '1 cp à noite.' },
+                { id: 19, category: 'Psiquiatria', name: 'Zolpidem', dose: '10mg', instruction: '1 cp ao deitar.' },
+                // CARDIOLOGIA
+                { id: 30, category: 'Cardiologia', name: 'Losartana', dose: '50mg', instruction: '1 cp a cada 12h.' },
+                { id: 31, category: 'Cardiologia', name: 'Enalapril', dose: '10mg', instruction: '1 cp a cada 12h.' },
+                { id: 32, category: 'Cardiologia', name: 'Atenolol', dose: '25mg', instruction: '1 cp pela manhã.' },
+                { id: 33, category: 'Cardiologia', name: 'Hidroclorotiazida', dose: '25mg', instruction: '1 cp pela manhã.' },
+                { id: 34, category: 'Cardiologia', name: 'Anlodipino', dose: '5mg', instruction: '1 cp pela manhã.' },
+                { id: 35, category: 'Cardiologia', name: 'Captopril', dose: '25mg', instruction: '1 cp se PA alta.' },
+                { id: 36, category: 'Cardiologia', name: 'Espironolactona', dose: '25mg', instruction: '1 cp pela manhã.' },
+                // GERAL
+                { id: 60, category: 'Geral', name: 'Dipirona', dose: '500mg', instruction: '1 cp a cada 6h se dor.' },
+                { id: 61, category: 'Geral', name: 'Paracetamol', dose: '750mg', instruction: '1 cp a cada 6h se dor.' },
+                { id: 62, category: 'Geral', name: 'Ibuprofeno', dose: '600mg', instruction: '1 cp a cada 8h.' },
+                { id: 63, category: 'Geral', name: 'Nimesulida', dose: '100mg', instruction: '1 cp a cada 12h por 3 dias.' },
+                { id: 64, category: 'Geral', name: 'Diclofenaco', dose: '50mg', instruction: '1 cp a cada 8h.' },
+                { id: 80, category: 'Geral', name: 'Omeprazol', dose: '20mg', instruction: '1 cp em jejum.' },
+                { id: 81, category: 'Geral', name: 'Pantoprazol', dose: '40mg', instruction: '1 cp em jejum.' },
+                { id: 90, category: 'Geral', name: 'Amoxicilina', dose: '500mg', instruction: '1 cp a cada 8h por 7 dias.' },
+                { id: 91, category: 'Geral', name: 'Clavulin', dose: '875mg', instruction: '1 cp a cada 12h por 10 dias.' },
+                { id: 92, category: 'Geral', name: 'Azitromicina', dose: '500mg', instruction: '1 cp ao dia por 5 dias.' },
+                { id: 110, category: 'Geral', name: 'Metformina', dose: '850mg', instruction: '1 cp após refeições.' },
+                { id: 120, category: 'Geral', name: 'Loratadina', dose: '10mg', instruction: '1 cp ao dia.' }
+            ];
+
+            let state = {
+                meds: JSON.parse(localStorage.getItem('neuro_meds')) || defaultMeds,
+                patients: JSON.parse(localStorage.getItem('neuro_patients')) || [],
+                config: JSON.parse(localStorage.getItem('neuro_config')) || { 
+                    name: 'Dr. Alexandre Silva', specialty: 'Psiquiatra', crm: 'CRM/SP 123456', 
+                    address: 'Av. Paulista, 1000', phone: '(11) 9999-8888', 
+                    logoUrl: 'https://i.ibb.co/h7gJj9r/dr-alyson-melo-crm-1234.png', apiKey: '' 
+                },
+                currentPatient: { id: null, name: '', soap: { s: '', o: '', a: '', p: '' } },
+                prescription: [],
+                tempMed: null
+            };
+
+            function init() {
+                lucide.createIcons();
+                loadTheme();
+                renderMeds();
+                updateConfigUI();
+                updateDocHeader();
+                updateDate();
+                renderAIButtons();
+            }
+
+            function updateDate() {
+                const now = new Date();
+                const options = { day: 'numeric', month: 'long', year: 'numeric' };
+                document.getElementById('dateDisplay').innerText = now.toLocaleDateString('pt-BR', options);
+            }
+
+            function renderAIButtons() {
+                const btns = [
+                    {t:'interactions', i:'activity', c:'text-purple-500', l:'Interações'},
+                    {t:'cid', i:'book-open', c:'text-cyan-500', l:'Sugestão CID'},
+                    {t:'nutri', i:'apple', c:'text-green-500', l:'NutriGuide'},
+                    {t:'kids', i:'baby', c:'text-pink-500', l:'Modo Kids'},
+                    {t:'translate', i:'globe', c:'text-blue-500', l:'Traduzir EN'},
+                    {t:'report', i:'file-badge', c:'text-yellow-500', l:'Laudo'},
+                    {t:'alternatives', i:'repeat', c:'text-orange-500', l:'Alternativas'},
+                    {t:'message', i:'message-square', c:'text-indigo-500', l:'WhatsApp'},
+                    {t:'mechanism', i:'microscope', c:'text-teal-500', l:'Mecanismo'},
+                    {t:'alerts', i:'siren', c:'text-red-500', l:'Alertas'},
+                    {t:'caregiver', i:'user-check', c:'text-emerald-500', l:'Cuidador'},
+                    {t:'lifestyle', i:'sun', c:'text-amber-500', l:'Lifestyle'},
+                    {t:'tapering', i:'trending-down', c:'text-red-400', l:'Desmame'},
+                    {t:'followup', i:'help-circle', c:'text-violet-500', l:'Retorno'},
+                    {t:'cost', i:'banknote', c:'text-emerald-600', l:'Custo'},
+                    {t:'schedule', i:'clock', c:'text-sky-500', l:'Cronograma'}
+                ];
+
+                document.getElementById('aiButtonsGrid').innerHTML = btns.map(b => `
+                    <button onclick="app.callAI('${b.t}')" class="h-20 rounded-xl flex flex-col items-center justify-center gap-1 border border-transparent bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 transition-colors group" title="${b.l}">
+                        <i data-lucide="${b.i}" class="${b.c} w-6 h-6 group-hover:scale-110 transition-transform"></i>
+                        <span class="text-[10px] font-semibold text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white">${b.l}</span>
+                    </button>
+                `).join('');
+                lucide.createIcons();
+            }
+
+            // Função IA Completa
+            async function callAI(type) {
+                if(!state.config.apiKey) {
+                    alert("Erro: Configure sua API Key do Gemini nas configurações! (Botão Engrenagem)");
+                    openModal('configModal');
+                    return;
+                }
+                
+                const medsText = state.prescription.map(i => `${i.name} (${i.dose})`).join(', ');
+                if(!medsText && type !== 'guide') return alert("Adicione medicamentos à receita para usar esta função.");
+
+                const tableInstruction = " Retorne a resposta EXCLUSIVAMENTE como uma Tabela HTML (<table>) estilizada com classes Tailwind (w-full, text-sm, border-collapse, th bg-slate-100 dark:bg-slate-800 p-2, td border p-2). Não use markdown (```).";
+                const textInstruction = " Retorne a resposta em texto formatado com tags HTML simples (<p>, <strong>, <ul>). Não use markdown.";
+
+                let prompt = "", title = "";
+
+                switch(type) {
+                    case 'interactions': title="Interações"; prompt=`Analise interações para: ${medsText}. Crie tabela: Medicamentos, Interação, Gravidade.${tableInstruction}`; break;
+                    case 'cid': title="Sugestão CID"; prompt=`Sugira CIDs para: ${medsText}. Tabela: Código CID, Doença, Probabilidade.${tableInstruction}`; break;
+                    case 'nutri': title="Guia Nutricional"; prompt=`Tabela nutricional para: ${medsText}. Colunas: Medicamento, Alimento/Interação, Recomendação.${tableInstruction}`; break;
+                    case 'alternatives': title="Alternativas"; prompt=`Sugira genéricos para: ${medsText}. Tabela: Original, Alternativa, Obs.${tableInstruction}`; break;
+                    case 'mechanism': title="Mecanismo"; prompt=`Mecanismo de ação de: ${medsText}. Tabela: Medicamento, Resumo Mecanismo.${tableInstruction}`; break;
+                    case 'alerts': title="Sinais de Alerta"; prompt=`Sinais de alerta para: ${medsText}. Tabela: Medicamento, Sinal, Ação.${tableInstruction}`; break;
+                    case 'caregiver': title="Checklist Cuidador"; prompt=`Checklist cronológico para: ${medsText}. Tabela: Horário, Medicamento, Instrução.${tableInstruction}`; break;
+                    case 'lifestyle': title="Estilo de Vida"; prompt=`Mudanças de vida para quem usa: ${medsText}. Tabela: Hábito, Benefício, Dica.${tableInstruction}`; break;
+                    case 'tapering': title="Sugestão Desmame"; prompt=`Sugira protocolo desmame (aviso: apenas sugestão) para: ${medsText}. Tabela: Semana, Dose, Obs.${tableInstruction}`; break;
+                    case 'followup': title="Perguntas Retorno"; prompt=`Perguntas para retorno: ${medsText}. Tabela: Pergunta, Objetivo.${tableInstruction}`; break;
+                    case 'cost': title="Estimativa Custo"; prompt=`Custo mensal Brasil (R$) para: ${medsText}. Tabela: Medicamento, Preço Est., Total.${tableInstruction}`; break;
+                    case 'schedule': title="Cronograma"; prompt=`Linha do tempo para: ${medsText}. Tabela: Horário, Medicamento, Instrução.${tableInstruction}`; break;
+                    case 'translate': title="Tradução (EN)"; prompt=`Translate: ${state.prescription.map(i=>`${i.name}: ${i.instruction}`).join('; ')}. Table: Original (PT), Translated (EN).${tableInstruction}`; break;
+
+                    case 'kids': title="Modo Kids"; prompt=`Explique para criança de 7 anos: ${medsText}. Use metáforas de heróis.${textInstruction}`; break;
+                    case 'report': title="Laudo Médico"; prompt=`Laudo Médico formal para ${state.currentPatient.name || 'paciente'} sobre uso de: ${medsText}.${textInstruction}`; break;
+                    case 'message': title="Mensagem WhatsApp"; prompt=`Mensagem curta e cordial WhatsApp resumindo receita: ${medsText}.${textInstruction}`; break;
+                    
+                    case 'guide': 
+                        const currentGuide = document.getElementById('patientGuide');
+                        currentGuide.value = "Gerando orientações...";
+                        const txt = await fetchGemini(`Escreva orientações curtas e diretas (max 3 parágrafos) para paciente usando: ${medsText}. Texto corrido sem markdown.`);
+                        currentGuide.value = txt ? txt.replace(/[*#]/g, '') : "Erro ao gerar orientações.";
+                        return;
+                }
+
+                document.getElementById('aiModalTitle').innerText = title;
+                document.getElementById('aiModalContent').innerHTML = '<div class="flex justify-center p-10"><div class="animate-spin rounded-full h-10 w-10 border-b-2 border-cyan-500"></div></div>';
+                openModal('aiModal');
+                
+                let responseText = await fetchGemini(prompt);
+                if (responseText) {
+                    // Remover markdown se a IA alucinar e colocar
+                    responseText = responseText.replace(/```html/g, '').replace(/```/g, '');
+                }
+
+                document.getElementById('aiModalContent').innerHTML = responseText || "<p class='text-red-500'>Não foi possível obter resposta. Verifique a chave API.</p>";
+            }
+
+            async function fetchGemini(prompt) {
+                if(!state.config.apiKey) return null;
+                try {
+                    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${state.config.apiKey}`, {
+                        method: 'POST', headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                    });
+                    const data = await response.json();
+                    return data.candidates?.[0]?.content?.parts?.[0]?.text;
+                } catch (error) {
+                    console.error(error);
+                    return null;
+                }
+            }
+
+            // Utilitários UI
+            function toggleTheme() {
+                document.documentElement.classList.toggle('dark');
+                localStorage.setItem('neuro_theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+            }
+            function loadTheme() { if(localStorage.getItem('neuro_theme') === 'light') document.documentElement.classList.remove('dark'); }
+            function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+            function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+            function openConfigMedModal() { openModal('addMedModal'); }
+            
+            function copyAIContent() { 
+                const content = document.getElementById('aiModalContent').innerText;
+                navigator.clipboard.writeText(content); 
+                alert("Conteúdo copiado!"); 
+            }
+            
+            function generatePDF() {
+                const element = document.getElementById('prescriptionPaper');
+                // Configuração otimizada para A4
+                const opt = { margin: 0, filename: `Receita_${state.currentPatient.name || 'NeuroScript'}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: true }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } };
+                html2pdf().set(opt).from(element).save();
+            }
+
+            // Farmácia
+            function renderMeds() {
+                const search = document.getElementById('medSearch').value.toLowerCase();
+                document.getElementById('medicationList').innerHTML = state.meds
+                    .filter(m => m.name.toLowerCase().includes(search))
+                    .map(m => `
+                        <button onclick="app.addToPrescription(${m.id})" class="w-full text-left p-3 rounded-xl border border-transparent bg-slate-50 dark:bg-slate-900/50 hover:border-cyan-500/50 transition-all group relative overflow-hidden">
+                            <div class="flex justify-between items-start">
+                                <div><div class="font-bold text-sm">${m.name}</div><div class="text-[10px] opacity-60 mt-0.5">${m.dose}</div></div>
+                                <i data-lucide="plus" class="w-4 h-4 text-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                            </div>
+                        </button>`).join('');
+                lucide.createIcons();
+            }
+
+            function addToPrescription(id) {
+                const med = state.meds.find(m => m.id === id);
+                if(med) { state.prescription.push({ ...med, uid: Date.now() + Math.random() }); updatePrescriptionView(); }
+            }
+
+            function removePrescriptionItem(uid) {
+                state.prescription = state.prescription.filter(i => i.uid !== uid);
+                updatePrescriptionView();
+            }
+
+            function updatePrescriptionView() {
+                const list = document.getElementById('prescriptionListDisplay');
+                document.getElementById('patientNameDisplay').innerText = state.currentPatient.name || "Nome do Paciente...";
+
+                if(state.prescription.length === 0) {
+                    list.innerHTML = '<div class="text-center text-slate-300 italic mt-10 no-print">Adicione itens da farmácia...</div>';
+                } else {
+                    list.innerHTML = state.prescription.map((item, idx) => `
+                        <div class="relative group pl-4 border-l-2 border-transparent hover:border-green-400 transition-all">
+                            <div class="flex justify-between items-baseline">
+                                <div class="font-bold font-arial" style="font-size: 12pt; color: #1e293b;">
+                                    ${idx+1}. ${item.name} <span class="font-normal ml-2 text-slate-600">${item.dose}</span>
+                                </div>
+                                <button onclick="app.removePrescriptionItem(${item.uid})" class="no-print text-red-400 opacity-0 group-hover:opacity-100 hover:text-red-600 transition-opacity"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                            </div>
+                            <p class="text-sm text-slate-700 mt-1 pl-4 font-arial">${item.instruction}</p>
+                        </div>`).join('');
+                }
+                lucide.createIcons();
+            }
+
+            function addNewMedication() {
+                const name = document.getElementById('newMedName').value;
+                if(!name) return;
+                state.meds.push({
+                    id: Date.now(), name,
+                    dose: document.getElementById('newMedDose').value,
+                    instruction: document.getElementById('newMedInstr').value,
+                    category: document.getElementById('newMedCat').value
+                });
+                localStorage.setItem('neuro_meds', JSON.stringify(state.meds));
+                renderMeds();
+                closeModal('addMedModal');
+            }
+
+            // Pacientes
+            function searchPatient() {
+                const query = document.getElementById('patientNameInput').value;
+                state.currentPatient.name = query;
+                updatePrescriptionView();
+                
+                const results = document.getElementById('patientSearchResults');
+                if(query.length < 1) { results.classList.add('hidden'); return; }
+                
+                const filtered = state.patients.filter(p => p.name.toLowerCase().includes(query.toLowerCase()));
+                if(filtered.length > 0) {
+                    results.innerHTML = filtered.map(p => `<button onclick="app.loadPatient(${p.id})" class="w-full text-left px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-800 border-b border-slate-200 dark:border-slate-700">${p.name}</button>`).join('');
+                    results.classList.remove('hidden');
+                } else results.classList.add('hidden');
+            }
+
+            function loadPatient(id) {
+                const p = state.patients.find(pat => pat.id === id);
+                if(p) {
+                    state.currentPatient = JSON.parse(JSON.stringify(p));
+                    document.getElementById('patientNameInput').value = p.name;
+                    document.getElementById('soapS').value = p.soap?.s || '';
+                    document.getElementById('soapO').value = p.soap?.o || '';
+                    document.getElementById('soapA').value = p.soap?.a || '';
+                    document.getElementById('soapP').value = p.soap?.p || '';
+                    document.getElementById('patientSearchResults').classList.add('hidden');
+                    updatePrescriptionView();
+                }
+            }
+
+            function savePatientData() {
+                const name = document.getElementById('patientNameInput').value;
+                if(!name) return alert("Nome obrigatório");
+                state.currentPatient.name = name;
+                state.currentPatient.soap = {
+                    s: document.getElementById('soapS').value,
+                    o: document.getElementById('soapO').value,
+                    a: document.getElementById('soapA').value,
+                    p: document.getElementById('soapP').value
+                };
+                if(!state.currentPatient.id) state.currentPatient.id = Date.now();
+                
+                const idx = state.patients.findIndex(p => p.id === state.currentPatient.id);
+                if(idx >= 0) state.patients[idx] = state.currentPatient;
+                else state.patients.push(state.currentPatient);
+                
+                localStorage.setItem('neuro_patients', JSON.stringify(state.patients));
+                alert("Dados salvos!");
+            }
+
+            function clearPatientData() {
+                if(confirm("Limpar dados atuais da tela?")) {
+                    state.currentPatient = { id: null, name: '', soap: { s: '', o: '', a: '', p: '' } };
+                    state.prescription = [];
+                    document.getElementById('patientNameInput').value = '';
+                    document.getElementById('soapS').value = '';
+                    document.getElementById('soapO').value = '';
+                    document.getElementById('soapA').value = '';
+                    document.getElementById('soapP').value = '';
+                    document.getElementById('patientGuide').value = '';
+                    updatePrescriptionView();
+                }
+            }
+
+            // Config & Upload
+            function updateConfigUI() {
+                const c = state.config;
+                document.getElementById('cfgName').value = c.name;
+                document.getElementById('cfgSpec').value = c.specialty;
+                document.getElementById('cfgCrm').value = c.crm;
+                document.getElementById('cfgAddress').value = c.address;
+                document.getElementById('cfgPhone').value = c.phone;
+                document.getElementById('cfgLogo').value = c.logoUrl;
+                document.getElementById('apiKeyInput').value = c.apiKey;
+                if(c.apiKey) document.getElementById('apiKeyStatus').classList.replace('bg-red-500', 'bg-green-500');
+            }
+
+            function handleLogoUpload(input) {
+                const file = input.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                document.getElementById('uploadStatus').innerText = "Carregando...";
+                reader.onload = function(e) {
+                    document.getElementById('cfgLogo').value = e.target.result;
+                    document.getElementById('uploadStatus').innerText = "Ok!";
+                };
+                reader.readAsDataURL(file);
+            }
+
+            function saveConfig() {
+                state.config = {
+                    name: document.getElementById('cfgName').value,
+                    specialty: document.getElementById('cfgSpec').value,
+                    crm: document.getElementById('cfgCrm').value,
+                    address: document.getElementById('cfgAddress').value,
+                    phone: document.getElementById('cfgPhone').value,
+                    logoUrl: document.getElementById('cfgLogo').value,
+                    apiKey: document.getElementById('apiKeyInput').value
+                };
+                localStorage.setItem('neuro_config', JSON.stringify(state.config));
+                updateDocHeader();
+                updateConfigUI();
+                closeModal('configModal');
+            }
+
+            function updateDocHeader() {
+                const c = state.config;
+                document.getElementById('docNameDisplay').innerText = c.name;
+                document.getElementById('docSpecDisplay').innerText = c.specialty;
+                document.getElementById('docCrmDisplay').innerText = c.crm;
+                document.getElementById('docNameFooter').innerText = c.name;
+                document.getElementById('docContactFooter').innerText = `${c.address} • ${c.phone}`;
+                const logo = document.getElementById('docLogoContainer');
+                
+                if(c.logoUrl && c.logoUrl.length > 10) {
+                    logo.innerHTML = `<img src="${c.logoUrl}" class="h-full w-full object-contain mix-blend-multiply">`;
+                } else {
+                    logo.innerHTML = `<div class="h-28 w-28 bg-green-700 text-white flex items-center justify-center rounded-full font-bold text-4xl">${c.name.charAt(0)}</div>`;
+                }
+            }
+
+            // Mobile Nav
+            function switchTab(tab) {
+                const sidebar = document.getElementById('sidebarPanel');
+                const tabPatient = document.getElementById('tab-patient');
+                const tabPharm = document.getElementById('tab-pharmacy');
+                const tabPresc = document.getElementById('tab-prescription');
+                
+                // Reset (Mobile Logic Only)
+                if(window.innerWidth < 1024) {
+                    sidebar.classList.add('hidden');
+                    tabPatient.classList.add('hidden');
+                    tabPharm.classList.add('hidden');
+                    tabPharm.classList.remove('flex');
+                    tabPresc.classList.add('hidden');
+                    tabPresc.classList.remove('flex');
+
+                    // Activate
+                    document.querySelectorAll('.nav-btn').forEach(b => b.classList.replace('text-cyan-600', 'text-slate-500'));
+                    document.querySelectorAll('.nav-btn').forEach(b => b.classList.replace('dark:text-cyan-500', 'text-slate-500'));
+                    document.getElementById(`nav-${tab}`).classList.replace('text-slate-500', 'text-cyan-600');
+                    document.getElementById(`nav-${tab}`).classList.add('dark:text-cyan-500');
+
+                    if(tab === 'prescription') {
+                        tabPresc.classList.remove('hidden');
+                        tabPresc.classList.add('flex');
+                    } else {
+                        sidebar.classList.remove('hidden');
+                        if(tab === 'patient') tabPatient.classList.remove('hidden');
+                        if(tab === 'pharmacy') {
+                            tabPharm.classList.remove('hidden');
+                            tabPharm.classList.add('flex');
+                        }
+                    }
+                }
+            }
+
+            return {
+                init, toggleTheme, openModal, closeModal, openConfigMedModal, copyAIContent, generatePDF,
+                searchPatient, loadPatient, savePatientData, clearPatientData,
+                renderMeds, addToPrescription, removePrescriptionItem, addNewMedication,
+                saveConfig, handleLogoUpload, callAI, switchTab
+            };
+        })();
+
+        document.addEventListener('DOMContentLoaded', () => {
+            window.app = app;
+            app.init();
+        });
+    </script>
+</body>
+</html>
