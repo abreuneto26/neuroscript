@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NeuroScript - Inteligência Clínica</title>
+    <title>NeuroScript - Inteligência Clínica (200+ Ferramentas)</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -12,7 +12,7 @@
             darkMode: 'class',
             theme: {
                 extend: {
-                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    fontFamily: { sans: ['Inter', 'sans-serif'], arial: ['Arial', 'sans-serif'] },
                     animation: { 'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite' }
                 }
             }
@@ -30,7 +30,7 @@
         body { font-family: 'Inter', sans-serif; touch-action: manipulation; }
         
         /* Scrollbar Customizada */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); }
         ::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.5); border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: rgba(156, 163, 175, 0.8); }
@@ -72,44 +72,26 @@
         .ai-table-container tr:nth-child(even) { background-color: rgba(0,0,0,0.02); }
         .dark .ai-table-container tr:nth-child(even) { background-color: rgba(255,255,255,0.02); }
 
-        /* Destacar valores anormais nas tabelas geradas pela IA */
         .ai-abnormal { color: #ef4444; font-weight: bold; }
         .dark .ai-abnormal { color: #f87171; }
 
-        /* ESCALA DO PAPEL NO MOBILE */
-        @media (max-width: 1023px) {
-            #prescriptionPaper {
-                transform: scale(0.55); /* Reduz visualmente o papel */
-                transform-origin: top center;
-                margin-bottom: -40%; /* Compensa o espaço vazio gerado pelo scale */
-            }
-            #tab-prescription {
-                overflow: hidden; /* Evita scroll horizontal indesejado */
-                align-items: flex-start;
-                padding-top: 20px;
-            }
-        }
-
         @media print {
-            @page { margin: 0; size: portrait; }
+            @page { margin: 0; size: auto; } 
             body { background: white; -webkit-print-color-adjust: exact; }
             .no-print { display: none !important; }
             .print-container { 
                 box-shadow: none !important; border: none !important; margin: 0 !important; 
-                width: 100% !important; padding: 0 !important; height: 100vh !important;
-                transform: none !important; /* Remove a escala do mobile na impressão */
+                padding: 0 !important; height: 100vh !important;
+                transform: none !important; 
             }
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
             .print-header { background-color: #f0fdf4 !important; color: #14532d !important; border-bottom: 2px solid #bbf7d0 !important; }
             .print-footer { background-color: #f0fdf4 !important; color: #14532d !important; border-top: 2px solid #bbf7d0 !important; }
-            
-            /* Oculta o textarea de orientações na impressão se estiver vazio */
             #patientGuide:empty { display: none !important; }
             #guideContainer { display: block; }
-            /* Se o textarea estiver vazio, esconde o título também na impressão */
             #patientGuide:placeholder-shown + .no-print { display: none; }
-            
-            /* Esconder fundo animado */
             .fixed.inset-0 { display: none; }
+            .hospital-input { border: none !important; background: transparent !important; }
         }
 
         .glass {
@@ -125,35 +107,25 @@
         input, textarea, select { font-size: 16px !important; }
 
         /* --- ESTRUTURA DE ABAS --- */
-        .tab-content {
-            display: none;
-            width: 100%;
-        }
-        .tab-content.active {
-            display: flex;
-            flex-direction: column;
-            height: 100%; /* Ocupa altura total do pai */
+        .tab-content { display: none; width: 100%; }
+        .tab-content.active { display: flex; flex-direction: column; height: 100%; }
+        
+        .doc-switch-btn { @apply px-3 py-1 text-xs font-bold rounded-full transition-colors border; }
+        .doc-switch-btn.active { @apply bg-slate-800 text-white border-slate-800 dark:bg-white dark:text-slate-900 dark:border-white; }
+        .doc-switch-btn.inactive { @apply text-slate-500 border-transparent hover:bg-slate-200 dark:hover:bg-slate-800; }
+
+        /* Estilo para Categorias da IA */
+        .ai-category-header {
+            @apply text-xs font-bold uppercase tracking-widest text-slate-400 mt-6 mb-3 border-b border-slate-200 dark:border-slate-800 pb-1;
         }
         
-        /* Estilo para o seletor de documento no papel */
-        .doc-switch-btn {
-            @apply px-3 py-1 text-xs font-bold rounded-full transition-colors border;
-        }
-        .doc-switch-btn.active {
-            @apply bg-slate-800 text-white border-slate-800 dark:bg-white dark:text-slate-900 dark:border-white;
-        }
-        .doc-switch-btn.inactive {
-            @apply text-slate-500 border-transparent hover:bg-slate-200 dark:hover:bg-slate-800;
+        /* Classes utilitárias para o Prescrição Hospitalar */
+        .hospital-input { 
+            @apply w-full bg-transparent outline-none font-arial text-slate-900 px-1 h-full border-b border-transparent focus:border-blue-300 hover:bg-blue-50/50 transition-colors; 
         }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300 h-screen overflow-hidden flex flex-col">
-
-    <!-- Background -->
-    <div class="fixed inset-0 z-0 pointer-events-none hidden dark:block">
-        <div class="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-purple-900/20 rounded-full blur-[120px] animate-pulse-slow"></div>
-        <div class="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-cyan-900/20 rounded-full blur-[120px]" style="animation-delay: 2s"></div>
-    </div>
 
     <!-- HEADER FIXO -->
     <header class="w-full z-50 glass border-b border-slate-200 dark:border-slate-800 h-16 flex items-center justify-between px-4 md:px-8 no-print shrink-0">
@@ -162,7 +134,7 @@
                 <i data-lucide="brain-circuit" class="text-white w-5 h-5"></i>
             </div>
             <h1 class="text-lg md:text-xl font-bold tracking-tight">
-                Neuro<span class="text-cyan-600 dark:text-cyan-400">Script</span>
+                Neuro<span class="text-cyan-600 dark:text-cyan-400">Script</span> <span class="text-xs opacity-50 font-normal align-top">ULTIMATE</span>
             </h1>
         </div>
         <div class="flex items-center gap-2">
@@ -185,16 +157,16 @@
         </div>
     </header>
 
-    <!-- MAIN CONTENT (OCUPA O RESTO DA TELA) -->
+    <!-- MAIN CONTENT -->
     <main class="flex flex-col flex-1 overflow-hidden max-w-[1800px] mx-auto w-full">
         
-        <!-- Botões de Navegação das Abas (Desktop) - FIXO NO TOPO DA ÁREA PRINCIPAL -->
+        <!-- Desktop Nav -->
         <div class="no-print hidden lg:flex border-b border-slate-200 dark:border-slate-800 px-8 shrink-0 bg-slate-50/80 dark:bg-slate-950/80 backdrop-blur z-20">
             <button id="tabButton-patient" onclick="app.switchTab('patient')" class="tab-button flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 border-transparent text-slate-500 dark:text-slate-400 hover:text-cyan-600 hover:border-cyan-600 transition-colors active-tab-button">
                 <i data-lucide="user" class="w-4 h-4"></i> Paciente & SOAP
             </button>
             <button id="tabButton-ai" onclick="app.switchTab('ai')" class="tab-button flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 border-transparent text-slate-500 dark:text-slate-400 hover:text-purple-600 hover:border-purple-600 transition-colors">
-                <i data-lucide="sparkles" class="w-4 h-4 text-purple-500"></i> Central de IA
+                <i data-lucide="sparkles" class="w-4 h-4 text-purple-500"></i> Central de IA (200+)
             </button>
             <button id="tabButton-pharmacy" onclick="app.switchTab('pharmacy')" class="tab-button flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 border-transparent text-slate-500 dark:text-slate-400 hover:text-green-600 hover:border-green-600 transition-colors">
                 <i data-lucide="pill" class="w-4 h-4"></i> Farmácia
@@ -207,11 +179,11 @@
             </button>
         </div>
 
-        <!-- Conteúdo das Abas (FILL HEIGHT) -->
+        <!-- Conteúdo -->
         <div class="flex flex-col lg:flex-row flex-1 overflow-hidden relative">
             
-            <!-- COLUNA DA ESQUERDA (ABAS) - SCROLL INDEPENDENTE -->
-            <div class="flex-1 overflow-y-auto custom-scrollbar p-4 md:p-6 lg:border-r border-slate-200 dark:border-slate-800 h-full" id="leftPanelContainer">
+            <!-- COLUNA DA ESQUERDA (Pode ser recolhida) -->
+            <div id="leftPanelContainer" class="flex-1 overflow-y-auto custom-scrollbar p-4 md:p-6 lg:border-r border-slate-200 dark:border-slate-800 h-full transition-all duration-300 ease-in-out">
                 
                 <!-- ABA: Paciente & SOAP -->
                 <div id="tabContent-patient" class="tab-content active flex flex-col gap-6 pb-20 lg:pb-0">
@@ -221,7 +193,6 @@
                                 <i data-lucide="user" class="w-4 h-4"></i> Dados do Paciente e Anamnese (SOAP)
                             </h2>
                             <div class="flex gap-2">
-                                <!-- MAGIC SOAP BUTTON -->
                                 <button onclick="app.openMagicSoap()" class="text-xs bg-gradient-to-r from-purple-500 to-cyan-500 text-white px-3 py-1 rounded flex gap-1 items-center hover:opacity-90 transition font-bold shadow-lg">
                                     <i data-lucide="sparkles" class="w-3 h-3"></i> Magic SOAP
                                 </button>
@@ -244,21 +215,18 @@
                                 <textarea id="soapS" class="w-full h-32 rounded-lg p-2 text-xs resize-none outline-none border bg-white dark:bg-slate-900/50 border-slate-300 dark:border-slate-700" placeholder="Queixa principal, histórico..."></textarea>
                             </div>
                             
-                            <!-- CAMPO OBJETIVO COM UPLOAD DE IMAGEM/PDF -->
                             <div class="col-span-1 relative">
                                 <div class="flex justify-between items-center mb-1">
                                     <label class="text-[10px] font-bold opacity-50 block">O (Objetivo)</label>
                                     <button onclick="document.getElementById('examUploadInput').click()" class="text-[10px] flex items-center gap-1 text-cyan-600 dark:text-cyan-400 hover:underline">
-                                        <i data-lucide="paperclip" class="w-3 h-3"></i> Anexar Exame (Img/PDF)
+                                        <i data-lucide="paperclip" class="w-3 h-3"></i> Anexar (Img/PDF)
                                     </button>
                                     <input type="file" id="examUploadInput" accept="image/*,application/pdf" class="hidden" onchange="app.handleExamUpload(this)">
                                 </div>
-                                <textarea id="soapO" class="w-full h-32 rounded-lg p-2 text-xs resize-none outline-none border bg-white dark:bg-slate-900/50 border-slate-300 dark:border-slate-700" placeholder="Exame físico, resultados de exames..."></textarea>
+                                <textarea id="soapO" class="w-full h-32 rounded-lg p-2 text-xs resize-none outline-none border bg-white dark:bg-slate-900/50 border-slate-300 dark:border-slate-700" placeholder="Exame físico, resultados..."></textarea>
                                 
-                                <!-- PREVIEW DO EXAME -->
                                 <div id="examPreviewContainer" class="hidden mt-2 p-2 bg-slate-100 dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
                                     <div class="flex items-start gap-3">
-                                        <!-- Visual (Imagem ou Icone) -->
                                         <div id="examPreviewVisual" class="w-16 h-16 shrink-0 flex items-center justify-center bg-white dark:bg-slate-900 rounded-md border border-slate-300 dark:border-slate-600 overflow-hidden relative">
                                             <img id="examPreviewImg" class="w-full h-full object-cover hidden">
                                             <i id="examPreviewIcon" data-lucide="file-text" class="w-8 h-8 text-slate-400 hidden"></i>
@@ -274,25 +242,33 @@
                                 </div>
                             </div>
 
-                            <div class="col-span-2"><label class="text-[10px] font-bold opacity-50 mb-1 block">A (Avaliação)</label><textarea id="soapA" class="w-full h-20 rounded-lg p-2 text-xs resize-none outline-none border bg-white dark:bg-slate-900/50 border-slate-300 dark:border-slate-700" placeholder="Diagnóstico, problemas identificados..."></textarea></div>
-                            <div class="col-span-2"><label class="text-[10px] font-bold opacity-50 mb-1 block">P (Plano)</label><textarea id="soapP" class="w-full h-20 rounded-lg p-2 text-xs resize-none outline-none border bg-white dark:bg-slate-900/50 border-slate-300 dark:border-slate-700" placeholder="Conduta, tratamento, exames complementares..."></textarea></div>
+                            <div class="col-span-2"><label class="text-[10px] font-bold opacity-50 mb-1 block">A (Avaliação)</label><textarea id="soapA" class="w-full h-20 rounded-lg p-2 text-xs resize-none outline-none border bg-white dark:bg-slate-900/50 border-slate-300 dark:border-slate-700" placeholder="Diagnóstico, hipóteses..."></textarea></div>
+                            <div class="col-span-2"><label class="text-[10px] font-bold opacity-50 mb-1 block">P (Plano)</label><textarea id="soapP" class="w-full h-20 rounded-lg p-2 text-xs resize-none outline-none border bg-white dark:bg-slate-900/50 border-slate-300 dark:border-slate-700" placeholder="Conduta, prescrição..."></textarea></div>
                         </div>
                     </div>
                 </div>
 
-                <!-- ABA: Central de IA Clínica -->
-                <div id="tabContent-ai" class="tab-content flex flex-col gap-6 pb-20 lg:pb-0">
-                     <div class="glass rounded-2xl p-5 border border-slate-200 dark:border-slate-800">
-                        <h2 class="text-xs font-bold uppercase tracking-widest mb-3 flex items-center gap-2 opacity-70">
-                            <i data-lucide="sparkles" class="w-4 h-4 text-purple-500"></i> Central de IA Clínica
-                        </h2>
-                        <div id="aiButtonsGrid" class="grid grid-cols-4 gap-2">
-                            <!-- Botões injetados via JS -->
+                <!-- ABA: Central de IA Clínica (200+ TOOLS) -->
+                <div id="tabContent-ai" class="tab-content flex flex-col gap-4 pb-20 lg:pb-0 h-full">
+                     <div class="glass rounded-2xl p-5 border border-slate-200 dark:border-slate-800 flex flex-col h-full">
+                        <div class="flex justify-between items-center mb-4 shrink-0">
+                            <h2 class="text-xs font-bold uppercase tracking-widest flex items-center gap-2 opacity-70">
+                                <i data-lucide="sparkles" class="w-4 h-4 text-purple-500"></i> Central de Inteligência
+                            </h2>
+                            <span class="text-[10px] bg-purple-500/10 text-purple-600 px-2 py-1 rounded-full font-bold border border-purple-500/20">200+ Ferramentas</span>
                         </div>
-                        <!-- Botão de Orientações -->
-                        <button onclick="app.callAI('guide')" class="w-full mt-3 h-12 rounded-xl flex items-center justify-center gap-2 border border-purple-500/30 bg-purple-500/10 hover:bg-purple-500/20 text-purple-500 transition-colors">
-                            <i data-lucide="file-text" class="w-5 h-5"></i> <span class="text-xs font-bold">Gerar Orientações (IA)</span>
-                        </button>
+
+                        <!-- Search Bar para AI -->
+                        <div class="relative mb-4 shrink-0">
+                            <input type="text" id="aiToolSearch" oninput="app.filterAITools()" placeholder="O que você precisa? (ex: risco cirúrgico, pediatria, dieta...)" 
+                                class="w-full rounded-xl py-3 pl-10 pr-4 outline-none border bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-700 focus:border-purple-500 transition-all text-sm">
+                            <i data-lucide="search" class="absolute left-3 top-3 w-5 h-5 text-slate-400"></i>
+                        </div>
+
+                        <!-- Grid Container -->
+                        <div id="aiToolsContainer" class="overflow-y-auto custom-scrollbar flex-1 pr-1 space-y-6">
+                            <!-- Injetado via JS -->
+                        </div>
                     </div>
                 </div>
 
@@ -304,7 +280,7 @@
                             <button onclick="app.openConfigMedModal()" class="text-xs bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 px-3 py-1.5 rounded-lg font-bold flex gap-1 items-center transition hover:bg-cyan-500/20"><i data-lucide="plus" class="w-3 h-3"></i> NOVO</button>
                         </div>
                         <div class="relative mb-4 shrink-0">
-                            <input type="text" id="medSearch" oninput="app.renderMeds()" placeholder="Buscar medicamento (200+ disponíveis)..." class="w-full rounded-lg py-2 pl-9 pr-3 text-sm outline-none border bg-white dark:bg-slate-900/50 border-slate-300 dark:border-slate-700 focus:border-cyan-500">
+                            <input type="text" id="medSearch" oninput="app.renderMeds()" placeholder="Buscar medicamento (500+ disponíveis)..." class="w-full rounded-lg py-2 pl-9 pr-3 text-sm outline-none border bg-white dark:bg-slate-900/50 border-slate-300 dark:border-slate-700 focus:border-cyan-500">
                             <i data-lucide="search" class="absolute left-3 top-2.5 w-4 h-4 opacity-50"></i>
                         </div>
                         <div id="medicationList" class="flex-1 overflow-y-auto space-y-2 custom-scrollbar pr-1"></div>
@@ -318,122 +294,79 @@
                             <h2 class="text-xs font-bold uppercase tracking-widest flex items-center gap-2 opacity-70"><i data-lucide="test-tube" class="w-4 h-4"></i> Solicitação de Exames</h2>
                         </div>
                         <div class="relative mb-4 shrink-0">
-                            <input type="text" id="examSearch" oninput="app.renderExams()" placeholder="Buscar exame (Hemograma, TSH, Raio-X)..." class="w-full rounded-lg py-2 pl-9 pr-3 text-sm outline-none border bg-white dark:bg-slate-900/50 border-slate-300 dark:border-slate-700 focus:border-orange-500">
+                            <input type="text" id="examSearch" oninput="app.renderExams()" placeholder="Buscar exame (500+ disponíveis)..." class="w-full rounded-lg py-2 pl-9 pr-3 text-sm outline-none border bg-white dark:bg-slate-900/50 border-slate-300 dark:border-slate-700 focus:border-orange-500">
                             <i data-lucide="search" class="absolute left-3 top-2.5 w-4 h-4 opacity-50"></i>
                         </div>
                          <div id="examList" class="flex-1 overflow-y-auto space-y-2 custom-scrollbar pr-1"></div>
                     </div>
                 </div>
                 
-                <!-- ABA: Receita (Visível no Mobile como aba, Desktop na direita) -->
+                <!-- ABA: Documento Mobile -->
                  <div id="tabContent-prescription" class="tab-content lg:hidden pb-20">
                     <div class="print-container bg-white text-slate-900 shadow-2xl relative overflow-hidden flex flex-col w-full aspect-[210/297] rounded-sm shrink-0 origin-top" id="mobilePrescriptionPaper">
-                       <div class="p-10 text-center">Use o modo desktop para visualizar a receita lado a lado.</div>
+                       <div class="p-10 text-center">Use o modo desktop para visualizar lado a lado.</div>
                     </div>
                 </div>
             </div>
 
-            <!-- COLUNA DA DIREITA (RECEITA) - VISÍVEL APENAS NO DESKTOP -->
-            <div class="hidden lg:flex w-[650px] bg-slate-100 dark:bg-slate-900/50 border-l border-slate-200 dark:border-slate-800 justify-center overflow-y-auto custom-scrollbar p-8 shrink-0 h-full">
+            <!-- COLUNA DA DIREITA (DOCUMENTO) -->
+            <div class="hidden lg:flex flex-1 bg-slate-100 dark:bg-slate-900/50 border-l border-slate-200 dark:border-slate-800 justify-center overflow-y-auto custom-scrollbar p-8 shrink-0 h-full relative">
                 
-                <div class="flex flex-col items-center w-full">
-                    <!-- SWITCHER DE DOCUMENTO -->
+                <!-- BOTÃO EXPANDIR/RECOLHER -->
+                <button onclick="app.toggleSidebar()" class="absolute top-4 left-4 no-print p-2 bg-white dark:bg-slate-800 rounded-lg shadow border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 z-10" title="Expandir/Recolher Tela">
+                    <i data-lucide="expand" class="w-5 h-5 text-slate-600 dark:text-slate-300"></i>
+                </button>
+
+                <div class="flex flex-col items-center w-full max-w-full overflow-x-auto">
                     <div class="flex gap-2 mb-4 no-print bg-white dark:bg-slate-900 p-1.5 rounded-full shadow-sm border border-slate-200 dark:border-slate-700">
                         <button onclick="app.setDocumentMode('prescription')" id="docMode-prescription" class="doc-switch-btn active">Receita Médica</button>
                         <button onclick="app.setDocumentMode('exams')" id="docMode-exams" class="doc-switch-btn inactive">Pedido de Exames</button>
+                        <button onclick="app.setDocumentMode('hospital')" id="docMode-hospital" class="doc-switch-btn inactive">Prescrição Hospitalar</button>
                     </div>
 
-                    <div id="prescriptionPaper" class="print-container bg-white text-slate-900 shadow-2xl relative overflow-hidden flex flex-col w-[600px] min-h-[840px] rounded-sm shrink-0 origin-top">
-                        <div class="print-header bg-green-50/50 px-8 py-6 border-b border-green-100 flex justify-between items-center">
-                            <div class="flex items-center gap-4">
-                                <!-- Container da Logo -->
-                                <div id="docLogoContainer" class="h-32 w-32 flex items-center justify-center overflow-hidden">
-                                    <img src="https://i.ibb.co/h7gJj9r/dr-alyson-melo-crm-1234.png" alt="Logo Médico" class="h-full w-full object-contain mix-blend-multiply">
-                                </div>
-                                <div class="ml-2">
-                                    <h1 id="docNameDisplay" class="text-xl font-bold font-arial text-slate-900">Nome do Médico</h1>
-                                    <p id="docSpecDisplay" class="text-sm text-slate-600 font-arial uppercase tracking-wide">Especialidade</p>
-                                    <p id="docCrmDisplay" class="text-xs text-slate-500 font-arial mt-1">CRM</p>
-                                </div>
-                            </div>
-                            <div class="text-right"><div class="text-[10px] uppercase font-bold text-slate-400 mb-1">Data de Emissão</div><div id="dateDisplay" class="font-medium text-lg text-slate-800 font-arial"></div></div>
+                    <!-- CONTAINER DO PAPEL -->
+                    <div class="w-full flex justify-center overflow-x-auto pb-10 px-4">
+                        <div id="prescriptionPaper" class="print-container bg-white text-slate-900 shadow-2xl relative overflow-hidden flex flex-col w-[600px] min-h-[840px] rounded-sm shrink-0 origin-top transition-all duration-300">
+                            <!-- O conteúdo do papel é injetado dinamicamente pelo JS -->
                         </div>
-                        <div class="px-12 py-10 flex-1 flex flex-col">
-                            <div class="mb-8 border-b border-dashed border-slate-300 pb-2">
-                                <span class="text-[10px] uppercase font-bold text-slate-400 block mb-1">Paciente</span>
-                                <div id="patientNameDisplay" class="text-lg font-arial" style="font-size: 12pt;">Nome do Paciente...</div>
-                            </div>
-                            
-                            <!-- Título Dinâmico do Documento -->
-                            <div id="docTitleDisplay" class="text-center uppercase font-bold tracking-widest text-slate-400 text-xs mb-6">RECEITUÁRIO</div>
-
-                            <div id="prescriptionListDisplay" class="space-y-6 flex-1"><div class="text-center text-slate-300 italic mt-10 no-print">Adicione itens...</div></div>
-                            
-                            <!-- Container de Orientações -->
-                            <div id="guideContainer" class="mt-8">
-                                <div class="mb-2 no-print flex justify-between items-center">
-                                    <span class="text-[10px] font-bold uppercase text-slate-400 tracking-widest">Orientações</span>
-                                </div>
-                                <textarea id="patientGuide" class="w-full bg-transparent text-sm text-slate-900 resize-none outline-none min-h-[80px] font-arial italic border border-transparent hover:border-slate-200 rounded p-2 transition-colors" placeholder="Digite orientações adicionais aqui..."></textarea>
-                            </div>
-                        </div>
-                        <footer class="print-footer mt-auto border-t border-green-100 p-8 text-center bg-green-50/30">
-                            <div class="w-64 border-t border-slate-800 mx-auto mb-4"></div>
-                            <p id="docNameFooter" class="font-bold text-sm text-slate-900 uppercase font-arial">Nome do Médico</p>
-                            <p id="docContactFooter" class="text-[10px] text-slate-500 font-arial mt-2">Endereço • Telefone</p>
-                        </footer>
                     </div>
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- MOBILE NAV -->
-    <div class="no-print lg:hidden fixed bottom-0 left-0 right-0 glass border-t border-slate-200 dark:border-slate-800 h-16 flex justify-around items-center z-50 backdrop-blur-xl">
-        <button onclick="app.switchTab('patient')" class="nav-btn flex flex-col items-center gap-1 p-2 text-cyan-600 dark:text-cyan-500" id="nav-patient"><i data-lucide="user" class="w-5 h-5"></i><span class="text-[10px]">Paciente</span></button>
-        <button onclick="app.switchTab('pharmacy')" class="nav-btn flex flex-col items-center gap-1 p-2 text-slate-500" id="nav-pharmacy"><i data-lucide="pill" class="w-5 h-5"></i><span class="text-[10px]">Farmácia</span></button>
-        <button onclick="app.switchTab('exams')" class="nav-btn flex flex-col items-center gap-1 p-2 text-slate-500" id="nav-exams"><i data-lucide="test-tube" class="w-5 h-5"></i><span class="text-[10px]">Exames</span></button>
-        <button onclick="app.switchTab('prescription')" class="nav-btn flex flex-col items-center gap-1 p-2 text-slate-500" id="nav-prescription"><i data-lucide="file-text" class="w-5 h-5"></i><span class="text-[10px]">Receita</span></button>
-    </div>
-
-    <!-- MODAL MAGIC SOAP -->
+    <!-- MODALS -->
     <div id="magicSoapModal" class="hidden fixed inset-0 z-[90] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 w-full max-w-2xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh]">
+         <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 w-full max-w-2xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh]">
             <div class="p-4 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center shrink-0 bg-gradient-to-r from-purple-50 dark:from-purple-900/10 to-transparent">
-                <h3 class="font-bold text-lg flex items-center gap-2 text-purple-600 dark:text-purple-400">
-                    <i data-lucide="sparkles" class="w-5 h-5"></i> Magic SOAP
-                </h3>
+                <h3 class="font-bold text-lg flex items-center gap-2 text-purple-600 dark:text-purple-400"><i data-lucide="sparkles" class="w-5 h-5"></i> Magic SOAP</h3>
                 <button onclick="app.closeModal('magicSoapModal')"><i data-lucide="x" class="w-5 h-5 opacity-50"></i></button>
             </div>
             <div class="p-6 grow flex flex-col gap-3">
-                <p class="text-sm text-slate-500">Cole abaixo anotações soltas OU carregue um áudio da consulta. A IA irá estruturar tudo no formato SOAP automaticamente.</p>
-                <textarea id="magicSoapInput" class="w-full flex-1 rounded-xl p-4 text-sm resize-none outline-none border bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-slate-700 focus:border-purple-500 transition-all min-h-[150px]" placeholder="Ex: Paciente Joao, 45 anos, veio com dor de cabeça ha 3 dias..."></textarea>
-                
+                <p class="text-sm text-slate-500">Cole anotações soltas OU carregue áudio. A IA estruturará o SOAP.</p>
+                <textarea id="magicSoapInput" class="w-full flex-1 rounded-xl p-4 text-sm resize-none outline-none border bg-slate-50 dark:bg-slate-950 border-slate-300 dark:border-slate-700 focus:border-purple-500 transition-all min-h-[150px]" placeholder="Ex: Paciente Joao, 45 anos..."></textarea>
                 <div class="border-t border-slate-200 dark:border-slate-800 pt-3 mt-2">
-                    <label class="block text-xs font-bold text-slate-500 mb-2">OU CARREGUE UM ÁUDIO (MP3, WAV, M4A):</label>
+                    <label class="block text-xs font-bold text-slate-500 mb-2">OU ÁUDIO (MP3, WAV):</label>
                     <input type="file" id="magicSoapAudio" accept="audio/*" class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100 transition-all">
                 </div>
             </div>
             <div class="p-4 border-t border-slate-200 dark:border-slate-800 flex justify-end gap-2 shrink-0">
                 <button onclick="app.closeModal('magicSoapModal')" class="px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-400 text-sm font-bold">Cancelar</button>
-                <button onclick="app.generateMagicSoap()" class="px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-700 text-white text-sm font-bold flex items-center gap-2">
-                    <i data-lucide="wand-2" class="w-4 h-4"></i> Gerar SOAP
-                </button>
+                <button onclick="app.generateMagicSoap()" class="px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-700 text-white text-sm font-bold flex items-center gap-2"><i data-lucide="wand-2" class="w-4 h-4"></i> Gerar SOAP</button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL IA, CONFIG e ADD MED -->
     <div id="aiModal" class="hidden fixed inset-0 z-[80] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 w-full max-w-3xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh]">
-            <div class="p-4 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center shrink-0">
+         <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 w-full max-w-3xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh]">
+            <div class="p-4 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center shrink-0 bg-purple-50 dark:bg-slate-800/50">
                 <h3 id="aiModalTitle" class="font-bold text-lg flex items-center gap-2">Resultado IA</h3>
                 <button onclick="app.closeModal('aiModal')"><i data-lucide="x" class="w-5 h-5 opacity-50"></i></button>
             </div>
-            <div class="p-6 overflow-y-auto custom-scrollbar grow ai-table-container">
+            <div class="p-6 overflow-y-auto custom-scrollbar grow ai-table-container bg-white dark:bg-slate-950">
                 <div id="aiModalContent" class="text-sm leading-relaxed text-slate-700 dark:text-slate-300"></div>
             </div>
-            <div class="p-4 border-t border-slate-200 dark:border-slate-800 flex justify-end gap-2 shrink-0">
+            <div class="p-4 border-t border-slate-200 dark:border-slate-800 flex justify-end gap-2 shrink-0 bg-slate-50 dark:bg-slate-900">
                 <button onclick="app.copyAIContent()" class="px-4 py-2 rounded-lg bg-slate-200 text-slate-800 text-xs font-bold">Copiar</button>
                 <button onclick="app.closeModal('aiModal')" class="px-4 py-2 rounded-lg bg-cyan-600 text-white text-xs font-bold">Fechar</button>
             </div>
@@ -441,7 +374,7 @@
     </div>
 
     <div id="configModal" class="hidden fixed inset-0 z-[60] bg-black/80 flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+         <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between mb-6"><h3 class="text-xl font-bold">Configurações</h3><button onclick="app.closeModal('configModal')"><i data-lucide="x" class="w-6 h-6"></i></button></div>
             <div class="space-y-4">
                 <div class="p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg border border-purple-200 dark:border-purple-800">
@@ -450,22 +383,15 @@
                 </div>
                 <div class="border-t border-slate-200 dark:border-slate-700 pt-4">
                     <label class="block text-xs font-bold mb-2">Dados do Médico</label>
-                    <input id="cfgName" placeholder="Nome Médico" class="w-full p-2 mb-2 rounded border bg-transparent border-slate-300 dark:border-slate-700">
+                    <input id="cfgName" placeholder="Nome" class="w-full p-2 mb-2 rounded border bg-transparent border-slate-300 dark:border-slate-700">
                     <input id="cfgSpec" placeholder="Especialidade" class="w-full p-2 mb-2 rounded border bg-transparent border-slate-300 dark:border-slate-700">
                     <input id="cfgCrm" placeholder="CRM" class="w-full p-2 mb-2 rounded border bg-transparent border-slate-300 dark:border-slate-700">
                     <input id="cfgAddress" placeholder="Endereço" class="w-full p-2 mb-2 rounded border bg-transparent border-slate-300 dark:border-slate-700">
                     <input id="cfgPhone" placeholder="Telefone" class="w-full p-2 mb-2 rounded border bg-transparent border-slate-300 dark:border-slate-700">
-                    <label class="block text-xs font-bold mt-4 mb-1">Logo (URL ou Upload)</label>
-                    <input id="cfgLogo" placeholder="URL Logo..." class="w-full p-2 mb-2 rounded border bg-transparent border-slate-300 dark:border-slate-700">
-                    <div class="flex items-center gap-2">
-                        <label class="flex-1 cursor-pointer bg-slate-200 dark:bg-slate-800 text-center py-2 rounded text-xs font-bold">
-                            Escolher Arquivo
-                            <input type="file" class="hidden" onchange="app.handleLogoUpload(this)">
-                        </label>
-                        <span id="uploadStatus" class="text-xs opacity-50"></span>
-                    </div>
+                    <label class="block text-xs font-bold mt-4 mb-1">Logo URL</label>
+                    <input id="cfgLogo" placeholder="URL..." class="w-full p-2 mb-2 rounded border bg-transparent border-slate-300 dark:border-slate-700">
                 </div>
-                <button onclick="app.saveConfig()" class="w-full bg-slate-800 text-white p-3 rounded-lg font-bold mt-4">Salvar Configurações</button>
+                <button onclick="app.saveConfig()" class="w-full bg-slate-800 text-white p-3 rounded-lg font-bold mt-4">Salvar</button>
             </div>
         </div>
     </div>
@@ -489,54 +415,261 @@
     </div>
 
     <script>
-        const app = (function() {
-            const defaultMeds = [
-                { id: 1, category: 'Psiquiatria', name: 'Sertralina', dose: '50mg', instruction: '1 cp pela manhã após o café.' },
-                { id: 2, category: 'Psiquiatria', name: 'Escitalopram', dose: '10mg', instruction: '1 cp pela manhã.' },
-                { id: 3, category: 'Psiquiatria', name: 'Clonazepam', dose: '0.5mg', instruction: '1 cp à noite se insônia.' },
-                { id: 4, category: 'Psiquiatria', name: 'Quetiapina', dose: '25mg', instruction: '1 cp à noite.' },
-                { id: 5, category: 'Psiquiatria', name: 'Fluoxetina', dose: '20mg', instruction: '1 cp pela manhã.' },
-                { id: 6, category: 'Psiquiatria', name: 'Venlafaxina', dose: '75mg', instruction: '1 cp pela manhã.' },
-                { id: 30, category: 'Cardiologia', name: 'Losartana', dose: '50mg', instruction: '1 cp a cada 12h.' },
-                { id: 31, category: 'Cardiologia', name: 'Enalapril', dose: '10mg', instruction: '1 cp a cada 12h.' },
-                { id: 32, category: 'Cardiologia', name: 'Atenolol', dose: '25mg', instruction: '1 cp pela manhã.' },
-                { id: 60, category: 'Geral', name: 'Dipirona', dose: '500mg', instruction: '1 cp a cada 6h se dor.' },
-                { id: 61, category: 'Geral', name: 'Paracetamol', dose: '750mg', instruction: '1 cp a cada 6h se dor.' },
-                { id: 80, category: 'Geral', name: 'Omeprazol', dose: '20mg', instruction: '1 cp em jejum.' },
-                { id: 110, category: 'Geral', name: 'Metformina', dose: '850mg', instruction: '1 cp após refeições.' }
-            ];
+        // --- DADOS E BIBLIOTECA (COMPLETA) ---
+        const RAW_MED_DATA = `Cardiologia|Losartana|50mg|1cp 12/12h;Cardiologia|Enalapril|10mg|1cp 12/12h;Cardiologia|Atenolol|50mg|1cp ao dia;Geral|Dipirona|1g|1cp 6/6h se dor;Geral|Paracetamol|750mg|1cp 6/6h se dor;Gastro|Omeprazol|20mg|1cp em jejum;Psiquiatria|Sertralina|50mg|1cp de manhã;Psiquiatria|Clonazepam|2mg|1cp à noite;Endocrinologia|Metformina|850mg|1cp 2x ao dia`;
+        
+        const RAW_EXAM_DATA = [
+            "Hemograma Completo", "Glicemia", "Creatinina", "Ureia", "Sódio", "Potássio", "Cálcio", "Magnésio", "Fósforo", "TGO", "TGP", "Gama GT", "Fosfatase Alcalina", "Bilirrubinas", "Amilase", "Lipase", "Albumina", "Proteínas Totais", 
+            "TSH", "T4 Livre", "T3", "Vitamina D", "Vitamina B12", "Ferro", "Ferritina", "Ácido Úrico", "PCR", "VHS", "Lactato", "Gasometria Arterial", 
+            "Colesterol Total", "HDL", "LDL", "Triglicerídeos", "HbA1c", "Insulina", "Peptídeo C", "Cortisol", "PTH", "PSA", "Beta HCG", 
+            "FAN", "Fator Reumatoide", "Anti-TPO", "Anti-Tireoglobulina", "HIV", "VDRL", "HBsAg", "Anti-HCV", "Dengue NS1/IgM/IgG",
+            "EAS (Urina I)", "Urocultura", "Parasitológico de Fezes", "Sangue Oculto", 
+            "Eletrocardiograma", "Ecocardiograma", "Holter 24h", "MAPA 24h", "Teste Ergométrico", 
+            "Raio-X Tórax", "Raio-X Abdome", "Raio-X Seios da Face", "Raio-X Coluna Cervical", "Raio-X Coluna Lombar", "Raio-X Joelho", "Raio-X Ombro",
+            "USG Abdome Total", "USG Vias Urinárias", "USG Tireoide", "USG Mamas", "USG Transvaginal", "USG Obstétrico", "Doppler Carótidas", "Doppler MMII",
+            "Tomografia Crânio", "Tomografia Tórax", "Tomografia Abdome", "Tomografia Pelve", "Angio-TC TEP", 
+            "Ressonância Crânio", "Ressonância Coluna", "Ressonância Joelho", "Ressonância Ombro", 
+            "Endoscopia Digestiva Alta", "Colonoscopia", "Broncoscopia"
+        ];
 
-            const defaultExams = [
-                "Hemograma Completo", "Glicemia de Jejum", "Hemoglobina Glicada (HbA1c)", "Colesterol Total e Frações", "Triglicerídeos",
-                "Creatinina", "Ureia", "TGO (AST)", "TGP (ALT)", "Gama GT", "Bilirrubinas", "TSH", "T4 Livre",
-                "Ácido Úrico", "Vitamina D (25-OH)", "Vitamina B12", "Ferritina", "Ferro Sérico", "Proteína C Reativa (PCR)", "VHS",
-                "EAS (Urina Tipo 1)", "Urocultura com Antibiograma", "Parasitológico de Fezes", "Sangue Oculto nas Fezes",
-                "Eletrocardiograma (ECG)", "Ecocardiograma Transtorácico", "Teste Ergométrico", "Holter 24h", "MAPA 24h",
-                "Raio-X de Tórax PA e Perfil", "Raio-X de Seios da Face", "Raio-X de Coluna Cervical", "Raio-X de Coluna Lombar",
-                "Ultrassonografia de Abdome Total", "Ultrassonografia de Vias Urinárias", "Ultrassonografia Pélvica", "Ultrassonografia Transvaginal", "Ultrassonografia de Tireoide", "Ultrassonografia de Mamas",
-                "Tomografia de Crânio", "Tomografia de Tórax", "Tomografia de Abdome Total",
-                "Ressonância Magnética de Crânio", "Ressonância Magnética de Coluna Lombar", "Ressonância Magnética de Joelho",
-                "Endoscopia Digestiva Alta", "Colonoscopia", "Beta HCG (Quantitativo)", "PSA Total e Livre"
-            ];
+        const AI_LIBRARY = [
+            // --- CARDIOLOGIA ---
+            { id: 'ecg_interpret', cat: 'Cardiologia', label: 'Interpretar ECG', icon: 'activity', color: 'red', prompt: 'Analise este ECG (imagem anexa ou dados clínicos). Siga o roteiro do livro Medicina de Emergência da USP: 1. Frequência e Ritmo. 2. Eixo. 3. Sobrecargas. 4. Bloqueios. 5. Isquemia/Infarto. 6. Conclusão.' },
+            { id: 'cardio_risk', cat: 'Cardiologia', label: 'Risco Cardiovascular', icon: 'heart-pulse', color: 'red', prompt: 'Estime risco CV (Framingham/SCORE) inferindo dados de {s} {o}. Peça dados faltantes.' },
+            { id: 'cha2ds2', cat: 'Cardiologia', label: 'CHA2DS2-VASc', icon: 'calculator', color: 'blue', prompt: 'Calcule CHA2DS2-VASc baseado em {s} {o}. Indique necessidade de anticoagulação.' },
+            { id: 'lipid_targets', cat: 'Cardiologia', label: 'Alvos LDL (SBC)', icon: 'target', color: 'orange', prompt: 'Com base no risco CV do paciente ({s} {o}), qual o alvo de LDL segundo diretriz SBC 2024? Sugira estatina.' },
+            { id: 'hf_meds', cat: 'Cardiologia', label: 'ICFER (4 Pilares)', icon: 'layers', color: 'green', prompt: 'Verifique se o paciente com ICFER ({s} {o}) está usando os 4 pilares (IECA/BRA/ARNI, BB, ARM, iSGLT2). Sugira otimização.' },
+            { id: 'chest_pain_score', cat: 'Cardiologia', label: 'Score HEART/TIMI', icon: 'clipboard', color: 'red', prompt: 'Calcule Score HEART para dor torácica descrita em {s}. Ref: Medicina de Emergência (USP).' },
+            { id: 'calcium_score', cat: 'Cardiologia', label: 'Escore de Cálcio', icon: 'database', color: 'gray', prompt: 'Interprete o resultado do Escore de Cálcio em {o} e sugira conduta (iniciar estatina?).' },
+            { id: 'has_guideline', cat: 'Cardiologia', label: 'Diretriz HAS', icon: 'book', color: 'blue', prompt: 'Resuma o manejo de HAS para este paciente segundo Diretriz Brasileira de Hipertensão 2020.' },
+            { id: 'qt_interval', cat: 'Cardiologia', label: 'QT Corrigido', icon: 'activity', color: 'yellow', prompt: 'Calcule QTc (Bazett) com base na FC e QT descritos em {o}. Risco de Torsades?' },
+            { id: 'grace_score', cat: 'Cardiologia', label: 'Score GRACE', icon: 'bar-chart', color: 'red', prompt: 'Estime Score GRACE para SCA descrita em {s}. Mortalidade intra-hospitalar?' },
+            { id: 'timi_stemi', cat: 'Cardiologia', label: 'TIMI (IAMCSST)', icon: 'alert-circle', color: 'red', prompt: 'Calcule Score TIMI para IAM com Supra ({s} {o}). Risco de mortalidade em 30 dias.' },
+            { id: 'timi_nstemi', cat: 'Cardiologia', label: 'TIMI (IAMSSST)', icon: 'alert-circle', color: 'orange', prompt: 'Calcule Score TIMI para Angina Instável/IAM sem Supra ({s} {o}). Risco de eventos.' },
+            { id: 'killip_class', cat: 'Cardiologia', label: 'Classificação Killip', icon: 'heart', color: 'purple', prompt: 'Classifique Killip-Kimball baseado no exame físico pulmonar e hemodinâmico descrito em {o}.' },
+            { id: 'nyha_class', cat: 'Cardiologia', label: 'Classe NYHA', icon: 'activity', color: 'blue', prompt: 'Classifique a insuficiência cardíaca (I-IV) baseada na tolerância ao esforço descrita em {s}.' },
+            { id: 'ccs_angina', cat: 'Cardiologia', label: 'Angina CCS', icon: 'shield', color: 'red', prompt: 'Classifique a gravidade da angina (I-IV) segundo Canadian Cardiovascular Society baseada em {s}.' },
+            { id: 'has_bled', cat: 'Cardiologia', label: 'Score HAS-BLED', icon: 'droplet', color: 'red', prompt: 'Calcule risco de sangramento em anticoagulação (HAS-BLED) para este paciente ({s} {o}).' },
+
+            // --- EMERGÊNCIA (Referência USP) ---
+            { id: 'acls_guide', cat: 'Emergência', label: 'Protocolo ACLS', icon: 'zap', color: 'red', prompt: 'Baseado no livro "Medicina de Emergência: Abordagem Prática (USP)", resuma a conduta ACLS para o cenário: {s}.' },
+            { id: 'sepsis_protocol', cat: 'Emergência', label: 'Protocolo Sepse', icon: 'alert-triangle', color: 'orange', prompt: 'Baseado no livro "Medicina de Emergência: Abordagem Prática (USP)", gere o Checklist da Hora de Ouro da Sepse para: {s} {o}.' },
+            { id: 'stroke_protocol', cat: 'Emergência', label: 'Protocolo AVC', icon: 'brain', color: 'purple', prompt: 'Baseado no livro "Medicina de Emergência: Abordagem Prática (USP)", crie checklist para AVC agudo (NIHSS, trombólise) para: {s}.' },
+            { id: 'anaphylaxis', cat: 'Emergência', label: 'Anafilaxia', icon: 'wind', color: 'red', prompt: 'Baseado no livro "Medicina de Emergência: Abordagem Prática (USP)", detalhe manejo imediato de anafilaxia para este caso.' },
+            { id: 'poisoning', cat: 'Emergência', label: 'Intoxicação Exógena', icon: 'skull', color: 'slate', prompt: 'Baseado no livro "Medicina de Emergência: Abordagem Prática (USP)", sugira antídotos e manejo para intoxicação descrita em: {s}.' },
+            { id: 'burn_parkland', cat: 'Emergência', label: 'Queimados (Parkland)', icon: 'flame', color: 'orange', prompt: 'Calcule reposição volêmica (Fórmula de Parkland) para queimadura descrita em {o}. Ref: Medicina de Emergência (USP).' },
+            { id: 'coma_ddx', cat: 'Emergência', label: 'Coma Indeterminado', icon: 'help-circle', color: 'slate', prompt: 'Gere diagnóstico diferencial para Coma sem causa aparente ({s} {o}). Ref: Medicina de Emergência (USP).' },
+            { id: 'syncope_risk', cat: 'Emergência', label: 'Risco Síncope (San Francisco)', icon: 'activity', color: 'yellow', prompt: 'Aplique regra de San Francisco para síncope em {s}. Alto ou baixo risco? Ref: Medicina de Emergência (USP).' },
+            { id: 'neutropenic_fever', cat: 'Emergência', label: 'Neutropenia Febril', icon: 'thermometer', color: 'red', prompt: 'Calcule score MASCC para neutropenia febril ({s} {o}). Internar ou alta? Ref: Medicina de Emergência (USP).' },
+            { id: 'hypertensive_emergency', cat: 'Emergência', label: 'Emergência Hipertensiva', icon: 'arrow-up', color: 'red', prompt: 'Manejo de crise hipertensiva ({o}). Urgência ou Emergência? Drogas EV indicadas (USP).' },
+            { id: 'status_epilepticus', cat: 'Emergência', label: 'Estado de Mal Epiléptico', icon: 'zap-off', color: 'purple', prompt: 'Protocolo de sedação e anticonvulsivantes para Status Epilepticus (USP).' },
+            { id: 'qsofa', cat: 'Emergência', label: 'qSOFA', icon: 'alert-circle', color: 'orange', prompt: 'Calcule qSOFA (FR, Glasgow, PAS) com base em {s} {o}. Risco de sepse?' },
+            { id: 'news2_score', cat: 'Emergência', label: 'NEWS-2 Score', icon: 'monitor', color: 'blue', prompt: 'Calcule NEWS-2 com base nos sinais vitais em {o}. Qual a frequência de monitorização recomendada?' },
+            { id: 'apache_ii', cat: 'Emergência', label: 'APACHE II', icon: 'bar-chart-2', color: 'slate', prompt: 'Estime APACHE II (se dados suficientes em {o}) para prognóstico de UTI.' },
+            { id: 'sofa_score', cat: 'Emergência', label: 'SOFA Score', icon: 'activity', color: 'red', prompt: 'Calcule variação do SOFA (Resp, Coag, Liver, Cardio, CNS, Renal) baseado em {o}.' },
+            
+            // --- NEFROLOGIA & HIDROELETROLÍTICO ---
+            { id: 'gfr_calc', cat: 'Nefrologia', label: 'TFG (CKD-EPI)', icon: 'droplet', color: 'yellow', prompt: 'Identifique Creatinina em {o} e estime TFG (CKD-EPI). Classifique o estágio da DRC.' },
+            { id: 'hyponatremia_correction', cat: 'Nefrologia', label: 'Corrigir Hiponatremia', icon: 'activity', color: 'blue', prompt: 'Calcule déficit de sódio e velocidade de reposição para hiponatremia em {o}. Cuidado com desmielinização. Ref: Adrogue-Madias.' },
+            { id: 'hyperkalemia_management', cat: 'Nefrologia', label: 'Manejo Hipercalemia', icon: 'alert-octagon', color: 'red', prompt: 'Sugira conduta escalonada para Potássio alto ({o}): Gluconato, Glicoinsulina, Sorcal, Diálise.' },
+            { id: 'acid_base', cat: 'Nefrologia', label: 'Gasometria Arterial', icon: 'file-text', color: 'gray', prompt: 'Interprete gasometria em {o}. Distúrbio misto? Anion Gap? Delta-Delta?' },
+            { id: 'aki_staging', cat: 'Nefrologia', label: 'Estágio IRA (KDIGO)', icon: 'bar-chart', color: 'orange', prompt: 'Classifique a Injúria Renal Aguda (KDIGO) baseada na variação da creatinina/diurese em {s} {o}.' },
+            { id: 'fena_calc', cat: 'Nefrologia', label: 'FeNa (Fração de Excreção)', icon: 'percent', color: 'blue', prompt: 'Calcule FeNa com dados de {o}. Sugere pré-renal ou NTA?' },
+            { id: 'dialysis_indication', cat: 'Nefrologia', label: 'Indicações Diálise', icon: 'filter', color: 'red', prompt: 'Verifique se há critérios de urgência dialítica (AEIOU) neste caso ({s} {o}).' },
+
+             // --- ENDOCRINOLOGIA ---
+            { id: 'dk_protocol', cat: 'Endocrinologia', label: 'Cetoacidose (CAD)', icon: 'alert-triangle', color: 'red', prompt: 'Gere protocolo de manejo de Cetoacidose Diabética (ADA) para os dados de {o}. Hidratação, Insulina, Potássio.' },
+            { id: 'insulin_sliding', cat: 'Endocrinologia', label: 'Escala de Insulina', icon: 'syringe', color: 'blue', prompt: 'Sugira esquema de insulina regular (sliding scale) para paciente internado com glicemias de {o}.' },
+            { id: 'thyroid_nodule', cat: 'Endocrinologia', label: 'Nódulo Tireoide (TI-RADS)', icon: 'circle', color: 'purple', prompt: 'Classifique nódulo tireoidiano descrito em {o} (ACR TI-RADS) e sugira PAAF se indicado.' },
+            { id: 'hba1c_target', cat: 'Endocrinologia', label: 'Alvo HbA1c', icon: 'target', color: 'green', prompt: 'Qual o alvo de Hemoglobina Glicada para este paciente ({s})? Idoso? Comorbidades?' },
+            { id: 'osteoporosis_treatment', cat: 'Endocrinologia', label: 'Manejo Osteoporose', icon: 'bone', color: 'slate', prompt: 'Sugira tratamento para osteoporose baseada em Densitometria em {o}. Bisfosfonatos? Denosumab?' },
+            { id: 'adrenal_insufficiency', cat: 'Endocrinologia', label: 'Insuficiência Adrenal', icon: 'triangle', color: 'orange', prompt: 'Suspeita de crise adrenal em {s}? Protocolo de reposição de corticoide.' },
+            { id: 'hypercalcemia', cat: 'Endocrinologia', label: 'Hipercalcemia', icon: 'droplet', color: 'yellow', prompt: 'Manejo agudo de hipercalcemia descrita em {o}. Hidratação, Diurético, Bisfosfonato?' },
+
+            // --- GASTROENTEROLOGIA ---
+            { id: 'child_pugh', cat: 'Gastroenterologia', label: 'Child-Pugh', icon: 'liver', color: 'yellow', prompt: 'Calcule Child-Pugh para cirrose com base em {o} (Bilirrubina, Albumina, RNI, Ascite, Encefalopatia).' },
+            { id: 'meld_calc', cat: 'Gastroenterologia', label: 'MELD Score', icon: 'calculator', color: 'orange', prompt: 'Calcule MELD (Bili, INR, Cr) com base em {o}. Prognóstico?' },
+            { id: 'upper_gi_bleed', cat: 'Gastroenterologia', label: 'HDA (Glasgow-Blatchford)', icon: 'droplet', color: 'red', prompt: 'Escore de Glasgow-Blatchford para HDA em {s}. Precisa de endoscopia urgente?' },
+            { id: 'pancreatitis_ranson', cat: 'Gastroenterologia', label: 'Ranson/Apache', icon: 'activity', color: 'purple', prompt: 'Critérios de gravidade para pancreatite aguda ({o}). Ranson ou Apache II.' },
+            { id: 'h_pylori', cat: 'Gastroenterologia', label: 'Erradicação H. pylori', icon: 'bug', color: 'green', prompt: 'Esquema de antibióticos para H. pylori (1ª linha Brasil) se confirmado em {o}.' },
+            { id: 'rome_iv', cat: 'Gastroenterologia', label: 'Critérios Roma IV', icon: 'book', color: 'blue', prompt: 'O paciente {s} preenche critérios de Roma IV para SII ou Dispepsia Funcional?' },
+            { id: 'rockall_score', cat: 'Gastroenterologia', label: 'Score Rockall (HDA)', icon: 'bar-chart', color: 'red', prompt: 'Calcule Rockall Score (pré ou pós-EDA) para risco de ressangramento em HDA.' },
+            { id: 'uc_mayo', cat: 'Gastroenterologia', label: 'Score Mayo (RCU)', icon: 'activity', color: 'purple', prompt: 'Classifique atividade da Retocolite Ulcerativa (Mayo Score) baseada em {s}.' },
+
+             // --- PNEUMOLOGIA ---
+            { id: 'copd_gold', cat: 'Pneumologia', label: 'DPOC (GOLD)', icon: 'wind', color: 'slate', prompt: 'Classifique DPOC (GOLD A-D) baseado em sintomas {s} e espirometria {o}. Tratamento?' },
+            { id: 'asthma_gina', cat: 'Pneumologia', label: 'Asma (GINA)', icon: 'feather', color: 'blue', prompt: 'Classifique controle da asma (GINA 2024) e ajuste de etapa (step) baseado em {s}.' },
+            { id: 'pneumonia_psi', cat: 'Pneumologia', label: 'Pneumonia (PORT/PSI)', icon: 'lungs', color: 'red', prompt: 'Calcule PSI/PORT para pneumonia comunitária ({s} {o}). Internar ou ambulatório?' },
+            { id: 'pe_wells', cat: 'Pneumologia', label: 'TEP (Wells/Geneva)', icon: 'alert-circle', color: 'red', prompt: 'Probabilidade pré-teste de TEP (Wells) em {s}. Pedir D-Dímero ou Angio-TC?' },
+            { id: 'pleural_light', cat: 'Pneumologia', label: 'Critérios de Light', icon: 'droplet', color: 'yellow', prompt: 'Derrame pleural ({o}): Exsudato ou Transudato pelos critérios de Light?' },
+            { id: 'curb65', cat: 'Pneumologia', label: 'CURB-65', icon: 'thermometer', color: 'cyan', prompt: 'Aplique CURB-65 para pneumonia baseada em {s} {o}. Ref: Medicina de Emergência (USP).' },
+            { id: 'perc_rule', cat: 'Pneumologia', label: 'Regra PERC (TEP)', icon: 'check-circle', color: 'green', prompt: 'Aplique regra PERC para excluir TEP em paciente de baixo risco descrito em {s}.' },
+            { id: 'mmrc_dyspnea', cat: 'Pneumologia', label: 'Escala mMRC', icon: 'wind', color: 'gray', prompt: 'Gradue a dispneia (0-4) pela escala mMRC baseada na descrição em {s}.' },
+
+            // --- NEUROLOGIA ---
+            { id: 'stroke_nihss', cat: 'Neurologia', label: 'NIHSS Calc', icon: 'calculator', color: 'purple', prompt: 'Estime a pontuação NIHSS baseada na descrição neurológica em {o}.' },
+            { id: 'vertigo_hints', cat: 'Neurologia', label: 'Protocolo HINTS', icon: 'rotate-cw', color: 'blue', prompt: 'Interprete exame HINTS para vertigem aguda descrita em {s}. Sugere central ou periférica?' },
+            { id: 'delirium_cam', cat: 'Neurologia', label: 'Delirium (CAM)', icon: 'alert-circle', color: 'orange', prompt: 'Aplique critérios CAM para Delirium baseado no comportamento descrito em {s} {o}.' },
+            { id: 'glasgow_scale', cat: 'Neurologia', label: 'Escala de Glasgow', icon: 'eye', color: 'green', prompt: 'Calcule o Glasgow com base em {o}. Detalhe Ocular, Verbal e Motor.' },
+            { id: 'dementia_screen', cat: 'Neurologia', label: 'Rastreio Demência', icon: 'brain', color: 'slate', prompt: 'Sugira mini-mental ou MoCA para queixa de memória em {s}. Pontos de corte?' },
+            { id: 'headache_redflags', cat: 'Neurologia', label: 'Red Flags Cefaleia', icon: 'flag', color: 'red', prompt: 'SNOOP4 para cefaleia em {s}. Precisa de imagem?' },
+            { id: 'abcd2_tia', cat: 'Neurologia', label: 'ABCD2 (AIT)', icon: 'alert-triangle', color: 'orange', prompt: 'Risco de AVC após AIT (Score ABCD2) baseado em {s} {o}.' },
+            { id: 'hunt_hess', cat: 'Neurologia', label: 'Hunt & Hess (HSA)', icon: 'activity', color: 'red', prompt: 'Classifique hemorragia subaracnoidea (Hunt & Hess) baseada na clínica em {s}.' },
+
+             // --- INFECTOLOGIA ---
+            { id: 'endocarditis_duke', cat: 'Infectologia', label: 'Endocardite (Duke)', icon: 'heart', color: 'red', prompt: 'Aplique critérios de Duke modificados para suspeita de endocardite em {s} {o}.' },
+            { id: 'meningitis_sf', cat: 'Infectologia', label: 'Líquor (Meningite)', icon: 'test-tube', color: 'yellow', prompt: 'Interprete o líquor em {o}. Bacteriano, Viral, Tuberculoso ou Fúngico?' },
+            { id: 'hiv_oi', cat: 'Infectologia', label: 'Infecções Oportunistas', icon: 'shield-off', color: 'purple', prompt: 'CD4 em {o}. Quais profilaxias iniciar? Suspeita de qual IO baseada em {s}?' },
+            { id: 'arbovirus_diff', cat: 'Infectologia', label: 'Dengue/Zika/Chik', icon: 'bug', color: 'green', prompt: 'Diferencie Dengue, Zika e Chikungunya baseado nos sintomas de {s}. Fase clínica?' },
+            { id: 'uti_treatment', cat: 'Infectologia', label: 'ITU Complicada?', icon: 'activity', color: 'blue', prompt: 'ITU em {s}. É complicada? Qual antibiótico empírico adequado?' },
+            { id: 'sir_criteria', cat: 'Infectologia', label: 'Critérios SIRS', icon: 'thermometer', color: 'orange', prompt: 'Verifique critérios de SIRS com os dados vitais em {o}.' },
+
+            // --- REUMATOLOGIA ---
+            { id: 'sle_criteria', cat: 'Reumatologia', label: 'Critérios Lúpus (EULAR)', icon: 'butterfly', color: 'purple', prompt: 'Verifique critérios EULAR/ACR 2019 para LES baseados em {s} {o}.' },
+            { id: 'ra_criteria', cat: 'Reumatologia', label: 'Artrite Reumatoide', icon: 'hand', color: 'orange', prompt: 'Critérios ACR/EULAR para AR. Score baseado em articulações e sorologia em {o}.' },
+            { id: 'gout_management', cat: 'Reumatologia', label: 'Crise de Gota', icon: 'foot-prints', color: 'red', prompt: 'Manejo de crise aguda de gota descrita em {s}. Colchicina? AINE? Corticoide?' },
+            { id: 'fibro_criteria', cat: 'Reumatologia', label: 'Fibromialgia', icon: 'body', color: 'pink', prompt: 'Critérios diagnósticos de Fibromialgia (ACR) para as dores descritas em {s}.' },
+            { id: 'jones_criteria', cat: 'Reumatologia', label: 'Critérios de Jones', icon: 'heart', color: 'red', prompt: 'Febre Reumática: Aplique Critérios de Jones modificados em {s} {o}.' },
+
+            // --- HEMATOLOGIA ---
+            { id: 'anemia_diff', cat: 'Hematologia', label: 'Investigação Anemia', icon: 'droplet', color: 'red', prompt: 'Classifique a anemia em {o} (VCM, HCM). Ferropriva? Megaloblástica? Doença crônica?' },
+            { id: 'coagulation_screen', cat: 'Hematologia', label: 'Coagulograma', icon: 'clock', color: 'blue', prompt: 'Interprete TP/TTPA em {o}. Via intrínseca ou extrínseca? Deficiência de fatores?' },
+            { id: 'transfusion_guide', cat: 'Hematologia', label: 'Guia Transfusão', icon: 'beaker', color: 'red', prompt: 'Indicação de transfusão para Hb/Plaquetas em {o}. Gatilhos recomendados.' },
+            { id: 'khorana_score', cat: 'Hematologia', label: 'Score Khorana', icon: 'activity', color: 'purple', prompt: 'Risco de TEV em paciente oncológico (Khorana). Indicar profilaxia?' },
+            { id: 'dic_score', cat: 'Hematologia', label: 'Score CIVD', icon: 'alert-triangle', color: 'red', prompt: 'Score da ISTH para Coagulação Intravascular Disseminada com dados de {o}.' },
+
+            // --- PEDIATRIA ---
+            { id: 'pediatric_dose', cat: 'Pediatria', label: 'Dose Pediátrica', icon: 'baby', color: 'pink', prompt: 'Calcule dose de {meds} para peso (infira ou peça) da criança.' },
+            { id: 'hydration_peds', cat: 'Pediatria', label: 'Hidratação Venosa', icon: 'droplet', color: 'blue', prompt: 'Calcule regra de Holliday-Segar para manutenção e soro de expansão (20ml/kg) para criança em {s}.' },
+            { id: 'milestones', cat: 'Pediatria', label: 'Marcos Desenvolvimento', icon: 'star', color: 'yellow', prompt: 'Verifique marcos do desenvolvimento para a idade citada em {s}. Atrasos?' },
+            { id: 'vaccine_check', cat: 'Pediatria', label: 'Checagem Vacinal', icon: 'syringe', color: 'blue', prompt: 'Quais vacinas do PNI (Brasil) deveriam ter sido tomadas até a idade do paciente?' },
+            { id: 'kawasaki_criteria', cat: 'Pediatria', label: 'Kawasaki', icon: 'heart', color: 'red', prompt: 'Critérios para Doença de Kawasaki em febre prolongada descrita em {s}.' },
+            { id: 'centor_score', cat: 'Pediatria', label: 'Score Centor/McIsaac', icon: 'thermometer', color: 'orange', prompt: 'Probabilidade de faringite estreptocócica (Centor) em {s}. Teste rápido?' },
+            { id: 'apgar_score', cat: 'Pediatria', label: 'APGAR', icon: 'activity', color: 'green', prompt: 'Calcule APGAR baseado na descrição do RN em {s} (Cor, FC, Reflexo, Tônus, Resp).' },
+            { id: 'silverman', cat: 'Pediatria', label: 'Silverman-Andersen', icon: 'wind', color: 'red', prompt: 'Avalie desconforto respiratório neonatal (Silverman) descrito em {s}.' },
+
+            // --- GINECOLOGIA E OBSTETRÍCIA ---
+            { id: 'pop_methods', cat: 'Gineco/Obs', label: 'Elegibilidade (MEC)', icon: 'circle', color: 'pink', prompt: 'Verifique critérios de elegibilidade OMS (MEC) para anticoncepcionais considerando comorbidades em {s}.' },
+            { id: 'gestational_age', cat: 'Gineco/Obs', label: 'Idade Gestacional (IG)', icon: 'calendar', color: 'pink', prompt: 'Estime IG e DPP se houver DUM em {s}. Se USG em {o}, use-a para corrigir.' },
+            { id: 'std_cdc', cat: 'Gineco/Obs', label: 'Tratamento IST (CDC/MS)', icon: 'shield', color: 'purple', prompt: 'Protocolo atualizado Brasil (MS) para tratamento de IST suspeita em {s}.' },
+            { id: 'preeclampsia_risk', cat: 'Gineco/Obs', label: 'Risco Pré-Eclâmpsia', icon: 'alert-triangle', color: 'red', prompt: 'Avalie fatores de risco para pré-eclâmpsia em {s} e sugira profilaxia (AAS/Cálcio) se indicado.' },
+            { id: 'abx_pregnancy', cat: 'Gineco/Obs', label: 'Antibiótico na Gestação', icon: 'bug', color: 'green', prompt: 'Segurança de antibióticos para infecção descrita em {s} durante a gravidez.' },
+            { id: 'bishop_score', cat: 'Gineco/Obs', label: 'Índice de Bishop', icon: 'activity', color: 'purple', prompt: 'Calcule índice de Bishop baseado no toque vaginal em {o}. Favorável à indução?' },
+
+            // --- ONCOLOGIA & PALIATIVOS ---
+            { id: 'tnm_staging', cat: 'Oncologia', label: 'Estadiamento (TNM)', icon: 'layers', color: 'slate', prompt: 'Tente estimar TNM genérico baseado no laudo de imagem em {o} ou biópsia.' },
+            { id: 'chemo_tox', cat: 'Oncologia', label: 'Toxicidade Quimio', icon: 'alert-octagon', color: 'red', prompt: 'Manejo de efeitos colaterais descritos em {s} relacionados à quimioterapia provável.' },
+            { id: 'pps_palliative', cat: 'Paliativos', label: 'Escala PPS', icon: 'activity', color: 'blue', prompt: 'Estime o Palliative Performance Scale (PPS) baseado na funcionalidade descrita em {s}.' },
+            { id: 'palliative_care', cat: 'Paliativos', label: 'Manejo de Sintomas', icon: 'sunset', color: 'orange', prompt: 'Sugira receitas de conforto para sintomas (dor, dispneia, náusea) descritos em {s}.' },
+            { id: 'opioid_conversion', cat: 'Paliativos', label: 'Conversão Opioide', icon: 'repeat', color: 'green', prompt: 'Conversão de dose de opioide ({meds}) para morfina oral equivalente ou rotação.' },
+            { id: 'ecog_status', cat: 'Oncologia', label: 'Performance ECOG', icon: 'user', color: 'gray', prompt: 'Classifique Performance Status (ECOG/WHO) do paciente descrito em {s}.' },
+
+             // --- ORTOPEDIA ---
+            { id: 'ottawa_rules', cat: 'Ortopedia', label: 'Regras de Ottawa', icon: 'bone', color: 'slate', prompt: 'Aplique Regras de Ottawa para tornozelo/joelho baseadas na história {s} e exame {o}. Precisa de Raio-X?' },
+            { id: 'back_pain_flags', cat: 'Ortopedia', label: 'Red Flags Lombalgia', icon: 'flag', color: 'red', prompt: 'Busque sinais de alarme em lombalgia (Cauda Equina, Câncer, Infecção) em {s}.' },
+            { id: 'canadian_cspine', cat: 'Ortopedia', label: 'Canadian C-Spine', icon: 'activity', color: 'orange', prompt: 'Regra Canadian C-Spine para trauma cervical em {s}. Imagem necessária?' },
+            { id: 'mirels_score', cat: 'Ortopedia', label: 'Score Mirels', icon: 'alert-circle', color: 'purple', prompt: 'Risco de fratura patológica em lesão óssea descrita em {o} (Mirels).' },
+
+            // --- GERIATRIA ---
+            { id: 'beers_criteria', cat: 'Geriatria', label: 'Critérios de Beers', icon: 'pill', color: 'red', prompt: 'Identifique medicamentos potencialmente inapropriados para idosos (Beers) na lista {meds}.' },
+            { id: 'frailty_score', cat: 'Geriatria', label: 'Escala de Fragilidade', icon: 'user', color: 'gray', prompt: 'Estime fragilidade (Fried/CFS) baseada na descrição funcional em {s}.' },
+            { id: 'fall_risk', cat: 'Geriatria', label: 'Risco de Queda', icon: 'arrow-down-right', color: 'orange', prompt: 'Avalie risco de quedas (medicações, comorbidades) em {s}.' },
+            { id: 'gds_depression', cat: 'Geriatria', label: 'Depressão (GDS-15)', icon: 'frown', color: 'blue', prompt: 'Sugira perguntas da Escala de Depressão Geriátrica (Yesavage) para {s}.' },
+            { id: 'katz_lawton', cat: 'Geriatria', label: 'Katz & Lawton', icon: 'list', color: 'green', prompt: 'Avalie ABVD e AIVD (Katz/Lawton) com base na funcionalidade em {s}.' },
+
+            // --- DIAGNÓSTICO E RACIOCÍNIO ---
+            { id: 'second_opinion', cat: 'Diagnóstico', label: 'Segunda Opinião', icon: 'brain-circuit', color: 'red', prompt: 'Atue como especialista sênior. Analise o caso: {soap}. Aponte inconsistências, red flags e sugira condutas.' },
+            { id: 'differential', cat: 'Diagnóstico', label: 'Diagnóstico Diferencial', icon: 'git-pull-request', color: 'orange', prompt: 'Liste diagnósticos diferenciais para: {s} {o} {a}. Tabela: Hipótese, Probabilidade, Dados a Favor, Dados Contra.' },
+            { id: 'rare_diseases', cat: 'Diagnóstico', label: 'Doenças Raras', icon: 'search', color: 'purple', prompt: 'Considere doenças raras ou genéticas que expliquem: {s} {o}.' },
+            { id: 'symptom_checker', cat: 'Diagnóstico', label: 'Analisador de Sintomas', icon: 'activity', color: 'blue', prompt: 'Analise os sintomas: {s}. Agrupe em síndromes e sugira etiologias.' },
+            { id: 'dermatology', cat: 'Diagnóstico', label: 'Dermatologia (IA)', icon: 'scan-eye', color: 'pink', prompt: 'Descreva tecnicamente as lesões relatadas em {s} {o}. Aplique regra ABCDE se for pinta. Sugira diagnósticos.' },
+            { id: 'red_flags', cat: 'Diagnóstico', label: 'Red Flags', icon: 'flag', color: 'red', prompt: 'Identifique sinais de alerta (Red Flags) urgentes neste caso: {soap}. Ref: Medicina de Emergência (USP).' },
+            { id: 'anamnesis_gap', cat: 'Diagnóstico', label: 'Lacunas na Anamnese', icon: 'help-circle', color: 'yellow', prompt: 'O que esqueci de perguntar? Liste perguntas cruciais faltando em: {s}.' },
+            
+            // --- TERAPÊUTICA E FARMÁCIA ---
+            { id: 'interactions', cat: 'Terapêutica', label: 'Interações Medicamentosas', icon: 'shuffle', color: 'red', prompt: 'Analise interações graves entre: {meds}. Tabela com mecanismo e manejo.' },
+            { id: 'renal_adjust', cat: 'Terapêutica', label: 'Ajuste Renal', icon: 'activity', color: 'blue', prompt: 'Para os remédios {meds}, sugira ajustes para ClCr < 30 e < 60 ml/min.' },
+            { id: 'hepatic_adjust', cat: 'Terapêutica', label: 'Ajuste Hepático', icon: 'activity', color: 'orange', prompt: 'Para os remédios {meds}, há contraindicação em Child-Pugh B ou C?' },
+            { id: 'pregnancy', cat: 'Terapêutica', label: 'Segurança na Gravidez', icon: 'baby', color: 'pink', prompt: 'Classifique o risco FDA/Anvisa na gravidez para: {meds}.' },
+            { id: 'breastfeeding', cat: 'Terapêutica', label: 'Lactação', icon: 'baby', color: 'pink', prompt: 'Segurança na amamentação para: {meds}. Sugira tempo de descarte do leite se necessário.' },
+            { id: 'deprescribing', cat: 'Terapêutica', label: 'Desprescrição', icon: 'trash-2', color: 'green', prompt: 'Sugira estratégia de desmame/retirada para: {meds} em idoso.' },
+            { id: 'alternatives', cat: 'Terapêutica', label: 'Alternativas Terapêuticas', icon: 'repeat', color: 'teal', prompt: 'Sugira alternativas para {meds} considerando baixo custo ou falta na farmácia.' },
+            { id: 'mechanism', cat: 'Terapêutica', label: 'Mecanismo de Ação', icon: 'microscope', color: 'indigo', prompt: 'Explique sucintamente o mecanismo de ação de: {meds}.' },
+            { id: 'side_effects', cat: 'Terapêutica', label: 'Efeitos Colaterais', icon: 'alert-triangle', color: 'yellow', prompt: 'Liste efeitos adversos comuns e graves para monitorar em: {meds}.' },
+            { id: 'antibiotic_stewardship', cat: 'Terapêutica', label: 'Escolha de Antibiótico', icon: 'bug', color: 'red', prompt: 'Sugira antibiótico empírico para infecção baseada em {s} {a}. Considere perfil local Brasil.' },
+            { id: 'iv_incompatibility', cat: 'Terapêutica', label: 'Incompatibilidade em Y', icon: 'x-circle', color: 'red', prompt: 'Verifique incompatibilidade em Y para drogas EV listadas em {meds}.' },
+            { id: 'steroid_conversion', cat: 'Terapêutica', label: 'Conversão Corticoide', icon: 'repeat', color: 'orange', prompt: 'Conversão de dose equivalente entre corticoides (hidro, pred, dexa) para {meds}.' },
+
+             // --- DOCUMENTOS E BUROCRACIA ---
+            { id: 'referral', cat: 'Documentos', label: 'Encaminhamento', icon: 'send', color: 'blue', prompt: 'Redija carta de encaminhamento formal para especialista baseada em {soap}.' },
+            { id: 'medical_certificate', cat: 'Documentos', label: 'Atestado Médico', icon: 'file-badge', color: 'slate', prompt: 'Gere texto para atestado médico justificando afastamento (sem dias, apenas texto) baseado em {a}.' },
+            { id: 'laudo', cat: 'Documentos', label: 'Laudo Médico', icon: 'file-text', color: 'slate', prompt: 'Redija laudo médico formal descrevendo condição atual e CID para fins previdenciários: {soap}.' },
+            { id: 'insurance_justification', cat: 'Documentos', label: 'Justificativa Convênio', icon: 'shield', color: 'green', prompt: 'Escreva justificativa técnica para solicitar exames/procedimentos listados no plano baseando-se em {a}.' },
+            { id: 'travel_letter', cat: 'Documentos', label: 'Carta para Viagem', icon: 'plane', color: 'sky', prompt: 'Redija carta (PT/EN) atestando uso de medicamentos controlados {meds} para viagem aérea.' },
+            { id: 'fitness_gym', cat: 'Documentos', label: 'Atestado Aptidão Física', icon: 'dumbbell', color: 'emerald', prompt: 'Texto para atestado de aptidão física considerando {s} {o}. Mencione restrições se houver.' },
+            
+            // --- SAÚDE MENTAL ---
+            { id: 'mse_format', cat: 'Saúde Mental', label: 'Súmula Psíquica', icon: 'brain', color: 'purple', prompt: 'Organize o exame mental (Súmula Psíquica) baseado em: {o}. Use termos: Consciência, Atenção, Memória, Afeto...' },
+            { id: 'dsm5_check', cat: 'Saúde Mental', label: 'Critérios DSM-5', icon: 'book-open', color: 'purple', prompt: 'Verifique se {s} preenche critérios DSM-5 para transtornos prováveis.' },
+            { id: 'suicide_risk', cat: 'Saúde Mental', label: 'Avaliação de Risco', icon: 'life-buoy', color: 'red', prompt: 'Avalie risco de autoextermínio baseado em {s}. Estratifique (Baixo/Médio/Alto) e sugira conduta.' },
+            { id: 'psych_education', cat: 'Saúde Mental', label: 'Psicoeducação', icon: 'users', color: 'pink', prompt: 'Explique o transtorno {a} para o paciente e família em linguagem empática.' },
+            { id: 'psych_agitation', cat: 'Saúde Mental', label: 'Agitação Psicomotora', icon: 'zap', color: 'orange', prompt: 'Protocolo de contenção medicamentosa para agitação descrita em {s}.' },
+            { id: 'ciwa_ar', cat: 'Saúde Mental', label: 'Abstinência Álcool (CIWA)', icon: 'wine-off', color: 'red', prompt: 'Estime score CIWA-Ar para abstinência alcoólica em {s}. Protocolo de diazepam?' },
+            { id: 'phq9_gad7', cat: 'Saúde Mental', label: 'PHQ-9 / GAD-7', icon: 'check-square', color: 'blue', prompt: 'Sugira aplicação de PHQ-9 (Depressão) e GAD-7 (Ansiedade) baseado em {s}.' },
+            
+             // --- NUTRIÇÃO ---
+            { id: 'caloric_needs', cat: 'Nutrição', label: 'Necessidade Calórica', icon: 'calculator', color: 'green', prompt: 'Estime Taxa Metabólica Basal e necessidade calórica (Harris-Benedict) para o paciente {s}.' },
+            { id: 'diet_advice', cat: 'Nutrição', label: 'Dieta Específica', icon: 'carrot', color: 'green', prompt: 'Monte orientações dietéticas focadas na patologia principal de {a}.' },
+            { id: 'enteral_nutrition', cat: 'Nutrição', label: 'Nutrição Enteral', icon: 'tube', color: 'blue', prompt: 'Sugira fórmula e vazão de dieta enteral para paciente {s} (peso estimado). Cálculo de meta.' },
+
+            // --- GERAL & ADM ---
+            { id: 'pre_admission', cat: 'Geral', label: 'Prescrição Admissão', icon: 'file-plus', color: 'blue', prompt: 'Gere um modelo de prescrição de admissão hospitalar completa para o caso {a}. Dieta, Dados Vitais, Sintomáticos, Específicos.' },
+            { id: 'death_certificate', cat: 'Geral', label: 'Atestado de Óbito', icon: 'file-text', color: 'gray', prompt: 'Sugira a sequência correta (Causa Básica -> Consequências) para o Atestado de Óbito deste caso hipotético.' },
+            { id: 'cid10_suggest', cat: 'Geral', label: 'Sugestão CID-10', icon: 'book', color: 'blue', prompt: 'Sugira códigos CID-10 prováveis para: {a} {s}.' },
+            { id: 'tuss_codes', cat: 'Geral', label: 'Códigos TUSS', icon: 'hash', color: 'slate', prompt: 'Sugira códigos TUSS para os procedimentos/exames citados em {p}.' },
+            { id: 'soap_audit', cat: 'Geral', label: 'Auditoria SOAP', icon: 'check-square', color: 'slate', prompt: 'Analise a qualidade deste registro SOAP para fins de auditoria. Está completo?' },
+            { id: 'pubmed_search', cat: 'Estudo', label: 'Termos Busca PubMed', icon: 'search', color: 'blue', prompt: 'Gere string de busca (MeSH terms) para pesquisar este caso no PubMed.' },
+            { id: 'report_translator', cat: 'Estudo', label: 'Traduzir (EN)', icon: 'globe', color: 'blue', prompt: 'Traduza os termos técnicos de {a} {p} para Inglês Médico.' },
+            
+             // --- COMUNICAÇÃO E PACIENTE ---
+            { id: 'metaphors', cat: 'Paciente', label: 'Metáforas Explicativas', icon: 'message-circle', color: 'teal', prompt: 'Crie uma metáfora simples para explicar {a} para um paciente leigo.' },
+            { id: 'bad_news', cat: 'Paciente', label: 'Más Notícias (SPIKES)', icon: 'heart-crack', color: 'slate', prompt: 'Sugira roteiro para dar a notícia de {a} usando protocolo SPIKES.' },
+            { id: 'whatsapp_msg', cat: 'Paciente', label: 'Mensagem WhatsApp', icon: 'message-square', color: 'green', prompt: 'Escreva mensagem curta e formal para enviar ao paciente resumindo a conduta: {p}.' },
+            { id: 'kids_explanation', cat: 'Paciente', label: 'Explicar para Criança', icon: 'smile', color: 'yellow', prompt: 'Explique {a} e o tratamento para uma criança de 8 anos.' },
+            { id: 'post_op', cat: 'Paciente', label: 'Pós-operatório', icon: 'band-aid', color: 'slate', prompt: 'Gere orientações de cuidados em casa para pós-operatório/procedimento de: {a}.' },
+            { id: 'pre_op_eval', cat: 'Cirurgia', label: 'Risco Cirúrgico', icon: 'clipboard-check', color: 'blue', prompt: 'Avaliação pré-operatória (ACP/Goldman) baseada em {s} {o}.' },
+            
+             // --- ENFERMAGEM & CUIDADOS ---
+            { id: 'braden_scale', cat: 'Enfermagem', label: 'Escala de Braden', icon: 'layers', color: 'orange', prompt: 'Estime risco de lesão por pressão (Braden) com base na mobilidade e estado em {s}.' },
+            { id: 'morse_fall', cat: 'Enfermagem', label: 'Escala de Morse', icon: 'arrow-down-right', color: 'red', prompt: 'Risco de queda (Morse) para paciente internado descrito em {s}.' },
+            { id: 'iv_dilution', cat: 'Enfermagem', label: 'Diluição Medicamentos', icon: 'droplet', color: 'blue', prompt: 'Orientações de diluição e tempo de infusão para os medicamentos EV em {meds}.' },
+            
+             // --- TOXICOLOGIA ---
+            { id: 'snake_bite', cat: 'Toxicologia', label: 'Acidente Ofídico', icon: 'alert-triangle', color: 'green', prompt: 'Classifique acidente ofídico (Botrópico, Crotálico...) baseado em {s} {o} e sugira soro.' },
+            { id: 'paracetamol_tox', cat: 'Toxicologia', label: 'Intoxicação Paracetamol', icon: 'skull', color: 'red', prompt: 'Protocolo de N-Acetilcisteína (Rumack-Matthew) para ingestão de paracetamol em {s}.' }
+        ];
+
+        const app = (function() {
+            
+            function loadMedications() {
+                const lines = RAW_MED_DATA.split(';').map(l => l.trim()).filter(l => l.length > 0);
+                return lines.map((line, index) => {
+                    const parts = line.split('|');
+                    if(parts.length < 4) return null;
+                    return { id: index + 1000, category: parts[0], name: parts[1], dose: parts[2], instruction: parts[3] };
+                }).filter(i => i !== null);
+            }
 
             let state = {
-                meds: JSON.parse(localStorage.getItem('neuro_meds')) || defaultMeds,
+                meds: JSON.parse(localStorage.getItem('neuro_meds')) || loadMedications(),
                 patients: JSON.parse(localStorage.getItem('neuro_patients')) || [],
-                config: JSON.parse(localStorage.getItem('neuro_config')) || { 
-                    name: 'Dr. Alexandre Silva', specialty: 'Psiquiatra', crm: 'CRM/SP 123456', 
-                    address: 'Av. Paulista, 1000', phone: '(11) 9999-8888', 
-                    logoUrl: 'https://i.ibb.co/h7gJj9r/dr-alyson-melo-crm-1234.png', apiKey: '' 
-                },
-                currentPatient: { 
-                    id: null, 
-                    name: '', 
-                    soap: { s: '', o: '', a: '', p: '' },
-                    examData: null, examName: null, examType: null
-                },
+                config: JSON.parse(localStorage.getItem('neuro_config')) || { name: 'Dr. Médico', specialty: 'Clínico', crm: '12345', logoUrl: '', apiKey: '' },
+                currentPatient: { id: null, name: '', soap: { s: '', o: '', a: '', p: '' }, examData: null, examName: null, examType: null },
                 prescription: [],
-                examRequest: [], // Lista de exames solicitados
-                activeDocument: 'prescription', // 'prescription' ou 'exams'
-                tempMed: null
+                hospitalLines: Array(15).fill(""), // Linhas da prescrição hospitalar (texto livre)
+                examRequest: [],
+                activeDocument: 'prescription', // prescription, exams, hospital
+                sidebarOpen: true // Estado da barra lateral
             };
 
             function init() {
@@ -545,314 +678,114 @@
                 renderMeds();
                 renderExams();
                 updateConfigUI();
-                updateDocHeader();
+                updateDocHeader(); 
                 updateDate();
-                renderAIButtons();
-                
+                renderAITools();
                 if(window.innerWidth >= 1024) switchTab('patient');
-                updateDocumentView(); // Renderiza o papel inicial
+                updateDocumentView();
             }
 
-            function updateDate() {
-                const now = new Date();
-                const options = { day: 'numeric', month: 'long', year: 'numeric' };
-                document.getElementById('dateDisplay').innerText = now.toLocaleDateString('pt-BR', options);
-            }
+            // --- FUNÇÃO CORRIGIDA DE RENDERIZAÇÃO DA IA ---
+            function renderAITools(filterText = '') {
+                const container = document.getElementById('aiToolsContainer');
+                container.innerHTML = '';
+                
+                const filtered = AI_LIBRARY.filter(t => 
+                    t.label.toLowerCase().includes(filterText.toLowerCase()) || 
+                    t.cat.toLowerCase().includes(filterText.toLowerCase())
+                );
 
-            function renderAIButtons() {
-                const btns = [
-                    {t:'second_opinion', i:'brain-circuit', c:'text-red-600', l:'Segunda Opinião', b:'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800'},
-                    {t:'differential', i:'git-pull-request', c:'text-orange-600', l:'Diagnóstico Dif.'}, 
-                    {t:'referral', i:'send', c:'text-blue-600', l:'Encaminhamento'},
-                    {t:'handout', i:'book-open-check', c:'text-teal-600', l:'Educação Paciente'}, 
-                    {t:'interactions', i:'activity', c:'text-purple-500', l:'Interações'},
-                    {t:'cid', i:'book-open', c:'text-cyan-500', l:'Sugestão CID'},
-                    {t:'nutri', i:'apple', c:'text-green-500', l:'NutriGuide'},
-                    {t:'calc', i:'calculator', c:'text-blue-600', l:'Calc. Médica'}, 
-                    {t:'kids', i:'baby', c:'text-pink-500', l:'Modo Kids'},
-                    {t:'translate', i:'globe', c:'text-blue-500', l:'Traduzir EN'},
-                    {t:'report', i:'file-badge', c:'text-yellow-500', l:'Laudo'},
-                    {t:'discharge', i:'log-out', c:'text-slate-600', l:'Resumo Alta'}, 
-                    {t:'alternatives', i:'repeat', c:'text-orange-500', l:'Alternativas'},
-                    {t:'message', i:'message-square', c:'text-indigo-500', l:'WhatsApp'},
-                    {t:'mechanism', i:'microscope', c:'text-teal-500', l:'Mecanismo'},
-                    {t:'alerts', i:'siren', c:'text-red-500', l:'Alertas'},
-                    {t:'caregiver', i:'user-check', c:'text-emerald-500', l:'Cuidador'},
-                    {t:'lifestyle', i:'sun', c:'text-amber-500', l:'Lifestyle'},
-                    {t:'tapering', i:'trending-down', c:'text-red-400', l:'Desmame'},
-                    {t:'followup', i:'help-circle', c:'text-violet-500', l:'Retorno'},
-                    {t:'cost', i:'banknote', c:'text-emerald-600', l:'Custo'},
-                    {t:'schedule', i:'clock', c:'text-sky-500', l:'Cronograma'}
-                ];
+                if (filtered.length === 0) {
+                    container.innerHTML = '<div class="text-center text-slate-400 py-10">Nenhuma ferramenta encontrada.</div>';
+                    return;
+                }
 
-                document.getElementById('aiButtonsGrid').innerHTML = btns.map(b => `
-                    <button onclick="app.callAI('${b.t}')" class="h-20 rounded-xl flex flex-col items-center justify-center gap-1 border ${b.b || 'border-transparent bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700'} transition-colors group relative overflow-hidden" title="${b.l}">
-                        ${b.t === 'second_opinion' ? '<div class="absolute top-0 right-0 bg-red-500 text-white text-[8px] px-1 font-bold rounded-bl-lg">NOVO</div>' : ''}
-                        <i data-lucide="${b.i}" class="${b.c} w-6 h-6 group-hover:scale-110 transition-transform"></i>
-                        <span class="text-[10px] font-semibold text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white text-center leading-tight">${b.l}</span>
-                    </button>
-                `).join('');
+                const categories = [...new Set(filtered.map(t => t.cat))];
+
+                categories.forEach(cat => {
+                    const items = filtered.filter(t => t.cat === cat);
+                    const section = document.createElement('div');
+                    section.innerHTML = `<h3 class="ai-category-header">${cat}</h3>`;
+                    const grid = document.createElement('div');
+                    grid.className = 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2';
+                    grid.innerHTML = items.map(t => `
+                        <button onclick="app.callAI('${t.id}')" class="h-20 rounded-xl flex flex-col items-center justify-center gap-1 border border-transparent bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 transition-colors group relative overflow-hidden text-${t.color}-600 dark:text-${t.color}-400 hover:border-${t.color}-500/30">
+                            <i data-lucide="${t.icon}" class="w-6 h-6 group-hover:scale-110 transition-transform mb-1"></i>
+                            <span class="text-[10px] font-semibold text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white text-center leading-tight px-1">${t.label}</span>
+                        </button>
+                    `).join('');
+                    section.appendChild(grid);
+                    container.appendChild(section);
+                });
                 lucide.createIcons();
             }
 
-            // --- MAGIC SOAP ---
-            function openMagicSoap() { openModal('magicSoapModal'); }
-            
-            async function generateMagicSoap() {
+            function filterAITools() {
+                const txt = document.getElementById('aiToolSearch').value;
+                renderAITools(txt);
+            }
+
+            async function callAI(toolId) {
                 if(!state.config.apiKey) { alert("Configure a API Key!"); openModal('configModal'); return; }
                 
-                const inputText = document.getElementById('magicSoapInput').value;
-                const audioFile = document.getElementById('magicSoapAudio').files[0];
+                let promptTemplate = "";
+                let title = "Resultado";
+                let isExamAnalysis = false;
 
-                if(!inputText && !audioFile) return alert("Digite o texto ou carregue um áudio.");
-
-                const btn = document.querySelector('#magicSoapModal button[onclick="app.generateMagicSoap()"]');
-                const originalText = btn.innerHTML;
-                btn.innerText = "Processando..."; btn.disabled = true;
-
-                let prompt = "Analise este conteúdo clínico (texto ou áudio de consulta). Extraia e organize as informações nos campos: Subjetivo (S), Objetivo (O), Avaliação (A), Plano (P). Responda APENAS com um objeto JSON puro (sem markdown) no formato: {\"s\": \"...\", \"o\": \"...\", \"a\": \"...\", \"p\": \"...\"}. Use português formal médico.";
-                
-                let payloadParts = [];
-
-                // Se tiver áudio, processa como multimodal
-                if (audioFile) {
-                    const reader = new FileReader();
-                    reader.onload = async (e) => {
-                        const base64Audio = e.target.result.split(',')[1];
-                        payloadParts = [
-                            { text: prompt },
-                            { inlineData: { mimeType: audioFile.type, data: base64Audio } }
-                        ];
-                        if (inputText) payloadParts[0].text += `\n\nContexto adicional em texto: ${inputText}`;
-                        
-                        await sendToGemini(payloadParts, btn, originalText);
-                    };
-                    reader.readAsDataURL(audioFile);
+                if(toolId === 'analyze_exam' || toolId === 'ecg_interpret' || toolId === 'dermatology') {
+                    isExamAnalysis = true;
+                    if(toolId === 'analyze_exam') title = "Análise de Exame";
+                    if(toolId === 'ecg_interpret') title = "Laudo de ECG (IA)";
+                    if(toolId === 'dermatology') title = "Análise Dermatológica";
+                    promptTemplate = "Atue como especialista. Analise este anexo médico. Identifique o tipo. Se for laboratorial, tabela HTML com Referência/Status. Se imagem, laudo estruturado. Use HTML Tailwind.";
+                    const tool = AI_LIBRARY.find(t => t.id === toolId);
+                    if(tool) promptTemplate = tool.prompt;
                 } else {
-                    // Apenas texto
-                    prompt += ` Texto: ${inputText}`;
-                    payloadParts = [{ text: prompt }];
-                    await sendToGemini(payloadParts, btn, originalText);
-                }
-            }
-
-            async function sendToGemini(payloadParts, btn, originalText) {
-                 try {
-                    const response = await fetchGeminiPayload(payloadParts);
-                    if(response) {
-                        const cleanJson = response.replace(/```json/g, '').replace(/```/g, '').trim();
-                        const data = JSON.parse(cleanJson);
-                        document.getElementById('soapS').value = data.s || "";
-                        document.getElementById('soapO').value = data.o || "";
-                        document.getElementById('soapA').value = data.a || "";
-                        document.getElementById('soapP').value = data.p || "";
-                        closeModal('magicSoapModal');
-                        alert("SOAP preenchido com sucesso!");
+                    const tool = AI_LIBRARY.find(t => t.id === toolId);
+                    if (tool) {
+                        promptTemplate = tool.prompt;
+                        title = tool.label;
                     } else {
-                        alert("Erro ao processar com IA.");
-                    }
-                } catch(e) {
-                    console.error(e);
-                    alert("Erro ao processar JSON da IA. Verifique o console.");
-                } finally {
-                    btn.innerHTML = originalText; btn.disabled = false;
-                }
-            }
-
-            // --- EXAMES ---
-            function renderExams() {
-                const search = document.getElementById('examSearch').value.toLowerCase();
-                document.getElementById('examList').innerHTML = defaultExams
-                    .filter(e => e.toLowerCase().includes(search))
-                    .map(e => `
-                        <button onclick="app.addToExamRequest('${e}')" class="w-full text-left p-3 rounded-xl border border-transparent bg-slate-50 dark:bg-slate-900/50 hover:border-orange-500/50 transition-all group relative overflow-hidden shrink-0 flex justify-between items-center">
-                            <span class="font-bold text-sm">${e}</span>
-                            <i data-lucide="plus" class="w-4 h-4 text-orange-500 opacity-0 group-hover:opacity-100 transition-opacity"></i>
-                        </button>`).join('');
-                lucide.createIcons();
-            }
-
-            function addToExamRequest(name) {
-                state.examRequest.push({ name, uid: Date.now() + Math.random() });
-                if (state.activeDocument !== 'exams') setDocumentMode('exams'); else updateDocumentView();
-            }
-
-            function removeExamRequestItem(uid) {
-                state.examRequest = state.examRequest.filter(i => i.uid !== uid);
-                updateDocumentView();
-            }
-
-            // --- LÓGICA DE DOCUMENTOS (RECEITA/EXAMES) ---
-            function setDocumentMode(mode) {
-                state.activeDocument = mode;
-                const btnPresc = document.getElementById('docMode-prescription');
-                const btnExams = document.getElementById('docMode-exams');
-                if (mode === 'prescription') {
-                    btnPresc.classList.replace('inactive', 'active');
-                    btnExams.classList.replace('active', 'inactive');
-                } else {
-                    btnExams.classList.replace('inactive', 'active');
-                    btnPresc.classList.replace('active', 'inactive');
-                }
-                updateDocumentView();
-            }
-
-            function updateDocumentView() {
-                const list = document.getElementById('prescriptionListDisplay');
-                const title = document.getElementById('docTitleDisplay');
-                document.getElementById('patientNameDisplay').innerText = state.currentPatient.name || "Nome do Paciente...";
-
-                if (state.activeDocument === 'prescription') {
-                    title.innerText = "RECEITUÁRIO MÉDICO";
-                    if (state.prescription.length === 0) {
-                        list.innerHTML = '<div class="text-center text-slate-300 italic mt-10 no-print">Adicione itens da farmácia...</div>';
-                    } else {
-                        list.innerHTML = state.prescription.map((item, idx) => `
-                            <div class="relative group pl-4 border-l-2 border-transparent hover:border-green-400 transition-all">
-                                <div class="flex justify-between items-baseline">
-                                    <div class="font-bold font-arial" style="font-size: 12pt; color: #1e293b;">
-                                        ${idx+1}. ${item.name} <span class="font-normal ml-2 text-slate-600">${item.dose}</span>
-                                    </div>
-                                    <button onclick="app.removePrescriptionItem(${item.uid})" class="no-print text-red-400 opacity-0 group-hover:opacity-100 hover:text-red-600 transition-opacity"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                                </div>
-                                <p class="text-sm text-slate-700 mt-1 pl-4 font-arial">${item.instruction}</p>
-                            </div>`).join('');
-                    }
-                } else {
-                    title.innerText = "SOLICITAÇÃO DE EXAMES";
-                    if (state.examRequest.length === 0) {
-                        list.innerHTML = '<div class="text-center text-slate-300 italic mt-10 no-print">Adicione exames da lista...</div>';
-                    } else {
-                        list.innerHTML = `
-                            <div class="space-y-2">
-                                <p class="font-arial text-sm mb-4">Solicito a realização dos seguintes exames:</p>
-                                <ul class="list-disc pl-5 space-y-1 font-arial text-slate-800">
-                                    ${state.examRequest.map(item => `
-                                        <li class="relative group pl-2">
-                                            <span style="font-size: 11pt;">${item.name}</span>
-                                            <button onclick="app.removeExamRequestItem(${item.uid})" class="no-print ml-2 text-red-400 opacity-0 group-hover:opacity-100 hover:text-red-600 transition-opacity"><i data-lucide="trash-2" class="w-3 h-3 inline"></i></button>
-                                        </li>
-                                    `).join('')}
-                                </ul>
-                            </div>
-                        `;
+                        title = "IA";
+                        promptTemplate = "Analise: {soap}.";
                     }
                 }
-                lucide.createIcons();
-            }
 
-            // --- OUTRAS FUNÇÕES ---
-            function handleExamUpload(input) {
-                const file = input.files[0];
-                if(!file) return;
-                if(file.size > 6 * 1024 * 1024) { alert("Arquivo muito grande. Limite 6MB."); return; }
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    state.currentPatient.examData = e.target.result;
-                    state.currentPatient.examName = file.name;
-                    state.currentPatient.examType = file.type;
-                    updateExamPreview();
-                };
-                reader.readAsDataURL(file);
-            }
-            function updateExamPreview() {
-                const { examData, examType, examName } = state.currentPatient;
-                const container = document.getElementById('examPreviewContainer');
-                const img = document.getElementById('examPreviewImg');
-                const icon = document.getElementById('examPreviewIcon');
-                const info = document.getElementById('examFileName');
-                if(!examData) { container.classList.add('hidden'); return; }
-                container.classList.remove('hidden');
-                info.innerText = examName || "Documento";
-                if (examType && examType.startsWith('image/')) { img.src = examData; img.classList.remove('hidden'); icon.classList.add('hidden'); } 
-                else { img.classList.add('hidden'); icon.classList.remove('hidden'); }
-                lucide.createIcons();
-            }
-            function clearExamImage() {
-                state.currentPatient.examData = null; state.currentPatient.examName = null; state.currentPatient.examType = null;
-                document.getElementById('examPreviewContainer').classList.add('hidden'); document.getElementById('examUploadInput').value = '';
-            }
-            
-            // --- AI ---
-            async function callAI(type) {
-                if(!state.config.apiKey) { alert("Erro: Configure API Key!"); openModal('configModal'); return; }
-                const medsText = state.prescription.map(i => `${i.name} (${i.dose})`).join(', ');
-                const noMedsRequired = ['guide', 'analyze_exam', 'second_opinion', 'differential', 'handout', 'calc', 'discharge', 'referral'];
-                if(!medsText && !noMedsRequired.includes(type)) return alert("Adicione medicamentos à receita.");
+                const s = document.getElementById('soapS').value || "Não informado";
+                const o = document.getElementById('soapO').value || "Não informado";
+                const a = document.getElementById('soapA').value || "Não informado";
+                const p = document.getElementById('soapP').value || "Não informado";
+                const medsText = state.prescription.map(i => `${i.name} (${i.dose})`).join(', ') || "Nenhum";
+                const soapFull = `Paciente: ${state.currentPatient.name}\nS: ${s}\nO: ${o}\nA: ${a}\nP: ${p}`;
 
-                const tableInstruction = " Retorne EXCLUSIVAMENTE Tabela HTML (<table>) com classes Tailwind (w-full text-sm border-collapse th bg-slate-100 dark:bg-slate-800 p-2 td border p-2).";
-                const textInstruction = " Retorne texto formatado HTML (<p>, <strong>, <ul>).";
-                
-                let prompt = "", title = ""; let payloadParts = [];
-                const s = document.getElementById('soapS').value; const o = document.getElementById('soapO').value;
-                const a = document.getElementById('soapA').value; const p = document.getElementById('soapP').value;
-                const soapContext = `Paciente: ${state.currentPatient.name}\nS: ${s}\nO: ${o}\nA: ${a}\nP: ${p}\nRx: ${medsText}`;
+                let finalPrompt = promptTemplate
+                    .replace('{s}', s).replace('{o}', o).replace('{a}', a).replace('{p}', p)
+                    .replace('{soap}', soapFull)
+                    .replace('{meds}', medsText)
+                    .replace('{patientName}', state.currentPatient.name);
 
-                switch(type) {
-                    case 'analyze_exam':
-                        if(!state.currentPatient.examData) return alert("Anexe documento!");
-                        title = "Análise de Documento";
-                        prompt = `Aja como um médico especialista analisando este exame.
-                        Identifique o tipo de documento e formate a resposta estritamente em HTML com classes Tailwind.
-                        
-                        1. **Se for Exame Laboratorial (Sangue, Urina, etc):**
-                           - Crie uma tabela HTML (<table class="w-full text-sm text-left border border-slate-200 dark:border-slate-700">).
-                           - Cabeçalho (<thead class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">) com: Parâmetro, Resultado, Referência, Status.
-                           - Destaque resultados alterados com <span class="text-red-600 dark:text-red-400 font-bold">.
-                           - Adicione uma breve interpretação clínica ao final.
+                finalPrompt += " \nIMPORTANTE: Responda EXCLUSIVAMENTE em HTML formatado. Use classes Tailwind (text-sm, border, p-2, table w-full, th bg-slate-100, text-red-500 para alertas). Não use Markdown (```html).";
 
-                        2. **Se for Exame de Imagem (Raio-X, TC, RM, USG):**
-                           - Use <div class="space-y-3">.
-                           - <h3 class="font-bold text-cyan-700 dark:text-cyan-400 border-b border-slate-200 pb-1">Técnica</h3>
-                           - <h3 class="font-bold text-cyan-700 dark:text-cyan-400 border-b border-slate-200 pb-1">Achados</h3> (Use lista <ul> com <li>).
-                           - <h3 class="font-bold text-purple-700 dark:text-purple-400 border-b border-slate-200 pb-1">Conclusão/Impressão</h3>
-                           - Destaque patologias em <strong>.
-
-                        3. **Se for outro tipo (Receita, Atestado, etc):**
-                           - Resuma os pontos chave em tópicos claros.`;
-                        
-                        payloadParts = [{ text: prompt }, { inlineData: { mimeType: state.currentPatient.examType || 'application/pdf', data: state.currentPatient.examData.split(',')[1] } }];
-                        break;
-                    case 'referral': title="Encaminhamento"; prompt=`Escreva uma Carta de Encaminhamento formal para um especialista (infira qual o mais indicado pelo contexto) sobre o paciente ${state.currentPatient.name}. Dados:\n${soapContext}\nUse HTML formal.`; payloadParts = [{ text: prompt }]; break;
-                    case 'differential': title="Diagnóstico Dif."; prompt=`Sugira diagnósticos diferenciais:\n${soapContext}\nTabela HTML: Diagnóstico, A Favor, Contra, Exames.${tableInstruction}`; payloadParts = [{ text: prompt }]; break;
-                    case 'handout': title="Educação Paciente"; prompt=`Material educativo paciente:\n${soapContext}\nLinguagem simples. HTML estruturado.${textInstruction}`; payloadParts = [{ text: prompt }]; break;
-                    case 'calc': title="Calc. Médica"; prompt=`Analise SOAP:\n${soapContext}\nIdentifique dados para cálculos médicos. Apresente cálculo e resultado HTML.`; payloadParts = [{ text: prompt }]; break;
-                    case 'discharge': title="Resumo Alta"; prompt=`Sumário alta:\n${soapContext}\nHTML estruturado.${textInstruction}`; payloadParts = [{ text: prompt }]; break;
-                    case 'second_opinion': title="2ª Opinião"; prompt=`Atue como especialista revisando:\n${soapContext}\nVerifique coerência, riscos, exames. HTML.${textInstruction}`; payloadParts = [{ text: prompt }]; break;
-                    default:
-                        const prompts = {
-                            'interactions': `Analise interações: ${medsText}. Tabela HTML.${tableInstruction}`,
-                            'cid': `Sugira CID: ${medsText}. Contexto: ${s} ${a}. Tabela HTML.${tableInstruction}`,
-                            'nutri': `Tabela nutricional: ${medsText}. HTML.${tableInstruction}`,
-                            'alternatives': `Genéricos: ${medsText}. Tabela HTML.${tableInstruction}`,
-                            'mechanism': `Mecanismo: ${medsText}. Tabela HTML.${tableInstruction}`,
-                            'alerts': `Alertas: ${medsText}. Tabela HTML.${tableInstruction}`,
-                            'caregiver': `Checklist: ${medsText}. Tabela HTML.${tableInstruction}`,
-                            'lifestyle': `Lifestyle: ${medsText}. Tabela HTML.${tableInstruction}`,
-                            'tapering': `Desmame: ${medsText}. Tabela HTML.${tableInstruction}`,
-                            'followup': `Retorno: ${medsText}. Tabela HTML.${tableInstruction}`,
-                            'cost': `Custo Brasil: ${medsText}. Tabela HTML.${tableInstruction}`,
-                            'schedule': `Cronograma: ${medsText}. Tabela HTML.${tableInstruction}`,
-                            'translate': `Translate: ${state.prescription.map(i=>i.name).join('; ')}. Table HTML.${tableInstruction}`,
-                            'kids': `Explique criança: ${medsText}. Metáforas. HTML.${textInstruction}`,
-                            'report': `Laudo Médico: ${state.currentPatient.name}. Uso: ${medsText}. CID: ${a}. HTML.${textInstruction}`,
-                            'message': `WhatsApp: ${medsText}. HTML.${textInstruction}`
-                        };
-                        if(type === 'guide') {
-                            const currentGuide = document.getElementById('patientGuide'); currentGuide.value = "Gerando...";
-                            const txt = await fetchGeminiPayload([{ text: `Orientações curtas paciente: ${medsText}. Ctx: ${a}. Texto corrido.` }]);
-                            currentGuide.value = txt ? txt.replace(/[*#]/g, '') : "Erro."; return;
-                        }
-                        title = type.toUpperCase(); prompt = prompts[type]; payloadParts = [{ text: prompt }];
-                }
                 document.getElementById('aiModalTitle').innerText = title;
                 document.getElementById('aiModalContent').innerHTML = '<div class="flex justify-center p-10"><div class="animate-spin rounded-full h-10 w-10 border-b-2 border-cyan-500"></div></div>';
                 openModal('aiModal');
-                let responseText = await fetchGeminiPayload(payloadParts);
-                if (responseText) responseText = responseText.replace(/```html/g, '').replace(/```/g, '');
-                document.getElementById('aiModalContent').innerHTML = responseText || "<p class='text-red-500'>Erro na resposta.</p>";
+
+                let payloadParts = [];
+                if (isExamAnalysis && state.currentPatient.examData) {
+                    payloadParts = [{ text: finalPrompt }, { inlineData: { mimeType: state.currentPatient.examType || 'application/pdf', data: state.currentPatient.examData.split(',')[1] } }];
+                } else {
+                    payloadParts = [{ text: finalPrompt }];
+                }
+
+                const result = await fetchGeminiPayload(payloadParts);
+                if(result) {
+                    const cleanHtml = result.replace(/```html/g, '').replace(/```/g, '');
+                    document.getElementById('aiModalContent').innerHTML = cleanHtml;
+                } else {
+                    document.getElementById('aiModalContent').innerHTML = "<p class='text-red-500'>Erro ao gerar resposta.</p>";
+                }
             }
-            
+
             async function fetchGeminiPayload(parts) {
                  if(!state.config.apiKey) return null;
                  try {
@@ -864,52 +797,144 @@
                     return data.candidates?.[0]?.content?.parts?.[0]?.text;
                 } catch (error) { console.error(error); return null; }
             }
+            
+            // --- MAGIC SOAP ---
+            function openMagicSoap() { openModal('magicSoapModal'); }
 
-            // --- UTILS ---
+            async function generateMagicSoap() {
+                if(!state.config.apiKey) { alert("Configure API Key!"); return; }
+                const txt = document.getElementById('magicSoapInput').value;
+                const audio = document.getElementById('magicSoapAudio').files[0];
+                if(!txt && !audio) return alert("Dados insuficientes.");
+                
+                const btn = document.querySelector('#magicSoapModal button[onclick="app.generateMagicSoap()"]');
+                const oldTxt = btn.innerHTML; btn.innerText = "Processando..."; btn.disabled = true;
+
+                let parts = [];
+                const prompt = "Estruture este relato clínico em formato JSON: {\"s\": \"...\", \"o\": \"...\", \"a\": \"...\", \"p\": \"...\"}. Use pt-BR médico formal.";
+                
+                if(audio) {
+                    const reader = new FileReader();
+                    reader.onload = async (e) => {
+                        parts = [{ text: prompt + (txt ? ` Contexto: ${txt}` : "") }, { inlineData: { mimeType: audio.type, data: e.target.result.split(',')[1] } }];
+                        await processMagicSoap(parts, btn, oldTxt);
+                    };
+                    reader.readAsDataURL(audio);
+                } else {
+                    parts = [{ text: prompt + ` Texto: ${txt}` }];
+                    await processMagicSoap(parts, btn, oldTxt);
+                }
+            }
+
+            async function processMagicSoap(parts, btn, oldTxt) {
+                const res = await fetchGeminiPayload(parts);
+                if(res) {
+                    try {
+                        const json = JSON.parse(res.replace(/```json/g, '').replace(/```/g, '').trim());
+                        document.getElementById('soapS').value = json.s || "";
+                        document.getElementById('soapO').value = json.o || "";
+                        document.getElementById('soapA').value = json.a || "";
+                        document.getElementById('soapP').value = json.p || "";
+                        closeModal('magicSoapModal');
+                    } catch(e) { alert("Erro no JSON da IA."); }
+                }
+                btn.innerHTML = oldTxt; btn.disabled = false;
+            }
+
+            // --- FUNÇÕES DE SUPORTE UI ---
             function toggleTheme() { document.documentElement.classList.toggle('dark'); localStorage.setItem('neuro_theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light'); }
             function loadTheme() { if(localStorage.getItem('neuro_theme') === 'light') document.documentElement.classList.remove('dark'); }
             function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
             function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
             function openConfigMedModal() { openModal('addMedModal'); }
-            function copyAIContent() { navigator.clipboard.writeText(document.getElementById('aiModalContent').innerText); alert("Copiado!"); }
+            function copyAIContent() { 
+                const text = document.getElementById('aiModalContent').innerText;
+                const textArea = document.createElement("textarea"); textArea.value = text; document.body.appendChild(textArea); textArea.select();
+                try { document.execCommand('copy'); alert("Copiado!"); } catch (err) { alert("Erro ao copiar."); }
+                document.body.removeChild(textArea);
+            }
+            
             function generatePDF() {
                 const element = document.getElementById('prescriptionPaper');
-                const filename = state.activeDocument === 'exams' ? `Exames_${state.currentPatient.name}.pdf` : `Receita_${state.currentPatient.name}.pdf`;
-                const opt = { margin: 0, filename: filename, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: true }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } };
+                let filename = "Documento.pdf";
+                let orientation = 'portrait';
+
+                if (state.activeDocument === 'exams') filename = `Exames_${state.currentPatient.name}.pdf`;
+                else if (state.activeDocument === 'hospital') {
+                    filename = `Prescricao_Hospitalar_${state.currentPatient.name}.pdf`;
+                    orientation = 'landscape';
+                }
+                else filename = `Receita_${state.currentPatient.name}.pdf`;
+                
+                const opt = {
+                    margin: 0,
+                    filename: filename,
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2, useCORS: true },
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: orientation }
+                };
                 html2pdf().set(opt).from(element).save();
             }
+            
+            function updateDate() { if(document.getElementById('dateDisplay')) document.getElementById('dateDisplay').innerText = new Date().toLocaleDateString('pt-BR'); }
+
             function renderMeds() {
                 const search = document.getElementById('medSearch').value.toLowerCase();
-                document.getElementById('medicationList').innerHTML = state.meds.filter(m => m.name.toLowerCase().includes(search)).map(m => `
-                        <button onclick="app.addToPrescription(${m.id})" class="w-full text-left p-3 rounded-xl border border-transparent bg-slate-50 dark:bg-slate-900/50 hover:border-cyan-500/50 transition-all group relative overflow-hidden shrink-0">
-                            <div><div class="font-bold text-sm">${m.name}</div><div class="text-[10px] opacity-60 mt-0.5">${m.dose}</div></div>
-                            <i data-lucide="plus" class="w-4 h-4 text-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity absolute right-3 top-3"></i>
-                        </button>`).join('');
-                lucide.createIcons();
+                const filtered = state.meds.filter(m => m.name.toLowerCase().includes(search) || m.category.toLowerCase().includes(search));
+                document.getElementById('medicationList').innerHTML = filtered.slice(0, 50).map(m => `
+                    <button onclick="app.addToPrescription(${m.id})" class="w-full text-left p-3 rounded-xl border border-transparent bg-slate-50 dark:bg-slate-900/50 hover:border-cyan-500/50 transition-all group relative overflow-hidden shrink-0">
+                        <div><span class="font-bold text-sm">${m.name}</span> <span class="text-[10px] opacity-60">${m.dose}</span></div>
+                    </button>`).join('');
             }
-            function addToPrescription(id) {
-                const med = state.meds.find(m => m.id === id);
-                if(med) { state.prescription.push({ ...med, uid: Date.now() + Math.random() }); if(state.activeDocument !== 'prescription') setDocumentMode('prescription'); else updateDocumentView(); }
-            }
-            function removePrescriptionItem(uid) { state.prescription = state.prescription.filter(i => i.uid !== uid); updateDocumentView(); }
             function addNewMedication() {
                 const name = document.getElementById('newMedName').value;
                 if(!name) return;
                 state.meds.push({ id: Date.now(), name, dose: document.getElementById('newMedDose').value, instruction: document.getElementById('newMedInstr').value, category: document.getElementById('newMedCat').value });
                 localStorage.setItem('neuro_meds', JSON.stringify(state.meds)); renderMeds(); closeModal('addMedModal');
             }
+            
+            // --- Lógica Principal de Adição e Sincronização ---
+            function addToPrescription(id) {
+                const med = state.meds.find(m => m.id === id);
+                if(med) { 
+                    state.prescription.push({ ...med, uid: Date.now() + Math.random() });
+                    // Sincroniza com a prescrição hospitalar (adiciona na primeira linha vazia)
+                    const text = `${med.name} ${med.dose}, ${med.instruction}`;
+                    const emptyIndex = state.hospitalLines.findIndex(l => l === "");
+                    if(emptyIndex !== -1) {
+                        state.hospitalLines[emptyIndex] = text.toUpperCase();
+                    }
+                    updateDocumentView(); 
+                }
+            }
+            function removePrescriptionItem(uid) { 
+                state.prescription = state.prescription.filter(i => i.uid !== uid); 
+                // Nota: Não removemos automaticamente da hospitalar para evitar perder edições manuais
+                updateDocumentView(); 
+            }
+            
+            function updateHospitalLine(index, value) {
+                state.hospitalLines[index] = value;
+            }
+            
+            function clearHospitalLine(index) {
+                state.hospitalLines[index] = "";
+                updateDocumentView();
+            }
+
+            function renderExams() {
+                const search = document.getElementById('examSearch').value.toLowerCase();
+                document.getElementById('examList').innerHTML = RAW_EXAM_DATA.filter(e => e.toLowerCase().includes(search)).slice(0, 50).map(e => `
+                    <button onclick="app.addToExamRequest('${e}')" class="w-full text-left p-3 rounded-xl border border-transparent bg-slate-50 dark:bg-slate-900/50 hover:border-orange-500/50 transition-all group relative overflow-hidden shrink-0"><span class="font-bold text-sm">${e}</span></button>`).join('');
+            }
+            function addToExamRequest(name) { state.examRequest.push({ name, uid: Date.now() + Math.random() }); updateDocumentView(); }
+            function removeExamRequestItem(uid) { state.examRequest = state.examRequest.filter(i => i.uid !== uid); updateDocumentView(); }
+
             function searchPatient() {
                 const query = document.getElementById('patientNameInput').value; state.currentPatient.name = query; updateDocumentView();
-                const results = document.getElementById('patientSearchResults');
-                if(query.length < 1) { results.classList.add('hidden'); return; }
-                const filtered = state.patients.filter(p => p.name.toLowerCase().includes(query.toLowerCase()));
-                if(filtered.length > 0) {
-                    results.innerHTML = filtered.map(p => `<button onclick="app.loadPatient(${p.id})" class="w-full text-left px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-800 border-b border-slate-200 dark:border-slate-700">${p.name}</button>`).join('');
-                    results.classList.remove('hidden');
-                } else results.classList.add('hidden');
             }
-            function loadPatient(id) {
-                const p = state.patients.find(pat => pat.id === id);
+            function loadPatient(id) { 
+                 const p = state.patients.find(pat => pat.id === id);
                 if(p) {
                     state.currentPatient = JSON.parse(JSON.stringify(p));
                     document.getElementById('patientNameInput').value = p.name;
@@ -919,7 +944,7 @@
                     document.getElementById('patientSearchResults').classList.add('hidden'); updateDocumentView();
                 }
             }
-            function savePatientData() {
+            function savePatientData() { 
                 const name = document.getElementById('patientNameInput').value; if(!name) return alert("Nome obrigatório");
                 state.currentPatient.name = name;
                 state.currentPatient.soap = { s: document.getElementById('soapS').value, o: document.getElementById('soapO').value, a: document.getElementById('soapA').value, p: document.getElementById('soapP').value };
@@ -928,16 +953,221 @@
                 if(idx >= 0) state.patients[idx] = state.currentPatient; else state.patients.push(state.currentPatient);
                 localStorage.setItem('neuro_patients', JSON.stringify(state.patients)); alert("Salvo!");
             }
-            function clearPatientData() {
-                if(confirm("Limpar?")) {
-                    state.currentPatient = { id: null, name: '', soap: { s: '', o: '', a: '', p: '' }, examData: null };
-                    state.prescription = []; state.examRequest = [];
-                    document.getElementById('patientNameInput').value = ''; document.getElementById('soapS').value = '';
-                    document.getElementById('soapO').value = ''; document.getElementById('soapA').value = '';
-                    document.getElementById('soapP').value = ''; document.getElementById('patientGuide').value = '';
-                    clearExamImage(); updateDocumentView();
+            function clearPatientData() { state.prescription = []; state.examRequest = []; state.hospitalLines = Array(15).fill(""); state.currentPatient.name = ""; document.getElementById('patientNameInput').value = ""; updateDocumentView(); }
+            function handleExamUpload(input) { 
+                const file = input.files[0]; if(!file) return; if(file.size>6*1024*1024){alert("Max 6MB");return;}
+                const reader = new FileReader();
+                reader.onload = (e) => { state.currentPatient.examData = e.target.result; state.currentPatient.examName = file.name; state.currentPatient.examType = file.type; updateExamPreview(); };
+                reader.readAsDataURL(file);
+            }
+            function clearExamImage() { state.currentPatient.examData = null; updateExamPreview(); document.getElementById('examUploadInput').value = ''; }
+
+            function updateExamPreview() {
+                const { examData, examType, examName } = state.currentPatient;
+                const container = document.getElementById('examPreviewContainer');
+                const img = document.getElementById('examPreviewImg');
+                const icon = document.getElementById('examPreviewIcon');
+                const info = document.getElementById('examFileName');
+                if(!examData) { container.classList.add('hidden'); return; }
+                container.classList.remove('hidden'); info.innerText = examName || "Arquivo";
+                if (examType && examType.startsWith('image/')) { img.src = examData; img.classList.remove('hidden'); icon.classList.add('hidden'); } 
+                else { img.classList.add('hidden'); icon.classList.remove('hidden'); }
+            }
+
+            function setDocumentMode(mode) {
+                state.activeDocument = mode;
+                const btns = {
+                    'prescription': document.getElementById('docMode-prescription'),
+                    'exams': document.getElementById('docMode-exams'),
+                    'hospital': document.getElementById('docMode-hospital')
+                };
+                
+                Object.values(btns).forEach(b => b?.classList.replace('active', 'inactive'));
+                if(btns[mode]) btns[mode].classList.replace('inactive', 'active');
+                
+                updateDocumentView();
+            }
+
+            function toggleSidebar() {
+                state.sidebarOpen = !state.sidebarOpen;
+                const leftPanel = document.getElementById('leftPanelContainer');
+                if(state.sidebarOpen) {
+                    leftPanel.classList.remove('w-0', 'p-0', 'overflow-hidden', 'opacity-0');
+                    leftPanel.classList.add('p-4', 'md:p-6');
+                    leftPanel.style.flex = '1';
+                } else {
+                    leftPanel.classList.add('w-0', 'p-0', 'overflow-hidden', 'opacity-0');
+                    leftPanel.style.flex = '0';
                 }
             }
+
+            function updateDocumentView() {
+                const paper = document.getElementById('prescriptionPaper');
+                const c = state.config;
+                const patientName = state.currentPatient.name || "Nome do Paciente...";
+                const dateStr = new Date().toLocaleDateString('pt-BR');
+                const timeStr = new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+
+                // --- LAYOUT HOSPITALAR (HORIZONTAL & EDITÁVEL) ---
+                if (state.activeDocument === 'hospital') {
+                    // Ajuste de tamanho para Paisagem
+                    paper.classList.remove('w-[600px]', 'min-h-[840px]');
+                    paper.classList.add('w-[1120px]', 'min-h-[790px]'); // A4 Landscape
+
+                    let rowsHtml = '';
+                    for (let i = 0; i < 15; i++) {
+                        const val = state.hospitalLines[i] || "";
+                        rowsHtml += `
+                        <div class="flex border-b border-slate-300 min-h-[32px] items-stretch group">
+                            <div class="w-10 border-r border-slate-300 flex items-center justify-center font-bold text-sm bg-slate-50 print:bg-transparent text-slate-500">${i+1}.</div>
+                            <div class="flex-1 relative">
+                                <input type="text" class="hospital-input absolute inset-0 w-full h-full px-2 uppercase" 
+                                    value="${val}" 
+                                    oninput="app.updateHospitalLine(${i}, this.value)"
+                                    placeholder=""
+                                >
+                            </div>
+                            <button onclick="app.clearHospitalLine(${i})" class="w-8 flex items-center justify-center text-red-400 opacity-0 group-hover:opacity-100 hover:text-red-600 transition-opacity no-print">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        </div>`;
+                    }
+
+                    paper.innerHTML = `
+                        <div class="h-full flex flex-col font-arial text-slate-900 p-8 border-4 border-double border-slate-300 print:border-0">
+                            
+                            <!-- HEADER HOSPITALAR -->
+                            <div class="border border-slate-900 mb-4">
+                                <div class="flex border-b border-slate-900">
+                                    <div class="flex-1 p-2 border-r border-slate-900">
+                                        <span class="text-[10px] font-bold block uppercase">Nome Paciente:</span>
+                                        <div class="text-sm font-bold uppercase truncate">${patientName}</div>
+                                    </div>
+                                    <div class="w-1/3 p-2">
+                                        <span class="text-[10px] font-bold block uppercase">Médico:</span>
+                                        <div class="text-sm truncate">${c.name}</div>
+                                    </div>
+                                </div>
+                                <div class="flex">
+                                    <div class="w-28 p-2 border-r border-slate-900 bg-slate-100 print:bg-transparent hospital-bg-header flex flex-col justify-center">
+                                        <span class="text-[10px] font-bold block uppercase text-center">DATA/HORA</span>
+                                    </div>
+                                    <div class="flex-1 p-2 flex items-center justify-center font-bold text-xl tracking-wider border-r border-slate-900 bg-slate-50 print:bg-transparent hospital-bg-header">
+                                        PRESCRIÇÃO MÉDICA
+                                    </div>
+                                    <div class="w-28 p-2 border-r border-slate-900">
+                                        <span class="text-[10px] font-bold block uppercase">Nº Prontuário:</span>
+                                        <input class="hospital-input" placeholder="...">
+                                    </div>
+                                    <div class="w-28 p-2">
+                                        <span class="text-[10px] font-bold block uppercase">CRM:</span>
+                                        <div class="text-sm">${c.crm.replace(/[^0-9]/g, '')}</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- CORPO DA PRESCRIÇÃO -->
+                            <div class="flex-1 border border-slate-900 flex flex-col mb-4">
+                                <div class="bg-slate-100 print:bg-transparent hospital-bg-header border-b border-slate-900 p-1 text-center text-xs font-bold uppercase">Itens da Prescrição (Editável)</div>
+                                <div class="flex-1 flex flex-col bg-white">
+                                    ${rowsHtml}
+                                </div>
+                            </div>
+
+                            <!-- RECOMENDAÇÕES -->
+                            <div class="border border-slate-900 p-2 mb-4 min-h-[60px]">
+                                <span class="text-[10px] font-bold block uppercase mb-1">Recomendações Adicionais:</span>
+                                <textarea class="w-full bg-transparent resize-none outline-none text-sm font-arial h-full" placeholder="Dieta, Cuidados de Enfermagem, Alergias..."></textarea>
+                            </div>
+
+                            <!-- RODAPÉ HOSPITALAR -->
+                            <div class="border border-slate-900 flex">
+                                <div class="w-24 p-2 border-r border-slate-900">
+                                    <span class="text-[10px] font-bold block uppercase">Leito:</span>
+                                    <input class="hospital-input mt-1" placeholder="___">
+                                </div>
+                                <div class="w-28 p-2 border-r border-slate-900">
+                                    <span class="text-[10px] font-bold block uppercase">DATA:</span>
+                                    <div class="text-sm mt-1">${dateStr}</div>
+                                </div>
+                                <div class="w-28 p-2 border-r border-slate-900">
+                                    <span class="text-[10px] font-bold block uppercase">HORÁRIO</span>
+                                    <input class="hospital-input mt-1" placeholder="${timeStr}">
+                                </div>
+                                <div class="flex-1 p-2 border-r border-slate-900 flex flex-col justify-end">
+                                    <div class="text-[10px] text-center border-t border-slate-400 pt-1 mt-4">${c.specialty}</div>
+                                </div>
+                                <div class="flex-1 p-2 flex flex-col justify-end">
+                                    <div class="text-[10px] text-center border-t border-slate-400 pt-1 mt-4">${c.name} - CRM ${c.crm}</div>
+                                </div>
+                            </div>
+
+                        </div>
+                    `;
+                    lucide.createIcons();
+                    return;
+                }
+
+                // --- LAYOUT PADRÃO (RETRATO) ---
+                paper.classList.remove('w-[1120px]', 'min-h-[790px]');
+                paper.classList.add('w-[600px]', 'min-h-[840px]');
+
+                let title = state.activeDocument === 'exams' ? "SOLICITAÇÃO DE EXAMES" : "RECEITUÁRIO MÉDICO";
+                let contentHtml = '';
+
+                if (state.activeDocument === 'exams') {
+                    if (state.examRequest.length === 0) contentHtml = '<div class="text-center text-slate-300 italic mt-10 no-print">Adicione exames...</div>';
+                    else contentHtml = `<div class="space-y-2"><p class="font-arial text-sm mb-4">Solicito exames:</p><ul class="list-disc pl-5 space-y-1 font-arial text-slate-800">${state.examRequest.map(item => `
+                        <li class="relative group pl-2"><span style="font-size: 11pt;">${item.name}</span><button onclick="app.removeExamRequestItem(${item.uid})" class="no-print ml-2 text-red-400 opacity-0 group-hover:opacity-100 transition-opacity"><i data-lucide="trash-2" class="w-3 h-3 inline"></i></button></li>`).join('')}</ul></div>`;
+                } else {
+                    if (state.prescription.length === 0) contentHtml = '<div class="text-center text-slate-300 italic mt-10 no-print">Adicione itens...</div>';
+                    else contentHtml = state.prescription.map((item, idx) => `
+                        <div class="relative group pl-4 border-l-2 border-transparent hover:border-green-400 transition-all mb-4">
+                            <div class="flex justify-between items-baseline">
+                                <div class="font-bold font-arial" style="font-size: 12pt; color: #1e293b;">${idx+1}. ${item.name} <span class="font-normal ml-2 text-slate-600">${item.dose}</span></div>
+                                <button onclick="app.removePrescriptionItem(${item.uid})" class="no-print text-red-400 opacity-0 group-hover:opacity-100 hover:text-red-600 transition-opacity"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                            </div>
+                            <p class="text-sm text-slate-700 mt-1 pl-4 font-arial">${item.instruction}</p>
+                        </div>`).join('');
+                }
+
+                paper.innerHTML = `
+                    <div class="print-header bg-green-50/50 px-8 py-6 border-b border-green-100 flex justify-between items-center">
+                        <div class="flex items-center gap-4">
+                            <div id="docLogoContainer" class="h-32 w-32 flex items-center justify-center overflow-hidden">
+                                ${c.logoUrl ? `<img src="${c.logoUrl}" class="h-full w-full object-contain mix-blend-multiply">` : `<div class="h-28 w-28 bg-green-700 text-white flex items-center justify-center rounded-full font-bold text-4xl">${c.name.charAt(0)}</div>`}
+                            </div>
+                            <div class="ml-2">
+                                <h1 class="text-xl font-bold font-arial text-slate-900">${c.name}</h1>
+                                <p class="text-sm text-slate-600 font-arial uppercase tracking-wide">${c.specialty}</p>
+                                <p class="text-xs text-slate-500 font-arial mt-1">${c.crm}</p>
+                            </div>
+                        </div>
+                        <div class="text-right"><div class="text-[10px] uppercase font-bold text-slate-400 mb-1">Data de Emissão</div><div class="font-medium text-lg text-slate-800 font-arial">${dateStr}</div></div>
+                    </div>
+                    <div class="px-12 py-10 flex-1 flex flex-col">
+                        <div class="mb-8 border-b border-dashed border-slate-300 pb-2">
+                            <span class="text-[10px] uppercase font-bold text-slate-400 block mb-1">Paciente</span>
+                            <div class="text-lg font-arial" style="font-size: 12pt;">${patientName}</div>
+                        </div>
+                        <div class="text-center uppercase font-bold tracking-widest text-slate-400 text-xs mb-6">${title}</div>
+                        <div class="flex-1">${contentHtml}</div>
+                        <div class="mt-8 ${state.activeDocument === 'exams' ? 'hidden' : ''}">
+                             <div class="mb-2 no-print flex justify-between items-center">
+                                <span class="text-[10px] font-bold uppercase text-slate-400 tracking-widest">Orientações</span>
+                            </div>
+                            <textarea id="patientGuide" class="w-full bg-transparent text-sm text-slate-900 resize-none outline-none min-h-[80px] font-arial italic border border-transparent hover:border-slate-200 rounded p-2 transition-colors" placeholder="Orientações adicionais..."></textarea>
+                        </div>
+                    </div>
+                    <footer class="print-footer mt-auto border-t border-green-100 p-8 text-center bg-green-50/30">
+                        <div class="w-64 border-t border-slate-800 mx-auto mb-4"></div>
+                        <p class="font-bold text-sm text-slate-900 uppercase font-arial">${c.name}</p>
+                        <p class="text-[10px] text-slate-500 font-arial mt-2">${c.address} • ${c.phone}</p>
+                    </footer>
+                `;
+                lucide.createIcons();
+            }
+
             function updateConfigUI() {
                 const c = state.config;
                 document.getElementById('cfgName').value = c.name; document.getElementById('cfgSpec').value = c.specialty;
@@ -946,38 +1176,17 @@
                 document.getElementById('apiKeyInput').value = c.apiKey;
                 if(c.apiKey) document.getElementById('apiKeyStatus').classList.replace('bg-red-500', 'bg-green-500');
             }
-            function handleLogoUpload(input) {
-                const file = input.files[0]; if (!file) return; const reader = new FileReader();
-                document.getElementById('uploadStatus').innerText = "Carregando...";
-                reader.onload = function(e) { document.getElementById('cfgLogo').value = e.target.result; document.getElementById('uploadStatus').innerText = "Ok!"; };
-                reader.readAsDataURL(file);
-            }
             function saveConfig() {
-                state.config = {
-                    name: document.getElementById('cfgName').value, specialty: document.getElementById('cfgSpec').value,
-                    crm: document.getElementById('cfgCrm').value, address: document.getElementById('cfgAddress').value,
-                    phone: document.getElementById('cfgPhone').value, logoUrl: document.getElementById('cfgLogo').value,
-                    apiKey: document.getElementById('apiKeyInput').value
-                };
-                localStorage.setItem('neuro_config', JSON.stringify(state.config));
-                updateDocHeader(); updateConfigUI(); closeModal('configModal');
+                state.config = { name: document.getElementById('cfgName').value, specialty: document.getElementById('cfgSpec').value, crm: document.getElementById('cfgCrm').value, address: document.getElementById('cfgAddress').value, phone: document.getElementById('cfgPhone').value, logoUrl: document.getElementById('cfgLogo').value, apiKey: document.getElementById('apiKeyInput').value };
+                localStorage.setItem('neuro_config', JSON.stringify(state.config)); updateDocHeader(); updateConfigUI(); closeModal('configModal');
             }
             function updateDocHeader() {
-                const c = state.config;
-                document.getElementById('docNameDisplay').innerText = c.name; document.getElementById('docSpecDisplay').innerText = c.specialty;
-                document.getElementById('docCrmDisplay').innerText = c.crm; document.getElementById('docNameFooter').innerText = c.name;
-                document.getElementById('docContactFooter').innerText = `${c.address} • ${c.phone}`;
-                const logo = document.getElementById('docLogoContainer');
-                if(c.logoUrl && c.logoUrl.length > 10) logo.innerHTML = `<img src="${c.logoUrl}" class="h-full w-full object-contain mix-blend-multiply">`;
-                else logo.innerHTML = `<div class="h-28 w-28 bg-green-700 text-white flex items-center justify-center rounded-full font-bold text-4xl">${c.name.charAt(0)}</div>`;
+               updateDocumentView();
             }
             function switchTab(tabId) {
                 document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-                const selectedTab = document.getElementById(`tabContent-${tabId}`); if (selectedTab) selectedTab.classList.add('active');
-                document.querySelectorAll('.tab-button').forEach(btn => {
-                    btn.classList.remove('active-tab-button', 'border-cyan-600', 'text-cyan-600', 'border-purple-600', 'text-purple-600', 'border-green-600', 'text-green-600', 'border-orange-600', 'text-orange-600', 'border-blue-600', 'text-blue-600');
-                    btn.classList.add('border-transparent', 'text-slate-500');
-                });
+                document.getElementById(`tabContent-${tabId}`)?.classList.add('active');
+                document.querySelectorAll('.tab-button').forEach(btn => { btn.classList.remove('active-tab-button', 'border-cyan-600', 'text-cyan-600', 'border-purple-600', 'text-purple-600', 'border-green-600', 'text-green-600', 'border-orange-600', 'text-orange-600', 'border-blue-600', 'text-blue-600'); btn.classList.add('border-transparent', 'text-slate-500'); });
                 const activeBtn = document.getElementById(`tabButton-${tabId}`);
                 if (activeBtn) {
                     activeBtn.classList.remove('border-transparent', 'text-slate-500');
@@ -987,17 +1196,8 @@
                     if(tabId === 'exams') activeBtn.classList.add('border-orange-600', 'text-orange-600');
                     if(tabId === 'prescription') activeBtn.classList.add('border-blue-600', 'text-blue-600');
                 }
-                document.querySelectorAll('.nav-btn').forEach(btn => { btn.classList.replace('text-cyan-600', 'text-slate-500'); btn.classList.replace('dark:text-cyan-500', 'text-slate-500'); });
-                const mobileBtn = document.getElementById(`nav-${tabId}`); if(mobileBtn) { mobileBtn.classList.replace('text-slate-500', 'text-cyan-600'); mobileBtn.classList.add('dark:text-cyan-500'); }
-                
-                if (tabId === 'exams') setDocumentMode('exams');
-                else if (tabId === 'pharmacy') setDocumentMode('prescription');
-                
-                if(window.innerWidth < 1024 && tabId === 'prescription') {
-                     const desktopPaper = document.getElementById('prescriptionPaper');
-                     const mobilePaper = document.getElementById('mobilePrescriptionPaper');
-                     if(desktopPaper && mobilePaper) mobilePaper.innerHTML = desktopPaper.innerHTML;
-                }
+                if (tabId === 'exams') setDocumentMode('exams'); else if (tabId === 'pharmacy') setDocumentMode('prescription');
+                if(window.innerWidth < 1024 && tabId === 'prescription') { document.getElementById('mobilePrescriptionPaper').innerHTML = document.getElementById('prescriptionPaper').innerHTML; }
             }
 
             return {
@@ -1005,15 +1205,13 @@
                 searchPatient, loadPatient, savePatientData, clearPatientData,
                 renderMeds, addToPrescription, removePrescriptionItem, addNewMedication,
                 renderExams, addToExamRequest, removeExamRequestItem, setDocumentMode,
-                saveConfig, handleLogoUpload, callAI, switchTab, handleExamUpload, clearExamImage,
-                openMagicSoap, generateMagicSoap
+                saveConfig, openMagicSoap, generateMagicSoap, switchTab,
+                callAI, handleExamUpload, clearExamImage,
+                renderAITools, filterAITools, updateHospitalLine, clearHospitalLine, toggleSidebar
             };
         })();
 
-        document.addEventListener('DOMContentLoaded', () => {
-            window.app = app;
-            app.init();
-        });
+        document.addEventListener('DOMContentLoaded', () => { window.app = app; app.init(); });
     </script>
 </body>
 </html>
