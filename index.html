@@ -119,9 +119,21 @@
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
         input, textarea, select { font-size: 16px !important; }
+
+        /* --- ESTRUTURA DE ABAS --- */
+        .tab-content {
+            display: none;
+            width: 100%;
+            /* Removida altura fixa para usar flexbox do container pai */
+        }
+        .tab-content.active {
+            display: flex;
+            flex-direction: column;
+            height: 100%; /* Ocupa altura total do pai */
+        }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300 min-h-screen overflow-x-hidden pb-20 lg:pb-0">
+<body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300 h-screen overflow-hidden flex flex-col">
 
     <!-- Background -->
     <div class="fixed inset-0 z-0 pointer-events-none hidden dark:block">
@@ -129,8 +141,8 @@
         <div class="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-cyan-900/20 rounded-full blur-[120px]" style="animation-delay: 2s"></div>
     </div>
 
-    <!-- HEADER -->
-    <header class="fixed top-0 w-full z-50 glass border-b border-slate-200 dark:border-slate-800 h-16 flex items-center justify-between px-4 md:px-8 no-print">
+    <!-- HEADER FIXO -->
+    <header class="w-full z-50 glass border-b border-slate-200 dark:border-slate-800 h-16 flex items-center justify-between px-4 md:px-8 no-print shrink-0">
         <div class="flex items-center gap-3">
             <div class="w-8 h-8 bg-gradient-to-br from-cyan-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
                 <i data-lucide="brain-circuit" class="text-white w-5 h-5"></i>
@@ -159,110 +171,140 @@
         </div>
     </header>
 
-    <!-- MAIN CONTENT -->
-    <main class="pt-20 px-4 md:px-8 flex flex-col lg:flex-row gap-6 max-w-[1800px] mx-auto min-h-screen relative z-10">
+    <!-- MAIN CONTENT (OCUPA O RESTO DA TELA) -->
+    <main class="flex flex-col flex-1 overflow-hidden max-w-[1800px] mx-auto w-full">
         
-        <!-- SIDEBAR (Esquerda) -->
-        <aside id="sidebarPanel" class="no-print w-full lg:w-[450px] flex flex-col gap-6 h-full lg:h-[calc(100vh-100px)] lg:overflow-y-auto custom-scrollbar">
+        <!-- Botões de Navegação das Abas (Desktop) - FIXO NO TOPO DA ÁREA PRINCIPAL -->
+        <div class="no-print hidden lg:flex border-b border-slate-200 dark:border-slate-800 px-8 shrink-0 bg-slate-50/80 dark:bg-slate-950/80 backdrop-blur z-20">
+            <button id="tabButton-patient" onclick="app.switchTab('patient')" class="tab-button flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 border-transparent text-slate-500 dark:text-slate-400 hover:text-cyan-600 hover:border-cyan-600 transition-colors active-tab-button">
+                <i data-lucide="user" class="w-4 h-4"></i> Paciente & SOAP
+            </button>
+            <button id="tabButton-ai" onclick="app.switchTab('ai')" class="tab-button flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 border-transparent text-slate-500 dark:text-slate-400 hover:text-purple-600 hover:border-purple-600 transition-colors">
+                <i data-lucide="sparkles" class="w-4 h-4 text-purple-500"></i> Central de IA
+            </button>
+            <button id="tabButton-pharmacy" onclick="app.switchTab('pharmacy')" class="tab-button flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 border-transparent text-slate-500 dark:text-slate-400 hover:text-green-600 hover:border-green-600 transition-colors">
+                <i data-lucide="pill" class="w-4 h-4"></i> Farmácia
+            </button>
+             <button id="tabButton-prescription" onclick="app.switchTab('prescription')" class="tab-button flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 border-transparent text-slate-500 dark:text-slate-400 hover:text-blue-600 hover:border-blue-600 transition-colors">
+                <i data-lucide="file-text" class="w-4 h-4"></i> Receita (Preview)
+            </button>
+        </div>
+
+        <!-- Conteúdo das Abas (FILL HEIGHT) -->
+        <div class="flex flex-col lg:flex-row flex-1 overflow-hidden relative">
             
-            <!-- Seção: Paciente & SOAP -->
-            <div id="tab-patient" class="flex flex-col gap-6">
-                <div class="glass rounded-2xl p-5 border border-slate-200 dark:border-slate-800">
-                    <div class="flex justify-between items-center mb-4">
-                        <h2 class="text-xs font-bold uppercase tracking-widest flex items-center gap-2 opacity-70">
-                            <i data-lucide="user" class="w-4 h-4"></i> Paciente & SOAP
+            <!-- COLUNA DA ESQUERDA (ABAS) - SCROLL INDEPENDENTE -->
+            <div class="flex-1 overflow-y-auto custom-scrollbar p-4 md:p-6 lg:border-r border-slate-200 dark:border-slate-800 h-full" id="leftPanelContainer">
+                
+                <!-- ABA: Paciente & SOAP -->
+                <div id="tabContent-patient" class="tab-content active flex flex-col gap-6 pb-20 lg:pb-0">
+                    <div class="glass rounded-2xl p-5 border border-slate-200 dark:border-slate-800">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-xs font-bold uppercase tracking-widest flex items-center gap-2 opacity-70">
+                                <i data-lucide="user" class="w-4 h-4"></i> Dados do Paciente e Anamnese (SOAP)
+                            </h2>
+                            <div class="flex gap-2">
+                                <button onclick="app.clearPatientData()" class="text-xs bg-red-500/10 text-red-600 dark:text-red-400 px-2 py-1 rounded hover:bg-red-500/20 transition">Limpar</button>
+                                <button onclick="app.savePatientData()" class="text-xs bg-green-500/20 text-green-600 dark:text-green-400 px-2 py-1 rounded flex gap-1 items-center hover:bg-green-500/30 transition">
+                                    <i data-lucide="save" class="w-3 h-3"></i> Salvar
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="relative mb-4">
+                            <input type="text" id="patientNameInput" oninput="app.searchPatient()" placeholder="Nome do paciente..." 
+                                class="w-full rounded-xl py-3 px-4 outline-none border bg-white dark:bg-slate-900/50 border-slate-300 dark:border-slate-700 focus:border-cyan-500 transition-all">
+                            <div id="patientSearchResults" class="hidden absolute top-full left-0 right-0 mt-1 rounded-xl border shadow-xl z-50 max-h-40 overflow-y-auto bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700"></div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="col-span-1"><label class="text-[10px] font-bold opacity-50 mb-1 block">S (Subjetivo)</label><textarea id="soapS" class="w-full h-20 rounded-lg p-2 text-xs resize-none outline-none border bg-white dark:bg-slate-900/50 border-slate-300 dark:border-slate-700" placeholder="Queixa principal, histórico..."></textarea></div>
+                            <div class="col-span-1"><label class="text-[10px] font-bold opacity-50 mb-1 block">O (Objetivo)</label><textarea id="soapO" class="w-full h-20 rounded-lg p-2 text-xs resize-none outline-none border bg-white dark:bg-slate-900/50 border-slate-300 dark:border-slate-700" placeholder="Exame físico, resultados de exames..."></textarea></div>
+                            <div class="col-span-2"><label class="text-[10px] font-bold opacity-50 mb-1 block">A (Avaliação)</label><textarea id="soapA" class="w-full h-14 rounded-lg p-2 text-xs resize-none outline-none border bg-white dark:bg-slate-900/50 border-slate-300 dark:border-slate-700" placeholder="Diagnóstico, problemas identificados..."></textarea></div>
+                            <div class="col-span-2"><label class="text-[10px] font-bold opacity-50 mb-1 block">P (Plano)</label><textarea id="soapP" class="w-full h-14 rounded-lg p-2 text-xs resize-none outline-none border bg-white dark:bg-slate-900/50 border-slate-300 dark:border-slate-700" placeholder="Conduta, tratamento, exames complementares..."></textarea></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ABA: Central de IA Clínica -->
+                <div id="tabContent-ai" class="tab-content flex flex-col gap-6 pb-20 lg:pb-0">
+                     <div class="glass rounded-2xl p-5 border border-slate-200 dark:border-slate-800">
+                        <h2 class="text-xs font-bold uppercase tracking-widest mb-3 flex items-center gap-2 opacity-70">
+                            <i data-lucide="sparkles" class="w-4 h-4 text-purple-500"></i> Central de IA Clínica
                         </h2>
-                        <div class="flex gap-2">
-                            <button onclick="app.clearPatientData()" class="text-xs bg-red-500/10 text-red-600 dark:text-red-400 px-2 py-1 rounded hover:bg-red-500/20 transition">Limpar</button>
-                            <button onclick="app.savePatientData()" class="text-xs bg-green-500/20 text-green-600 dark:text-green-400 px-2 py-1 rounded flex gap-1 items-center hover:bg-green-500/30 transition">
-                                <i data-lucide="save" class="w-3 h-3"></i> Salvar
-                            </button>
+                        <div id="aiButtonsGrid" class="grid grid-cols-4 gap-2">
+                            <!-- Botões injetados via JS -->
                         </div>
-                    </div>
-                    
-                    <div class="relative mb-4">
-                        <input type="text" id="patientNameInput" oninput="app.searchPatient()" placeholder="Nome do paciente..." 
-                            class="w-full rounded-xl py-3 px-4 outline-none border bg-white dark:bg-slate-900/50 border-slate-300 dark:border-slate-700 focus:border-cyan-500 transition-all">
-                        <div id="patientSearchResults" class="hidden absolute top-full left-0 right-0 mt-1 rounded-xl border shadow-xl z-50 max-h-40 overflow-y-auto bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700"></div>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-2">
-                        <div class="col-span-1"><label class="text-[10px] font-bold opacity-50 mb-1 block">S (Subjetivo)</label><textarea id="soapS" class="w-full h-20 rounded-lg p-2 text-xs resize-none outline-none border bg-white dark:bg-slate-900/50 border-slate-300 dark:border-slate-700" placeholder="Queixa..."></textarea></div>
-                        <div class="col-span-1"><label class="text-[10px] font-bold opacity-50 mb-1 block">O (Objetivo)</label><textarea id="soapO" class="w-full h-20 rounded-lg p-2 text-xs resize-none outline-none border bg-white dark:bg-slate-900/50 border-slate-300 dark:border-slate-700" placeholder="Exame..."></textarea></div>
-                        <div class="col-span-2"><label class="text-[10px] font-bold opacity-50 mb-1 block">A (Avaliação)</label><textarea id="soapA" class="w-full h-14 rounded-lg p-2 text-xs resize-none outline-none border bg-white dark:bg-slate-900/50 border-slate-300 dark:border-slate-700" placeholder="Diagnóstico..."></textarea></div>
-                        <div class="col-span-2"><label class="text-[10px] font-bold opacity-50 mb-1 block">P (Plano)</label><textarea id="soapP" class="w-full h-14 rounded-lg p-2 text-xs resize-none outline-none border bg-white dark:bg-slate-900/50 border-slate-300 dark:border-slate-700" placeholder="Conduta..."></textarea></div>
+                        <!-- Botão de Orientações -->
+                        <button onclick="app.callAI('guide')" class="w-full mt-3 h-12 rounded-xl flex items-center justify-center gap-2 border border-purple-500/30 bg-purple-500/10 hover:bg-purple-500/20 text-purple-500 transition-colors">
+                            <i data-lucide="file-text" class="w-5 h-5"></i> <span class="text-xs font-bold">Gerar Orientações (IA)</span>
+                        </button>
                     </div>
                 </div>
 
-                <!-- Grid IA COMPLETO -->
-                <div class="glass rounded-2xl p-5 border border-slate-200 dark:border-slate-800">
-                    <h2 class="text-xs font-bold uppercase tracking-widest mb-3 flex items-center gap-2 opacity-70">
-                        <i data-lucide="sparkles" class="w-4 h-4 text-purple-500"></i> Central de IA Clínica
-                    </h2>
-                    <div id="aiButtonsGrid" class="grid grid-cols-4 gap-2">
-                        <!-- Botões injetados via JS -->
+                <!-- ABA: Farmácia -->
+                <div id="tabContent-pharmacy" class="tab-content flex flex-col gap-6 h-full pb-20 lg:pb-0">
+                    <div class="glass rounded-2xl p-5 border border-slate-200 dark:border-slate-800 flex-1 flex flex-col h-full">
+                        <div class="flex justify-between items-center mb-3 shrink-0">
+                            <h2 class="text-xs font-bold uppercase tracking-widest flex items-center gap-2 opacity-70"><i data-lucide="pill" class="w-4 h-4"></i> Farmácia</h2>
+                            <button onclick="app.openConfigMedModal()" class="text-xs bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 px-3 py-1.5 rounded-lg font-bold flex gap-1 items-center transition hover:bg-cyan-500/20"><i data-lucide="plus" class="w-3 h-3"></i> NOVO</button>
+                        </div>
+                        <div class="relative mb-4 shrink-0">
+                            <input type="text" id="medSearch" oninput="app.renderMeds()" placeholder="Buscar medicamento (200+ disponíveis)..." class="w-full rounded-lg py-2 pl-9 pr-3 text-sm outline-none border bg-white dark:bg-slate-900/50 border-slate-300 dark:border-slate-700 focus:border-cyan-500">
+                            <i data-lucide="search" class="absolute left-3 top-2.5 w-4 h-4 opacity-50"></i>
+                        </div>
+                        <div id="medicationList" class="flex-1 overflow-y-auto space-y-2 custom-scrollbar pr-1"></div>
                     </div>
-                    <!-- Botão de Orientações -->
-                    <button onclick="app.callAI('guide')" class="w-full mt-3 h-12 rounded-xl flex items-center justify-center gap-2 border border-purple-500/30 bg-purple-500/10 hover:bg-purple-500/20 text-purple-500 transition-colors">
-                        <i data-lucide="file-text" class="w-5 h-5"></i> <span class="text-xs font-bold">Gerar Orientações (IA)</span>
-                    </button>
+                </div>
+                
+                <!-- ABA: Receita (Visível no Mobile como aba, Desktop na direita) -->
+                 <div id="tabContent-prescription" class="tab-content lg:hidden pb-20">
+                    <!-- Conteúdo duplicado dinamicamente ou movido via JS se necessário, mas por simplicidade mantemos separado no mobile -->
+                    <div class="print-container bg-white text-slate-900 shadow-2xl relative overflow-hidden flex flex-col w-full aspect-[210/297] rounded-sm shrink-0 origin-top" id="mobilePrescriptionPaper">
+                       <!-- O JS vai clonar ou gerenciar isso, mas por enquanto deixamos o placeholder, já que o mobile usa o switchTab que mostra o tabContent-prescription -->
+                       <div class="p-10 text-center">Use o modo desktop para visualizar a receita lado a lado.</div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Seção: Farmácia -->
-            <div id="tab-pharmacy" class="flex-1 flex flex-col h-full glass rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 hidden lg:flex">
-                <div class="p-4 border-b border-slate-200 dark:border-slate-700/50">
-                    <div class="flex justify-between items-center mb-3">
-                        <h2 class="text-xs font-bold uppercase tracking-widest flex items-center gap-2 opacity-70"><i data-lucide="pill" class="w-4 h-4"></i> Farmácia</h2>
-                        <button onclick="app.openConfigMedModal()" class="text-xs bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 px-3 py-1.5 rounded-lg font-bold flex gap-1 items-center transition hover:bg-cyan-500/20"><i data-lucide="plus" class="w-3 h-3"></i> NOVO</button>
-                    </div>
-                    <div class="relative">
-                        <input type="text" id="medSearch" oninput="app.renderMeds()" placeholder="Buscar medicamento (200+ disponíveis)..." class="w-full rounded-lg py-2 pl-9 pr-3 text-sm outline-none border bg-white dark:bg-slate-900/50 border-slate-300 dark:border-slate-700 focus:border-cyan-500">
-                        <i data-lucide="search" class="absolute left-3 top-2.5 w-4 h-4 opacity-50"></i>
-                    </div>
-                </div>
-                <div id="medicationList" class="flex-1 overflow-y-auto p-2 space-y-2 custom-scrollbar h-96"></div>
-            </div>
-        </aside>
-
-        <!-- PREVIEW DA RECEITA (Direita) -->
-        <div id="tab-prescription" class="flex-1 flex justify-center overflow-auto py-4 hidden lg:flex transition-all duration-300">
-            <!-- Adicionado wrapper para escala em mobile se necessário -->
-            <div id="prescriptionPaper" class="print-container bg-white text-slate-900 shadow-2xl relative overflow-hidden flex flex-col w-[600px] aspect-[210/297] rounded-sm shrink-0 origin-top">
-                <div class="print-header bg-green-50/50 px-8 py-6 border-b border-green-100 flex justify-between items-center">
-                    <div class="flex items-center gap-4">
-                        <!-- Container da Logo -->
-                        <div id="docLogoContainer" class="h-32 w-32 flex items-center justify-center overflow-hidden">
-                             <img src="https://i.ibb.co/h7gJj9r/dr-alyson-melo-crm-1234.png" alt="Logo Médico" class="h-full w-full object-contain mix-blend-multiply">
+            <!-- COLUNA DA DIREITA (RECEITA) - VISÍVEL APENAS NO DESKTOP -->
+            <div class="hidden lg:flex w-[650px] bg-slate-100 dark:bg-slate-900/50 border-l border-slate-200 dark:border-slate-800 justify-center overflow-y-auto custom-scrollbar p-8 shrink-0 h-full">
+                <div id="prescriptionPaper" class="print-container bg-white text-slate-900 shadow-2xl relative overflow-hidden flex flex-col w-[600px] min-h-[840px] rounded-sm shrink-0 origin-top">
+                    <div class="print-header bg-green-50/50 px-8 py-6 border-b border-green-100 flex justify-between items-center">
+                        <div class="flex items-center gap-4">
+                            <!-- Container da Logo -->
+                            <div id="docLogoContainer" class="h-32 w-32 flex items-center justify-center overflow-hidden">
+                                <img src="https://i.ibb.co/h7gJj9r/dr-alyson-melo-crm-1234.png" alt="Logo Médico" class="h-full w-full object-contain mix-blend-multiply">
+                            </div>
+                            <div class="ml-2">
+                                <h1 id="docNameDisplay" class="text-xl font-bold font-arial text-slate-900">Nome do Médico</h1>
+                                <p id="docSpecDisplay" class="text-sm text-slate-600 font-arial uppercase tracking-wide">Especialidade</p>
+                                <p id="docCrmDisplay" class="text-xs text-slate-500 font-arial mt-1">CRM</p>
+                            </div>
                         </div>
-                        <div class="ml-2">
-                            <h1 id="docNameDisplay" class="text-xl font-bold font-arial text-slate-900">Nome do Médico</h1>
-                            <p id="docSpecDisplay" class="text-sm text-slate-600 font-arial uppercase tracking-wide">Especialidade</p>
-                            <p id="docCrmDisplay" class="text-xs text-slate-500 font-arial mt-1">CRM</p>
+                        <div class="text-right"><div class="text-[10px] uppercase font-bold text-slate-400 mb-1">Data de Emissão</div><div id="dateDisplay" class="font-medium text-lg text-slate-800 font-arial"></div></div>
+                    </div>
+                    <div class="px-12 py-10 flex-1 flex flex-col">
+                        <div class="mb-8 border-b border-dashed border-slate-300 pb-2">
+                            <span class="text-[10px] uppercase font-bold text-slate-400 block mb-1">Paciente</span>
+                            <div id="patientNameDisplay" class="text-lg font-arial" style="font-size: 12pt;">Nome do Paciente...</div>
+                        </div>
+                        <div id="prescriptionListDisplay" class="space-y-6 flex-1"><div class="text-center text-slate-300 italic mt-10 no-print">Adicione itens da farmácia...</div></div>
+                        
+                        <!-- Container de Orientações -->
+                        <div id="guideContainer" class="mt-8">
+                            <div class="mb-2 no-print flex justify-between items-center">
+                                <span class="text-[10px] font-bold uppercase text-slate-400 tracking-widest">Orientações</span>
+                            </div>
+                            <textarea id="patientGuide" class="w-full bg-transparent text-sm text-slate-900 resize-none outline-none min-h-[80px] font-arial italic border border-transparent hover:border-slate-200 rounded p-2 transition-colors" placeholder="Digite orientações adicionais aqui..."></textarea>
                         </div>
                     </div>
-                    <div class="text-right"><div class="text-[10px] uppercase font-bold text-slate-400 mb-1">Data de Emissão</div><div id="dateDisplay" class="font-medium text-lg text-slate-800 font-arial"></div></div>
+                    <footer class="print-footer mt-auto border-t border-green-100 p-8 text-center bg-green-50/30">
+                        <div class="w-64 border-t border-slate-800 mx-auto mb-4"></div>
+                        <p id="docNameFooter" class="font-bold text-sm text-slate-900 uppercase font-arial">Nome do Médico</p>
+                        <p id="docContactFooter" class="text-[10px] text-slate-500 font-arial mt-2">Endereço • Telefone</p>
+                    </footer>
                 </div>
-                <div class="px-12 py-10 flex-1 flex flex-col">
-                    <div class="mb-8 border-b border-dashed border-slate-300 pb-2">
-                        <span class="text-[10px] uppercase font-bold text-slate-400 block mb-1">Paciente</span>
-                        <div id="patientNameDisplay" class="text-lg font-arial" style="font-size: 12pt;">Nome do Paciente...</div>
-                    </div>
-                    <div id="prescriptionListDisplay" class="space-y-6 flex-1"><div class="text-center text-slate-300 italic mt-10 no-print">Adicione itens da farmácia...</div></div>
-                    
-                    <!-- Container de Orientações -->
-                    <div id="guideContainer" class="mt-8">
-                        <div class="mb-2 no-print flex justify-between items-center">
-                            <span class="text-[10px] font-bold uppercase text-slate-400 tracking-widest">Orientações</span>
-                        </div>
-                        <textarea id="patientGuide" class="w-full bg-transparent text-sm text-slate-900 resize-none outline-none min-h-[80px] font-arial italic border border-transparent hover:border-slate-200 rounded p-2 transition-colors" placeholder="Digite orientações adicionais aqui..."></textarea>
-                    </div>
-                </div>
-                <footer class="print-footer mt-auto border-t border-green-100 p-8 text-center bg-green-50/30">
-                    <div class="w-64 border-t border-slate-800 mx-auto mb-4"></div>
-                    <p id="docNameFooter" class="font-bold text-sm text-slate-900 uppercase font-arial">Nome do Médico</p>
-                    <p id="docContactFooter" class="text-[10px] text-slate-500 font-arial mt-2">Endereço • Telefone</p>
-                </footer>
             </div>
         </div>
     </main>
@@ -411,6 +453,9 @@
                 updateDocHeader();
                 updateDate();
                 renderAIButtons();
+                
+                // Auto-selecionar primeira aba no desktop se nenhuma estiver ativa
+                if(window.innerWidth >= 1024) switchTab('patient');
             }
 
             function updateDate() {
@@ -448,7 +493,6 @@
                 lucide.createIcons();
             }
 
-            // Função IA Completa
             async function callAI(type) {
                 if(!state.config.apiKey) {
                     alert("Erro: Configure sua API Key do Gemini nas configurações! (Botão Engrenagem)");
@@ -497,7 +541,6 @@
                 
                 let responseText = await fetchGemini(prompt);
                 if (responseText) {
-                    // Remover markdown se a IA alucinar e colocar
                     responseText = responseText.replace(/```html/g, '').replace(/```/g, '');
                 }
 
@@ -519,7 +562,6 @@
                 }
             }
 
-            // Utilitários UI
             function toggleTheme() {
                 document.documentElement.classList.toggle('dark');
                 localStorage.setItem('neuro_theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
@@ -537,18 +579,16 @@
             
             function generatePDF() {
                 const element = document.getElementById('prescriptionPaper');
-                // Configuração otimizada para A4
                 const opt = { margin: 0, filename: `Receita_${state.currentPatient.name || 'NeuroScript'}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: true }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } };
                 html2pdf().set(opt).from(element).save();
             }
 
-            // Farmácia
             function renderMeds() {
                 const search = document.getElementById('medSearch').value.toLowerCase();
                 document.getElementById('medicationList').innerHTML = state.meds
                     .filter(m => m.name.toLowerCase().includes(search))
                     .map(m => `
-                        <button onclick="app.addToPrescription(${m.id})" class="w-full text-left p-3 rounded-xl border border-transparent bg-slate-50 dark:bg-slate-900/50 hover:border-cyan-500/50 transition-all group relative overflow-hidden">
+                        <button onclick="app.addToPrescription(${m.id})" class="w-full text-left p-3 rounded-xl border border-transparent bg-slate-50 dark:bg-slate-900/50 hover:border-cyan-500/50 transition-all group relative overflow-hidden shrink-0">
                             <div class="flex justify-between items-start">
                                 <div><div class="font-bold text-sm">${m.name}</div><div class="text-[10px] opacity-60 mt-0.5">${m.dose}</div></div>
                                 <i data-lucide="plus" class="w-4 h-4 text-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity"></i>
@@ -602,7 +642,6 @@
                 closeModal('addMedModal');
             }
 
-            // Pacientes
             function searchPatient() {
                 const query = document.getElementById('patientNameInput').value;
                 state.currentPatient.name = query;
@@ -666,7 +705,6 @@
                 }
             }
 
-            // Config & Upload
             function updateConfigUI() {
                 const c = state.config;
                 document.getElementById('cfgName').value = c.name;
@@ -723,39 +761,52 @@
                 }
             }
 
-            // Mobile Nav
-            function switchTab(tab) {
-                const sidebar = document.getElementById('sidebarPanel');
-                const tabPatient = document.getElementById('tab-patient');
-                const tabPharm = document.getElementById('tab-pharmacy');
-                const tabPresc = document.getElementById('tab-prescription');
+            function switchTab(tabId) {
+                // 1. Esconder todos os conteúdos das abas
+                document.querySelectorAll('.tab-content').forEach(el => {
+                    el.classList.remove('active');
+                });
                 
-                // Reset (Mobile Logic Only)
-                if(window.innerWidth < 1024) {
-                    sidebar.classList.add('hidden');
-                    tabPatient.classList.add('hidden');
-                    tabPharm.classList.add('hidden');
-                    tabPharm.classList.remove('flex');
-                    tabPresc.classList.add('hidden');
-                    tabPresc.classList.remove('flex');
+                // 2. Mostrar o conteúdo da aba selecionada
+                const selectedTab = document.getElementById(`tabContent-${tabId}`);
+                if (selectedTab) {
+                    selectedTab.classList.add('active');
+                }
 
-                    // Activate
-                    document.querySelectorAll('.nav-btn').forEach(b => b.classList.replace('text-cyan-600', 'text-slate-500'));
-                    document.querySelectorAll('.nav-btn').forEach(b => b.classList.replace('dark:text-cyan-500', 'text-slate-500'));
-                    document.getElementById(`nav-${tab}`).classList.replace('text-slate-500', 'text-cyan-600');
-                    document.getElementById(`nav-${tab}`).classList.add('dark:text-cyan-500');
+                // 3. Atualizar estilo dos botões Desktop
+                document.querySelectorAll('.tab-button').forEach(btn => {
+                    btn.classList.remove('active-tab-button', 'border-cyan-600', 'text-cyan-600', 'border-purple-600', 'text-purple-600', 'border-green-600', 'text-green-600', 'border-blue-600', 'text-blue-600');
+                    btn.classList.add('border-transparent', 'text-slate-500');
+                });
 
-                    if(tab === 'prescription') {
-                        tabPresc.classList.remove('hidden');
-                        tabPresc.classList.add('flex');
-                    } else {
-                        sidebar.classList.remove('hidden');
-                        if(tab === 'patient') tabPatient.classList.remove('hidden');
-                        if(tab === 'pharmacy') {
-                            tabPharm.classList.remove('hidden');
-                            tabPharm.classList.add('flex');
-                        }
-                    }
+                const activeBtn = document.getElementById(`tabButton-${tabId}`);
+                if (activeBtn) {
+                    activeBtn.classList.remove('border-transparent', 'text-slate-500');
+                    if(tabId === 'patient') activeBtn.classList.add('border-cyan-600', 'text-cyan-600');
+                    if(tabId === 'ai') activeBtn.classList.add('border-purple-600', 'text-purple-600');
+                    if(tabId === 'pharmacy') activeBtn.classList.add('border-green-600', 'text-green-600');
+                    if(tabId === 'prescription') activeBtn.classList.add('border-blue-600', 'text-blue-600');
+                }
+
+                // 4. Atualizar estilo dos botões Mobile
+                document.querySelectorAll('.nav-btn').forEach(btn => {
+                     btn.classList.replace('text-cyan-600', 'text-slate-500');
+                     btn.classList.replace('dark:text-cyan-500', 'text-slate-500');
+                });
+                const mobileBtn = document.getElementById(`nav-${tabId}`);
+                if(mobileBtn) {
+                    mobileBtn.classList.replace('text-slate-500', 'text-cyan-600');
+                    mobileBtn.classList.add('dark:text-cyan-500');
+                }
+                
+                // Se for prescrição no mobile, garantir que o conteúdo mobile seja visível
+                if(window.innerWidth < 1024 && tabId === 'prescription') {
+                     // Lógica para clonar o conteúdo da receita para o container mobile se necessário
+                     const desktopPaper = document.getElementById('prescriptionPaper');
+                     const mobilePaper = document.getElementById('mobilePrescriptionPaper');
+                     if(desktopPaper && mobilePaper) {
+                        mobilePaper.innerHTML = desktopPaper.innerHTML;
+                     }
                 }
             }
 
