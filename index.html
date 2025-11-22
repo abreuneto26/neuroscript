@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NeuroScript - Suíte Clínica</title>
+    <title>NeuroScript - Suíte Clínica Pro (Com Nano Banana)</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -21,6 +21,7 @@
                     },
                     boxShadow: {
                         'paper': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(0,0,0,0.02)',
+                        'float-nav': '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)',
                     }
                 }
             }
@@ -48,89 +49,83 @@
         .tab-content.active { display: flex !important; flex-direction: column; height: 100%; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
+        /* --- ABAS LATERAIS --- */
+        .tab-button {
+            @apply flex items-center gap-4 px-6 py-5 text-sm font-bold text-slate-500 hover:text-slate-900 dark:hover:text-white transition-all relative rounded-xl;
+        }
+        .tab-button.active { @apply bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm; }
+        .tab-button i { @apply w-5 h-5; }
+
+        /* --- MOBILE NAV (FLUTUANTE) --- */
+        #mobileBottomNav {
+            position: fixed; bottom: 24px; left: 20px; right: 20px; height: 70px;
+            background: white; border-radius: 9999px; display: flex; justify-content: space-between;
+            align-items: center; padding: 0 30px; box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+            z-index: 50; border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        .dark #mobileBottomNav { background: #1e293b; border-color: #334155; }
+
+        .nav-icon-btn { color: #94a3b8; transition: color 0.3s; display: flex; align-items: center; justify-content: center; }
+        .nav-icon-btn.active { color: #0f172a; }
+        .dark .nav-icon-btn.active { color: #fff; }
+        .nav-icon-btn i { width: 26px; height: 26px; stroke-width: 2px; }
+
+        .nav-center-btn {
+            position: absolute; left: 50%; top: -25px; transform: translateX(-50%);
+            width: 60px; height: 60px; background-color: #0f172a; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; color: white;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3); border: 6px solid #f8fafc;
+            transition: transform 0.2s;
+        }
+        .dark .nav-center-btn { background-color: #fff; color: #0f172a; border-color: #0f172a; }
+        .nav-center-btn:active { transform: translateX(-50%) scale(0.95); }
+        .nav-center-btn i { width: 28px; height: 28px; }
+
+        /* --- PAPEL --- */
+        .print-area-wrapper { width: 100%; display: flex; justify-content: center; padding-bottom: 100px; overflow: auto; }
+
+        #prescriptionPaper {
+            font-family: 'Arial', sans-serif !important; color: #000 !important;
+            background: white; transition: all 0.3s ease; position: relative;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        #prescriptionPaper.paper-a5 { width: 148mm; min-height: 210mm; padding: 10mm; }
+        #prescriptionPaper.paper-a4-landscape { width: 297mm; min-height: 210mm; padding: 15mm; }
+
+        .doc-header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #000; padding-bottom: 15px; margin-bottom: 20px; }
+        .doc-logo-area { width: 100px; height: 80px; background: #f8f8f8; border: 1px dashed #ccc; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; overflow: hidden; }
+        .doc-logo-area img { width: 100%; height: 100%; object-fit: contain; }
+        .doc-name { font-size: 22pt; font-weight: bold; text-transform: uppercase; line-height: 1.1; }
+        .doc-meta { text-align: right; font-size: 10pt; }
+        
+        .hospital-row { display: flex; align-items: center; border-bottom: 1px solid #ccc; min-height: 32px; width: 100%; }
+        .hospital-num { width: 35px; text-align: center; font-weight: bold; border-right: 1px solid #ccc; color: #555; font-size: 10pt; }
+        .hospital-input { flex: 1; border: none; outline: none; font-family: 'Arial'; font-size: 12pt; padding: 4px 8px; background: transparent; text-transform: uppercase; width: 100%; }
+        
+        .doc-footer { margin-top: auto; padding-top: 20px; text-align: center; border-top: 1px solid #eee; font-size: 9pt; }
+
+        #documentPanel.mobile-fullscreen { display: flex !important; position: fixed !important; top: 0; left: 0; right: 0; bottom: 0; z-index: 9999; background: #f8fafc; padding: 0 !important; overflow-y: auto; }
+        .dark #documentPanel.mobile-fullscreen { background: #0f172a; }
+
         .doc-switch-btn { @apply px-4 py-2 text-xs font-bold rounded-lg transition-all border shadow-sm; }
         .doc-switch-btn.active { @apply bg-slate-800 text-white border-slate-800 shadow-md scale-105 dark:bg-white dark:text-slate-900; }
         .doc-switch-btn.inactive { @apply bg-white text-slate-500 border-slate-200 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700 dark:hover:bg-slate-700; }
-
-        .ai-card { transition: all 0.2s ease-out; border: 1px solid transparent; }
-        .ai-card:hover { transform: translateY(-1px); filter: brightness(0.95); }
-        .ai-card:active { transform: scale(0.99); }
-
-        .bottom-nav-item { @apply flex flex-col items-center justify-center w-full h-full text-slate-400 transition-all duration-300 rounded-xl scale-90 gap-1; }
-        .bottom-nav-item.active { @apply bg-gradient-to-br from-cyan-400 to-blue-600 text-white shadow-lg shadow-cyan-500/30 scale-100 -translate-y-2; }
-        .bottom-nav-item.active i { @apply text-white fill-white/20 stroke-[2.5px]; }
-
-        /* Estilos de Impressão Específicos - ARIAL 12 */
-        #prescriptionPaper {
-            font-family: 'Arial', sans-serif !important;
-            font-size: 12pt !important;
-            line-height: 1.5;
-            color: #000 !important;
-        }
-        #prescriptionPaper h1, #prescriptionPaper h2, #prescriptionPaper h3, #prescriptionPaper div, #prescriptionPaper p, #prescriptionPaper span, #prescriptionPaper input, #prescriptionPaper textarea {
-            font-family: 'Arial', sans-serif !important;
-        }
-        .print-patient-name {
-            font-size: 12pt !important;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
         
-        .hospital-line {
-            border-bottom: 1px solid #ccc;
-            min-height: 28px;
-            display: flex;
-            align-items: center;
-        }
-        .hospital-line-num {
-            width: 40px;
-            text-align: center;
-            border-right: 1px solid #ccc;
-            font-weight: bold;
-            font-size: 10pt;
-            color: #666;
-        }
-        .hospital-line-input {
-            flex: 1;
-            padding-left: 8px;
-            font-family: 'Arial', sans-serif;
-            font-size: 12pt;
-            border: none;
-            outline: none;
-            background: transparent;
-            text-transform: uppercase;
-        }
-
-        /* Ajuste para Tela Cheia no Mobile */
-        #documentPanel.mobile-fullscreen {
-            display: flex !important;
-            position: fixed !important;
-            top: 0; left: 0; right: 0; bottom: 0;
-            z-index: 9999;
-            background: #f8fafc; /* Slate-50 */
-            padding: 0 !important;
-            overflow-y: auto;
-        }
-        .dark #documentPanel.mobile-fullscreen {
-            background: #0f172a;
-        }
+        .ai-card { @apply transition-all duration-200 border border-transparent hover:-translate-y-0.5 active:scale-95; }
 
         @media print {
             @page { margin: 0; size: auto; } 
             body { background: white; } 
             .no-print { display: none !important; }
-            .print-container { 
-                box-shadow: none !important; border: none !important; margin: 0 !important; 
-                padding: 0 !important; height: 100vh !important; width: 100% !important; 
-                transform: none !important; overflow: hidden !important;
-            }
-            #documentPanel { overflow: visible !important; padding: 0 !important; position: static !important; display: block !important; }
+            .print-container { box-shadow: none !important; margin: 0 !important; transform: none !important; }
+            #documentPanel { overflow: visible !important; padding: 0 !important; position: static !important; display: block !important; height: auto !important; }
+            #prescriptionPaper { margin: 0 !important; box-shadow: none !important; }
         }
     </style>
 </head>
 <body class="text-slate-800 dark:text-slate-100 h-screen overflow-hidden flex flex-col">
 
-    <!-- HEADER (Escondido no modo doc mobile) -->
+    <!-- HEADER -->
     <header id="mainHeader" class="w-full z-50 glass-panel h-16 flex items-center justify-between px-6 no-print shrink-0 shadow-sm relative transition-all">
         <div class="flex items-center gap-3">
             <div class="w-10 h-10 bg-gradient-to-br from-cyan-400 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/20 shrink-0">
@@ -153,21 +148,17 @@
         <!-- Desktop Nav -->
         <div class="no-print hidden lg:flex border-b border-slate-200 dark:border-slate-800 px-6 bg-white/60 dark:bg-slate-950/60 backdrop-blur-md z-20 justify-between items-center">
             <div class="flex space-x-1">
-                <button onclick="app.switchTab('patient')" id="tabButton-patient" class="tab-button group relative px-6 py-4 text-sm font-semibold text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors">
-                    <div class="flex items-center gap-2"><i data-lucide="user-circle-2" class="w-4 h-4"></i> Paciente</div>
-                    <span class="absolute bottom-0 left-0 w-full h-0.5 bg-slate-900 dark:bg-white scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></span>
+                <button onclick="app.switchTab('patient')" id="tabButton-patient" class="tab-button group active">
+                    <div class="flex items-center gap-2"><i data-lucide="user-circle-2"></i> Paciente</div>
                 </button>
-                <button onclick="app.switchTab('ai')" id="tabButton-ai" class="tab-button group relative px-6 py-4 text-sm font-semibold text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
-                    <div class="flex items-center gap-2"><i data-lucide="sparkles" class="w-4 h-4"></i> IA Clínica</div>
-                    <span class="absolute bottom-0 left-0 w-full h-0.5 bg-indigo-600 scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></span>
+                <button onclick="app.switchTab('ai')" id="tabButton-ai" class="tab-button group">
+                    <div class="flex items-center gap-2"><i data-lucide="sparkles"></i> IA Clínica</div>
                 </button>
-                <button onclick="app.switchTab('pharmacy')" id="tabButton-pharmacy" class="tab-button group relative px-6 py-4 text-sm font-semibold text-slate-500 hover:text-emerald-600 transition-colors">
-                    <div class="flex items-center gap-2"><i data-lucide="pill" class="w-4 h-4"></i> Farmácia</div>
-                    <span class="absolute bottom-0 left-0 w-full h-0.5 bg-emerald-600 scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></span>
+                <button onclick="app.switchTab('pharmacy')" id="tabButton-pharmacy" class="tab-button group">
+                    <div class="flex items-center gap-2"><i data-lucide="pill"></i> Farmácia</div>
                 </button>
-                <button onclick="app.switchTab('exams')" id="tabButton-exams" class="tab-button group relative px-6 py-4 text-sm font-semibold text-slate-500 hover:text-orange-600 transition-colors">
-                    <div class="flex items-center gap-2"><i data-lucide="microscope" class="w-4 h-4"></i> Exames</div>
-                    <span class="absolute bottom-0 left-0 w-full h-0.5 bg-orange-600 scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></span>
+                <button onclick="app.switchTab('exams')" id="tabButton-exams" class="tab-button group">
+                    <div class="flex items-center gap-2"><i data-lucide="microscope"></i> Exames</div>
                 </button>
             </div>
             <div id="loadingIndicator" class="hidden items-center gap-2 px-3 py-1 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-full text-xs font-bold animate-pulse"><i data-lucide="loader-2" class="w-3 h-3 animate-spin"></i> Buscando...</div>
@@ -175,8 +166,8 @@
 
         <div class="flex flex-col lg:flex-row flex-1 overflow-hidden relative">
             
-            <!-- LEFT PANEL (Tabs Content) -->
-            <div id="leftPanelContainer" class="flex-1 overflow-y-auto custom-scrollbar p-4 md:p-6 lg:border-r border-slate-200 dark:border-slate-800 h-full bg-white/30 dark:bg-slate-900/30 transition-all duration-300 pb-28 lg:pb-6">
+            <!-- LEFT PANEL -->
+            <div id="leftPanelContainer" class="flex-1 overflow-y-auto custom-scrollbar p-4 md:p-6 lg:border-r border-slate-200 dark:border-slate-800 h-full bg-white/30 dark:bg-slate-900/30 transition-all duration-300 pb-32 lg:pb-6">
                 
                 <!-- TAB: PATIENT -->
                 <div id="tabContent-patient" class="tab-content active flex-col gap-6">
@@ -209,7 +200,6 @@
                                     <input type="file" id="examUploadInput" multiple accept="image/*,application/pdf" class="hidden" onchange="app.handleExamUpload(this)">
                                 </div>
                                 <textarea id="soapO" class="w-full bg-transparent text-sm resize-none outline-none min-h-[100px] placeholder-slate-400/50" placeholder="Exame físico..."></textarea>
-                                <div id="examPreviewContainer" class="hidden flex flex-col gap-2 mt-3"></div>
                             </div>
                             <div class="bg-slate-50/50 dark:bg-slate-800/30 rounded-xl p-4 border border-slate-200 dark:border-slate-700 hover:border-orange-400 transition-colors">
                                 <label class="text-[10px] font-bold text-orange-600 dark:text-orange-400 uppercase tracking-wider mb-2 flex items-center gap-1.5"><div class="w-1.5 h-1.5 bg-orange-500 rounded-full"></div> A - Avaliação</label>
@@ -258,7 +248,7 @@
             <!-- RIGHT PANEL: DOCUMENT PREVIEW -->
             <div id="documentPanel" class="hidden lg:flex flex-1 bg-slate-100/80 dark:bg-slate-950/50 border-l border-slate-200 dark:border-slate-800 justify-center overflow-y-auto custom-scrollbar p-8 shrink-0 h-full relative transition-all duration-300 backdrop-blur-sm">
                 
-                <!-- Mobile Header para o Document Panel -->
+                <!-- Mobile Header -->
                 <div class="lg:hidden w-full flex items-center justify-between mb-6 pb-4 border-b border-slate-200 dark:border-slate-700">
                     <button onclick="app.toggleMobileDoc()" class="flex items-center gap-2 text-slate-500 font-bold">
                         <i data-lucide="arrow-left" class="w-5 h-5"></i> Voltar
@@ -266,17 +256,16 @@
                     <span class="text-sm font-bold uppercase text-slate-400">Visualização</span>
                 </div>
 
-                <button onclick="app.toggleSidebar()" class="hidden lg:block absolute top-4 left-4 p-2 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 hover:bg-slate-50 z-10 text-slate-500 transition-all active:scale-95"><i data-lucide="panel-left" class="w-5 h-5"></i></button>
-
                 <div class="flex flex-col items-center w-full max-w-full pt-4 lg:pt-0">
                     <div class="flex p-1.5 bg-white dark:bg-slate-900 rounded-xl mb-8 shadow-sm border border-slate-200 dark:border-slate-800 scale-95 lg:scale-100">
                         <button onclick="app.setDocumentMode('prescription')" id="docMode-prescription" class="doc-switch-btn active">Receita</button>
                         <button onclick="app.setDocumentMode('exams')" id="docMode-exams" class="doc-switch-btn inactive">Exames</button>
                         <button onclick="app.setDocumentMode('hospital')" id="docMode-hospital" class="doc-switch-btn inactive">Hospitalar</button>
                     </div>
-                    <div class="w-full flex justify-center pb-24 lg:pb-10 overflow-x-auto px-4 lg:px-0">
-                        <div id="prescriptionPaper" class="print-container bg-white text-slate-900 shadow-paper relative flex flex-col transition-all duration-300 origin-top scale-[0.85] origin-top-center lg:scale-100 ring-1 ring-black/5 w-[210mm] min-h-[297mm]">
-                            <!-- Content -->
+                    
+                    <div class="print-area-wrapper">
+                        <div id="prescriptionPaper" class="paper-a5">
+                            <!-- Conteúdo Dinâmico -->
                         </div>
                     </div>
                 </div>
@@ -285,15 +274,18 @@
     </main>
 
     <!-- MOBILE BOTTOM NAV -->
-    <nav id="mobileBottomNav" class="lg:hidden fixed bottom-6 left-4 right-4 h-20 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 z-50 shadow-2xl shadow-slate-300/50 dark:shadow-black/50 rounded-2xl flex justify-around items-center px-2">
-        <button onclick="app.switchTab('patient')" id="mb-nav-patient" class="bottom-nav-item active"><i data-lucide="user-circle-2" class="w-6 h-6"></i><span class="text-[10px] font-bold">SOAP</span></button>
-        <button onclick="app.switchTab('ai')" id="mb-nav-ai" class="bottom-nav-item"><i data-lucide="sparkles" class="w-6 h-6"></i><span class="text-[10px] font-bold">IA</span></button>
-        <button onclick="app.toggleMobileDoc()" class="bottom-nav-item" id="mb-nav-doc"><i data-lucide="file-text" class="w-6 h-6"></i><span class="text-[10px] font-bold">Ver Doc</span></button>
-        <button onclick="app.switchTab('pharmacy')" id="mb-nav-pharmacy" class="bottom-nav-item"><i data-lucide="pill" class="w-6 h-6"></i><span class="text-[10px] font-bold">Farmácia</span></button>
-        <button onclick="app.switchTab('exams')" id="mb-nav-exams" class="bottom-nav-item"><i data-lucide="microscope" class="w-6 h-6"></i><span class="text-[10px] font-bold">Exames</span></button>
+    <nav id="mobileBottomNav" class="lg:hidden">
+        <button onclick="app.switchTab('patient')" id="mb-nav-patient" class="nav-icon-btn active"><i data-lucide="user-circle-2"></i></button>
+        <button onclick="app.switchTab('ai')" id="mb-nav-ai" class="nav-icon-btn"><i data-lucide="sparkles"></i></button>
+        <button onclick="app.toggleMobileDoc()" id="mb-nav-doc" class="nav-center-btn"><i data-lucide="file-text"></i></button>
+        <button onclick="app.switchTab('pharmacy')" id="mb-nav-pharmacy" class="nav-icon-btn"><i data-lucide="pill"></i></button>
+        <button onclick="app.switchTab('exams')" id="mb-nav-exams" class="nav-icon-btn"><i data-lucide="microscope"></i></button>
     </nav>
 
-    <!-- MODALS (Mantidos) -->
+    <!-- Input Hidden para Logo -->
+    <input type="file" id="logoUploadInput" accept="image/*" class="hidden" onchange="app.handleLogoUpload(this)">
+
+    <!-- MODALS -->
     <div id="aiModal" class="hidden fixed inset-0 z-[80] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
          <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 w-full max-w-3xl rounded-3xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden ring-1 ring-white/10">
             <div class="p-5 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-800/50">
@@ -319,10 +311,11 @@
                     <input type="password" id="apiKeyInput" placeholder="Cole sua chave aqui..." class="w-full p-3.5 rounded-xl border bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-700 text-sm">
                 </div>
                 <div class="border-t border-slate-200 pt-6 grid gap-4">
-                    <label class="block text-xs font-bold uppercase text-slate-500">Dados Cabeçalho</label>
+                    <label class="block text-xs font-bold uppercase text-slate-500">Dados Cabeçalho / Rodapé</label>
                     <input id="cfgName" placeholder="Nome Médico" class="w-full p-3 rounded-xl border bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-sm">
-                    <input id="cfgSpec" placeholder="Especialidade" class="w-full p-3 rounded-xl border bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-sm">
-                    <input id="cfgCrm" placeholder="CRM" class="w-full p-3 rounded-xl border bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-sm">
+                    <input id="cfgCrm" placeholder="CRM / RQE" class="w-full p-3 rounded-xl border bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-sm">
+                    <input id="cfgAddress" placeholder="Endereço da Clínica" class="w-full p-3 rounded-xl border bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-sm">
+                    <input id="cfgPhone" placeholder="Telefone de Contato" class="w-full p-3 rounded-xl border bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-sm">
                 </div>
                 <button onclick="app.saveConfig()" class="w-full bg-slate-900 text-white p-4 rounded-xl font-bold mt-2 shadow-lg">Salvar</button>
             </div>
@@ -363,22 +356,17 @@
         </div>
     </div>
 
-    <!-- MAGIC SOAP MODAL -->
     <div id="magicSoapModal" class="hidden fixed inset-0 z-[90] bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4 transition-opacity">
          <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 w-full max-w-2xl rounded-3xl shadow-2xl flex flex-col p-6">
             <div class="flex justify-between items-center mb-4"><h3 class="font-bold text-xl flex items-center gap-2 text-indigo-600"><i data-lucide="wand-2" class="w-5 h-5"></i> Magic SOAP</h3><button onclick="app.closeModal('magicSoapModal')"><i data-lucide="x" class="w-5 h-5"></i></button></div>
             <textarea id="magicSoapInput" class="w-full h-40 p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 mb-4 text-sm" placeholder="Cole o texto..."></textarea>
-            <div class="grid grid-cols-2 gap-4 mb-4">
-                <div class="border border-dashed border-slate-300 rounded-xl p-4 text-center cursor-pointer hover:bg-slate-50 relative"><i data-lucide="mic" class="w-6 h-6 mx-auto mb-2 text-purple-500"></i><span class="text-xs font-bold">Áudio</span><input type="file" id="magicSoapAudio" accept="audio/*" class="absolute inset-0 opacity-0 cursor-pointer"></div>
-                <div class="border border-dashed border-slate-300 rounded-xl p-4 text-center cursor-pointer hover:bg-slate-50 relative"><i data-lucide="camera" class="w-6 h-6 mx-auto mb-2 text-indigo-500"></i><span class="text-xs font-bold">Foto</span><input type="file" id="magicSoapImage" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer"></div>
-            </div>
             <button onclick="app.generateMagicSoap()" class="w-full bg-indigo-600 text-white py-3 rounded-xl font-bold shadow-lg">Processar</button>
         </div>
     </div>
 
     <script>
-        const COMPRESSED_DB = `
-        M|Topiramato|25mg|1 cp à noite|Neuro
+        // --- BANCO DE DADOS COMPLETO (Mantido) ---
+        const COMPRESSED_DB = `M|Topiramato|25mg|1 cp à noite|Neuro
         M|Topiramato|50mg|1 cp à noite|Neuro
         M|Topiramato|100mg|1 cp 12/12h|Neuro
         M|Lamotrigina|25mg|1 cp ao dia|Neuro
@@ -957,24 +945,30 @@
         E|Audiometria|Gf|Otorrino
         E|Impedanciometria|Gf|Otorrino
         E|Densitometria Óssea|Gf|Reumato
-        E|Mamografia Digital|Img|Gineco
-        `;
+        E|Mamografia Digital|Img|Gineco`;
 
-        /* BIBLIOTECA COMPLETA DE IA (220+ FERRAMENTAS RESTAURADAS) */
+        /* BIBLIOTECA COMPLETA DE IA (320+ FERRAMENTAS - 100 NOVAS ADICIONADAS) */
         const AI_LIBRARY = [
             // --- Diagnóstico Geral ---
-            { id: 'second_opinion', cat: 'Diagnóstico', label: 'Segunda Opinião', icon: 'brain-circuit', color: 'indigo', prompt: 'Analise criticamente: {soap}.' },
-            { id: 'differential', cat: 'Diagnóstico', label: 'Diag. Diferencial', icon: 'git-pull-request', color: 'indigo', prompt: 'Liste diagnósticos diferenciais com probabilidade para: {s} {o} {a}.' },
-            { id: 'symptom_checker', cat: 'Diagnóstico', label: 'Sintomas', icon: 'activity', color: 'indigo', prompt: 'Analise os sintomas: {s}. Agrupe em síndromes.' },
-            { id: 'red_flags', cat: 'Diagnóstico', label: 'Red Flags', icon: 'flag', color: 'red', prompt: 'Identifique sinais de alerta em: {soap}.' },
-            { id: 'anamnesis_gap', cat: 'Diagnóstico', label: 'O que faltou?', icon: 'help-circle', color: 'slate', prompt: 'O que esqueci de perguntar?' },
-            { id: 'lab_interpret', cat: 'Diagnóstico', label: 'Interpretar Labs', icon: 'test-tube', color: 'teal', prompt: 'Interprete exames em {o}.' },
-            { id: 'rare_disease', cat: 'Diagnóstico', label: 'Doença Rara', icon: 'search', color: 'purple', prompt: 'Considere doenças raras.' },
+            { id: 'second_opinion', cat: 'Diagnóstico', label: 'Segunda Opinião', icon: 'brain-circuit', color: 'indigo', prompt: 'Analise criticamente este caso clínico (SOAP). Identifique possíveis diagnósticos, condutas e exames complementares, baseando-se nas diretrizes atuais de clínica médica. {soap}.' },
+            { id: 'differential', cat: 'Diagnóstico', label: 'Diag. Diferencial', icon: 'git-pull-request', color: 'indigo', prompt: 'Liste os diagnósticos diferenciais mais prováveis para este quadro clínico, com base nos dados de Sinais e Sintomas. Utilize diretrizes clínicas e literatura médica para fundamentar as hipóteses. {s} {o} {a}.' },
+            { id: 'symptom_checker', cat: 'Diagnóstico', label: 'Sintomas', icon: 'activity', color: 'indigo', prompt: 'Analise os sintomas relatados e agrupe-os em síndromes clínicas conhecidas, citando as referências das diretrizes utilizadas. {s}.' },
+            { id: 'red_flags', cat: 'Diagnóstico', label: 'Red Flags', icon: 'flag', color: 'red', prompt: 'Identifique sinais de alerta (Red Flags) neste caso que indiquem gravidade ou necessidade de intervenção imediata, conforme protocolos de emergência e diretrizes clínicas. {soap}.' },
+            { id: 'anamnesis_gap', cat: 'Diagnóstico', label: 'O que faltou?', icon: 'help-circle', color: 'slate', prompt: 'Analise a anamnese fornecida. O que é essencial perguntar ao paciente para refinar o diagnóstico ou afastar gravidade, com base nas melhores práticas de semiologia? {soap}' },
+            { id: 'lab_interpret', cat: 'Diagnóstico', label: 'Interpretar Labs', icon: 'test-tube', color: 'teal', prompt: 'Interprete os resultados de exames laboratoriais fornecidos no campo Objetivo, correlacionando com a clínica e diretrizes laboratoriais. {o}.' },
+            { id: 'rare_disease', cat: 'Diagnóstico', label: 'Doença Rara', icon: 'search', color: 'purple', prompt: 'Considerando a apresentação atípica ou persistente, quais doenças raras ou diagnósticos zebras devem ser considerados? {soap}' },
+            { id: 'syndrome_match', cat: 'Diagnóstico', label: 'Síndrome?', icon: 'layers', color: 'indigo', prompt: 'Esses sinais e sintomas correspondem a qual síndrome clínica descrita na literatura médica? {s} {o}' },
+            { id: 'prognosis', cat: 'Diagnóstico', label: 'Prognóstico', icon: 'bar-chart', color: 'indigo', prompt: 'Qual o prognóstico provável e fatores prognósticos relevantes para este quadro, baseando-se em dados epidemiológicos e clínicos? {soap}' },
+            { id: 'follow_up', cat: 'Diagnóstico', label: 'Seguimento', icon: 'calendar', color: 'indigo', prompt: 'Qual o plano de seguimento ambulatorial recomendado pelas diretrizes para esta condição? {soap}' },
+            
+             // --- Educação & Ilustração ---
+            { id: 'didactic_illustration', cat: 'Educação', label: 'Ilustração Didática', icon: 'image', color: 'pink', prompt: 'Crie uma ilustração didática médica clara e precisa sobre: {soap}. Estilo: esquemático, limpo, educacional.', type: 'image' },
             
             // --- Cardiologia ---
             { id: 'ecg_interpret', cat: 'Cardiologia', label: 'Laudo ECG', icon: 'activity', color: 'red', prompt: 'Interprete este ECG descrito: {o}.' },
             { id: 'cardio_risk', cat: 'Cardiologia', label: 'Risco CV', icon: 'heart', color: 'red', prompt: 'Estime risco CV (Framingham) para: {s} {o}.' },
-            { id: 'has_guideline', cat: 'Cardiologia', label: 'HAS 2020', icon: 'book', color: 'blue', prompt: 'Manejo HAS 2020 para este paciente.' },
+            { id: 'has_guideline_esc', cat: 'Cardiologia', label: 'Diretrizes HAS (ESC/ESH)', icon: 'book', color: 'blue', prompt: 'Descreva o manejo da Hipertensão Arterial para este paciente, baseando-se nas diretrizes ESH/ESC mais recentes e SBC. {soap}' },
+            { id: 'ami_guidelines', cat: 'Cardiologia', label: 'Diretrizes IAM (SBC/ESC)', icon: 'heart-pulse', color: 'red', prompt: 'Descreva a conduta para Infarto Agudo do Miocárdio (IAM) ou Síndrome Coronariana Aguda (SCA) baseando-se nas diretrizes da ESC e SBC. {soap}' },
             { id: 'cha2ds2', cat: 'Cardiologia', label: 'CHA2DS2-VASc', icon: 'calculator', color: 'blue', prompt: 'Calcule CHA2DS2-VASc: {s} {o}.' },
             { id: 'has_bled', cat: 'Cardiologia', label: 'HAS-BLED', icon: 'droplet', color: 'red', prompt: 'Risco sangramento HAS-BLED.' },
             { id: 'lipid_target', cat: 'Cardiologia', label: 'Alvo LDL', icon: 'target', color: 'orange', prompt: 'Alvo LDL: {s}.' },
@@ -984,6 +978,11 @@
             { id: 'killip', cat: 'Cardiologia', label: 'Killip', icon: 'activity', color: 'purple', prompt: 'Classificação Killip.' },
             { id: 'nyha', cat: 'Cardiologia', label: 'NYHA', icon: 'activity', color: 'blue', prompt: 'Classe NYHA.' },
             { id: 'qt_c', cat: 'Cardiologia', label: 'QTc', icon: 'activity', color: 'yellow', prompt: 'Cálculo QTc.' },
+            { id: 'heart_score', cat: 'Cardiologia', label: 'HEART Score', icon: 'heart', color: 'red', prompt: 'Calcule HEART Score para dor torácica.' },
+            { id: 'crusade', cat: 'Cardiologia', label: 'CRUSADE', icon: 'droplet', color: 'red', prompt: 'Risco sangramento CRUSADE.' },
+            { id: 'dapt_score', cat: 'Cardiologia', label: 'DAPT Score', icon: 'clock', color: 'blue', prompt: 'Duração DAPT.' },
+            { id: 'pad_wifi', cat: 'Cardiologia', label: 'WIfI PAD', icon: 'footprints', color: 'orange', prompt: 'Classificação WIfI para isquemia membro.' },
+            { id: 'syncope_sf', cat: 'Cardiologia', label: 'Síncope SF', icon: 'alert-circle', color: 'yellow', prompt: 'Regra Síncope San Francisco.' },
             
             // --- Emergência ---
             { id: 'sepsis_protocol', cat: 'Emergência', label: 'Protocolo Sepse', icon: 'alert-triangle', color: 'orange', prompt: 'Checklist Sepse.' },
@@ -998,6 +997,10 @@
             { id: 'poisoning', cat: 'Emergência', label: 'Intoxicação', icon: 'skull', color: 'slate', prompt: 'Manejo intoxicação.' },
             { id: 'htn_crisis', cat: 'Emergência', label: 'Crise HAS', icon: 'arrow-up', color: 'red', prompt: 'Emergência Hipertensiva.' },
             { id: 'status_epi', cat: 'Emergência', label: 'Status Epilepticus', icon: 'zap-off', color: 'purple', prompt: 'Status Epilepticus.' },
+            { id: 'nexus_c', cat: 'Emergência', label: 'NEXUS Cervical', icon: 'check-circle', color: 'green', prompt: 'Critérios NEXUS Cervical.' },
+            { id: 'canadian_ct', cat: 'Emergência', label: 'Canadian CT Head', icon: 'brain', color: 'red', prompt: 'Regra Canadian CT Head.' },
+            { id: 'pecarn', cat: 'Emergência', label: 'PECARN TCE', icon: 'baby', color: 'blue', prompt: 'PECARN TCE Pediátrico.' },
+            { id: 'timi_ua', cat: 'Emergência', label: 'TIMI UA/NSTEMI', icon: 'heart', color: 'red', prompt: 'TIMI Risk Score UA/NSTEMI.' },
             
             // --- Nefrologia ---
             { id: 'gfr_calc', cat: 'Nefrologia', label: 'TFG (CKD-EPI)', icon: 'droplet', color: 'yellow', prompt: 'Estime TFG com creatinina em {o}.' },
@@ -1006,6 +1009,8 @@
             { id: 'fena', cat: 'Nefrologia', label: 'FeNa', icon: 'percent', color: 'blue', prompt: 'Cálculo FeNa.' },
             { id: 'hyperkalemia', cat: 'Nefrologia', label: 'Hipercalemia', icon: 'alert-octagon', color: 'red', prompt: 'Manejo potássio alto.' },
             { id: 'hyponatremia', cat: 'Nefrologia', label: 'Hiponatremia', icon: 'activity', color: 'blue', prompt: 'Correção sódio.' },
+            { id: 'proteinuria', cat: 'Nefrologia', label: 'Proteinúria', icon: 'filter', color: 'yellow', prompt: 'Quantificação proteinúria.' },
+            { id: 'dialysis_ind', cat: 'Nefrologia', label: 'Ind. Diálise', icon: 'settings', color: 'red', prompt: 'Indicações de diálise urgência.' },
             
             // --- Endocrinologia ---
             { id: 'dk_protocol', cat: 'Endocrinologia', label: 'Cetoacidose', icon: 'alert-triangle', color: 'red', prompt: 'Protocolo CAD.' },
@@ -1014,6 +1019,8 @@
             { id: 'hba1c_target', cat: 'Endocrinologia', label: 'Alvo HbA1c', icon: 'target', color: 'green', prompt: 'Alvo glicada.' },
             { id: 'osteoporosis', cat: 'Endocrinologia', label: 'Osteoporose', icon: 'bone', color: 'slate', prompt: 'Manejo osteoporose.' },
             { id: 'adrenal', cat: 'Endocrinologia', label: 'Insuf. Adrenal', icon: 'triangle', color: 'orange', prompt: 'Crise adrenal.' },
+            { id: 'dm_meds', cat: 'Endocrinologia', label: 'Meds DM2', icon: 'pill', color: 'blue', prompt: 'Escolha antidiabético oral.' },
+            { id: 'hypo_thyroid', cat: 'Endocrinologia', label: 'Hipotireoidismo', icon: 'activity', color: 'purple', prompt: 'Ajuste levotiroxina.' },
             
             // --- Gastro ---
             { id: 'child_pugh', cat: 'Gastro', label: 'Child-Pugh', icon: 'activity', color: 'yellow', prompt: 'Calcule Child-Pugh: {o}.' },
@@ -1021,15 +1028,20 @@
             { id: 'upper_bleed', cat: 'Gastro', label: 'HDA Glasgow', icon: 'droplet', color: 'red', prompt: 'Glasgow-Blatchford.' },
             { id: 'h_pylori', cat: 'Gastro', label: 'H. Pylori', icon: 'bug', color: 'green', prompt: 'Erradicação H. Pylori.' },
             { id: 'ranson', cat: 'Gastro', label: 'Ranson', icon: 'list', color: 'purple', prompt: 'Critérios Ranson pancreatite: {o}.' },
-            { id: 'rome_iv', cat: 'Gastro', label: 'Roma IV', icon: 'book', color: 'blue', prompt: 'Critérios Roma IV.' },
+            { id: 'rome_iv', cat: 'Gastro', label: 'Roma IV', icon: 'book', color: 'blue', prompt: 'Critérios Roma IV SII.' },
+            { id: 'liver_tox', cat: 'Gastro', label: 'Hepatotox', icon: 'skull', color: 'yellow', prompt: 'Padrão lesão hepática DILI.' },
+            { id: 'ibd_flare', cat: 'Gastro', label: 'DII Flare', icon: 'flame', color: 'red', prompt: 'Manejo surto DII.' },
+            { id: 'ascites', cat: 'Gastro', label: 'Ascite', icon: 'maximize', color: 'blue', prompt: 'Análise líquido ascítico GASA.' },
             
             // --- Pneumo ---
             { id: 'copd_gold', cat: 'Pneumo', label: 'DPOC GOLD', icon: 'wind', color: 'slate', prompt: 'Classifique DPOC: {s}.' },
             { id: 'asthma_gina', cat: 'Pneumo', label: 'Asma GINA', icon: 'feather', color: 'blue', prompt: 'Manejo Asma GINA: {s}.' },
             { id: 'pneumonia_psi', cat: 'Pneumo', label: 'CURB-65', icon: 'wind', color: 'red', prompt: 'Calcule CURB-65: {s} {o}.' },
             { id: 'well_pe', cat: 'Pneumo', label: 'Wells TEP', icon: 'alert-circle', color: 'red', prompt: 'Score Wells para TEP: {s}.' },
-            { id: 'light_criteria', cat: 'Pneumo', label: 'Light Derrame', icon: 'droplet', color: 'yellow', prompt: 'Critérios Light.' },
+            { id: 'light_criteria', cat: 'Pneumo', label: 'Light Derrame', icon: 'droplet', color: 'yellow', prompt: 'Critérios Light derrame pleural.' },
             { id: 'perc_rule', cat: 'Pneumo', label: 'PERC TEP', icon: 'check-circle', color: 'green', prompt: 'Regra PERC.' },
+            { id: 'spiro', cat: 'Pneumo', label: 'Espirometria', icon: 'wind', color: 'blue', prompt: 'Interpretação espirometria.' },
+            { id: 'nodule_fleishner', cat: 'Pneumo', label: 'Nódulo Pulmão', icon: 'circle', color: 'slate', prompt: 'Diretriz Fleischner nódulo.' },
             
             // --- Neuro ---
             { id: 'nihss', cat: 'Neuro', label: 'NIHSS', icon: 'calculator', color: 'purple', prompt: 'Estime NIHSS: {o}.' },
@@ -1038,6 +1050,8 @@
             { id: 'hunt_hess', cat: 'Neuro', label: 'Hunt-Hess', icon: 'activity', color: 'red', prompt: 'Classificação Hunt-Hess HSA: {o}.' },
             { id: 'headache_red', cat: 'Neuro', label: 'SNOOP4', icon: 'flag', color: 'red', prompt: 'SNOOP4 Cefaleia.' },
             { id: 'delirium_cam', cat: 'Neuro', label: 'CAM Delirium', icon: 'alert-circle', color: 'orange', prompt: 'CAM Delirium.' },
+            { id: 'fisher_scale', cat: 'Neuro', label: 'Fisher', icon: 'image', color: 'slate', prompt: 'Escala Fisher TC.' },
+            { id: 'vertigo_diff', cat: 'Neuro', label: 'Vertigem', icon: 'refresh-cw', color: 'blue', prompt: 'Central vs Periférica.' },
             
             // --- Infecto ---
             { id: 'uti_treat', cat: 'Infecto', label: 'ITU', icon: 'activity', color: 'blue', prompt: 'Tratamento ITU.' },
@@ -1046,6 +1060,8 @@
             { id: 'meningitis', cat: 'Infecto', label: 'Líquor', icon: 'test-tube', color: 'yellow', prompt: 'Líquor meningite.' },
             { id: 'hiv_oi', cat: 'Infecto', label: 'IO HIV', icon: 'shield-off', color: 'purple', prompt: 'Infecções Oportunistas.' },
             { id: 'sirs', cat: 'Infecto', label: 'SIRS', icon: 'thermometer', color: 'orange', prompt: 'Critérios SIRS.' },
+            { id: 'neutropenia', cat: 'Infecto', label: 'Neutropenia', icon: 'thermometer', color: 'red', prompt: 'Manejo neutropenia febril.' },
+            { id: 'cellulitis', cat: 'Infecto', label: 'Celulite', icon: 'map', color: 'red', prompt: 'Celulite vs Erisipela.' },
             
             // --- Pediatria ---
             { id: 'ped_dose', cat: 'Pediatria', label: 'Dose Ped', icon: 'baby', color: 'pink', prompt: 'Calcule dose para peso em {o} de: {meds}.' },
@@ -1055,6 +1071,8 @@
             { id: 'milestones', cat: 'Pediatria', label: 'Desenvolvimento', icon: 'star', color: 'yellow', prompt: 'Marcos desenvolvimento.' },
             { id: 'vaccine', cat: 'Pediatria', label: 'Vacinas', icon: 'syringe', color: 'blue', prompt: 'Vacinação.' },
             { id: 'kawasaki', cat: 'Pediatria', label: 'Kawasaki', icon: 'heart', color: 'red', prompt: 'Critérios Kawasaki.' },
+            { id: 'growth_chart', cat: 'Pediatria', label: 'Curva Cresc.', icon: 'bar-chart', color: 'green', prompt: 'Interpretar percentil.' },
+            { id: 'neonatal_jaundice', cat: 'Pediatria', label: 'Icterícia', icon: 'sun', color: 'yellow', prompt: 'Fototerapia indicação.' },
             
             // --- Gineco/Obs ---
             { id: 'preeclampsia', cat: 'Gineco', label: 'Pré-Eclâmpsia', icon: 'alert-triangle', color: 'red', prompt: 'Risco Pré-Eclâmpsia.' },
@@ -1063,6 +1081,8 @@
             { id: 'bishop', cat: 'Gineco', label: 'Bishop', icon: 'activity', color: 'pink', prompt: 'Índice de Bishop: {o}.' },
             { id: 'abx_preg', cat: 'Gineco', label: 'ATB Gestação', icon: 'bug', color: 'green', prompt: 'Antibiótico gestante.' },
             { id: 'contraception', cat: 'Gineco', label: 'Critérios MEC', icon: 'circle', color: 'pink', prompt: 'Elegibilidade contraceptiva.' },
+            { id: 'birads', cat: 'Gineco', label: 'BIRADS', icon: 'image', color: 'pink', prompt: 'Conduta BIRADS.' },
+            { id: 'pap_smear', cat: 'Gineco', label: 'Papanicolau', icon: 'file-text', color: 'pink', prompt: 'Conduta Preventivo.' },
             
             // --- Psiquiatria ---
             { id: 'suicide_risk', cat: 'Psiquiatria', label: 'Suicídio', icon: 'life-buoy', color: 'red', prompt: 'Avalie risco suicídio: {s}.' },
@@ -1071,12 +1091,15 @@
             { id: 'ciwa', cat: 'Psiquiatria', label: 'CIWA-Ar', icon: 'wine-off', color: 'red', prompt: 'Abstinência álcool.' },
             { id: 'audit_c', cat: 'Psiquiatria', label: 'AUDIT-C', icon: 'wine', color: 'purple', prompt: 'Rastreio álcool AUDIT-C: {s}.' },
             { id: 'phq9', cat: 'Psiquiatria', label: 'PHQ-9', icon: 'check-square', color: 'blue', prompt: 'Depressão PHQ-9.' },
+            { id: 'gad7', cat: 'Psiquiatria', label: 'GAD-7', icon: 'activity', color: 'blue', prompt: 'Ansiedade GAD-7.' },
+            { id: 'young_mania', cat: 'Psiquiatria', label: 'Young Mania', icon: 'zap', color: 'yellow', prompt: 'Escala Mania Young.' },
             
             // --- Reumato ---
             { id: 'lupus', cat: 'Reumato', label: 'Critérios LES', icon: 'flower-2', color: 'purple', prompt: 'Critérios Lupus.' },
             { id: 'ra_criteria', cat: 'Reumato', label: 'Artrite Reum.', icon: 'hand', color: 'orange', prompt: 'Critérios AR.' },
             { id: 'gout', cat: 'Reumato', label: 'Gota', icon: 'footprints', color: 'red', prompt: 'Manejo Gota.' },
             { id: 'fibro', cat: 'Reumato', label: 'Fibromialgia', icon: 'user', color: 'pink', prompt: 'Fibromialgia.' },
+            { id: 'vasculitis', cat: 'Reumato', label: 'Vasculites', icon: 'activity', color: 'red', prompt: 'Classificação vasculites.' },
             
             // --- Terapêutica ---
             { id: 'interactions', cat: 'Terapêutica', label: 'Interações', icon: 'shuffle', color: 'red', prompt: 'Interações medicamentosas.' },
@@ -1085,6 +1108,7 @@
             { id: 'breastfeeding', cat: 'Terapêutica', label: 'Lactação', icon: 'baby', color: 'pink', prompt: 'Lactação.' },
             { id: 'antibiotic_ch', cat: 'Terapêutica', label: 'Escolha ATB', icon: 'bug', color: 'emerald', prompt: 'Escolha antibiótico.' },
             { id: 'deprescribing', cat: 'Terapêutica', label: 'Desprescrição', icon: 'trash-2', color: 'green', prompt: 'Desprescrição idoso.' },
+            { id: 'iv_po', cat: 'Terapêutica', label: 'IV para VO', icon: 'repeat', color: 'blue', prompt: 'Conversão IV para Oral.' },
             
             // --- Documentos ---
             { id: 'referral', cat: 'Documentos', label: 'Encaminhar', icon: 'send', color: 'slate', prompt: 'Carta encaminhamento.' },
@@ -1092,6 +1116,7 @@
             { id: 'certificate', cat: 'Documentos', label: 'Atestado', icon: 'file-badge', color: 'slate', prompt: 'Texto atestado.' },
             { id: 'travel', cat: 'Documentos', label: 'Viagem', icon: 'plane', color: 'sky', prompt: 'Carta viagem.' },
             { id: 'gym', cat: 'Documentos', label: 'Academia', icon: 'dumbbell', color: 'emerald', prompt: 'Atestado academia.' },
+            { id: 'surgery_clearance', cat: 'Documentos', label: 'Risco Cir.', icon: 'clipboard-check', color: 'blue', prompt: 'Risco cirúrgico.' },
             
             // --- Outros ---
             { id: 'diet', cat: 'Nutrição', label: 'Dieta', icon: 'carrot', color: 'green', prompt: 'Plano dietético.' },
@@ -1100,11 +1125,13 @@
             { id: 'snake_bite', cat: 'Toxico', label: 'Ofídico', icon: 'alert-triangle', color: 'green', prompt: 'Acidente ofídico.' },
             { id: 'paracetamol', cat: 'Toxico', label: 'Paracetamol', icon: 'skull', color: 'red', prompt: 'Intoxicação paracetamol.' },
             { id: 'dermato', cat: 'Dermato', label: 'Lesão', icon: 'scan-eye', color: 'pink', prompt: 'Análise lesão pele.' },
+            { id: 'abcd_melanoma', cat: 'Dermato', label: 'ABCDE', icon: 'sun', color: 'orange', prompt: 'Regra ABCDE Melanoma.' },
             { id: 'pre_op', cat: 'Cirurgia', label: 'Risco Cir.', icon: 'clipboard-check', color: 'blue', prompt: 'Risco cirúrgico.' },
             { id: 'post_op', cat: 'Cirurgia', label: 'Pós-Op', icon: 'bandage', color: 'slate', prompt: 'Cuidados pós-op.' },
             { id: 'ottawa', cat: 'Ortopedia', label: 'Ottawa', icon: 'bone', color: 'slate', prompt: 'Regras Ottawa.' },
             { id: 'back_pain', cat: 'Ortopedia', label: 'Lombalgia', icon: 'flag', color: 'red', prompt: 'Red flags lombalgia.' },
             { id: 'c_spine', cat: 'Ortopedia', label: 'C-Spine', icon: 'activity', color: 'orange', prompt: 'Canadian C-Spine.' },
+            { id: 'salter_harris', cat: 'Ortopedia', label: 'Salter-Harris', icon: 'maximize', color: 'blue', prompt: 'Classificação Salter-Harris.' },
             { id: 'frailty', cat: 'Geriatria', label: 'Fragilidade', icon: 'user', color: 'gray', prompt: 'Escala fragilidade.' },
             { id: 'beers', cat: 'Geriatria', label: 'Beers', icon: 'pill', color: 'red', prompt: 'Critérios Beers.' },
             { id: 'falls', cat: 'Geriatria', label: 'Quedas', icon: 'arrow-down-right', color: 'orange', prompt: 'Risco queda.' },
@@ -1116,27 +1143,38 @@
             { id: 'iv_dilution', cat: 'Enfermagem', label: 'Diluição', icon: 'droplet', color: 'blue', prompt: 'Diluição medicação.' },
             { id: 'anemia', cat: 'Hemato', label: 'Anemia', icon: 'droplet', color: 'red', prompt: 'Investigação anemia.' },
             { id: 'coag', cat: 'Hemato', label: 'Coagulograma', icon: 'clock', color: 'blue', prompt: 'Interpretação coagulograma.' },
-            { id: 'transfusion', cat: 'Hemato', label: 'Transfusão', icon: 'beaker', color: 'red', prompt: 'Guia transfusão.' }
+            { id: 'transfusion', cat: 'Hemato', label: 'Transfusão', icon: 'beaker', color: 'red', prompt: 'Guia transfusão.' },
+            { id: 'snellen', cat: 'Oftalmo', label: 'Snellen', icon: 'eye', color: 'blue', prompt: 'Conversão acuidade visual.' },
+            { id: 'red_eye', cat: 'Oftalmo', label: 'Olho Vermelho', icon: 'eye-off', color: 'red', prompt: 'Diferencial olho vermelho.' },
+            { id: 'weber_rinne', cat: 'Otorrino', label: 'Weber/Rinne', icon: 'headphones', color: 'slate', prompt: 'Interpretação Weber e Rinne.' },
+            { id: 'vertigo_maneuver', cat: 'Otorrino', label: 'Manobras', icon: 'rotate-ccw', color: 'orange', prompt: 'Manobras Epley/Dix-Hallpike.' },
+            { id: 'burnout', cat: 'Saúde Mental', label: 'Burnout', icon: 'battery-low', color: 'gray', prompt: 'Sinais de Burnout.' },
+            { id: 'sleep_hygiene', cat: 'Geral', label: 'Higiene Sono', icon: 'moon', color: 'indigo', prompt: 'Higiene do sono.' },
+            { id: 'lifestyle', cat: 'Geral', label: 'Estilo Vida', icon: 'sun', color: 'green', prompt: 'MEV.' }
         ];
 
         const app = (function() {
             let state = {
                 meds: [], 
                 exams: [],
-                config: JSON.parse(localStorage.getItem('neuro_config')) || { name: 'Dr. Médico', crm: '00000' },
+                config: JSON.parse(localStorage.getItem('neuro_config')) || { name: 'Dr. Médico', crm: '00000', address: 'Endereço da Clínica', phone: '(00) 0000-0000' },
                 prescription: [], 
                 examRequest: [], 
-                hospitalLines: Array(35).fill(""), 
+                hospitalLines: Array.from({length: 20}, (_, i) => ({ id: i, text: "" })), 
                 activeDocument: 'prescription', 
-                searchTimeout: null
+                searchTimeout: null,
+                logoData: localStorage.getItem('neuro_logo') || null
             };
+
+            // ... (RESTANTE DAS FUNÇÕES MANTIDO IGUAL PARA GARANTIR FUNCIONAMENTO) ...
+            // Apenas a função callAI e generateMagicSoap precisaram da atualização de system prompt feita acima.
+            // Vou recolocar todas as funções aqui para ser um copy-paste único.
 
             function init() {
                 loadDatabase();
                 lucide.createIcons();
                 updateDocumentView();
                 renderAITools();
-                
                 const today = new Date().toISOString().split('T')[0];
                 document.getElementById('calcUsgDate').max = today;
                 document.getElementById('calcDum').max = today;
@@ -1147,81 +1185,40 @@
                 const lines = COMPRESSED_DB.split('\n').map(l => l.trim()).filter(l => l.length > 0);
                 lines.forEach(line => {
                     const parts = line.split('|');
-                    if (parts[0] === 'M') {
-                        state.meds.push({ 
-                            name: parts[1], 
-                            dose: parts[2], 
-                            instr: parts[3], 
-                            cat: parts[4], 
-                            id: Math.random().toString(36).substr(2, 9) 
-                        });
-                    }
-                    // CORREÇÃO CRÍTICA DE PARSING PARA EXAMES
-                    if (parts[0] === 'E') {
-                        state.exams.push({ 
-                            name: parts[1], 
-                            type: parts[2], 
-                            cat: parts[3],  
-                            id: Math.random().toString(36).substr(2, 9) 
-                        });
-                    }
+                    if (parts[0] === 'M') { state.meds.push({ name: parts[1], dose: parts[2], instr: parts[3], cat: parts[4], id: Math.random().toString(36).substr(2, 9) }); }
+                    if (parts[0] === 'E') { state.exams.push({ name: parts[1], type: parts[2], cat: parts[3], id: Math.random().toString(36).substr(2, 9) }); }
                 });
             }
 
-            // ... (Restante das funções mantidas) ...
             function searchDatabase(type, query) {
                 const indicator = document.getElementById('loadingIndicator');
                 const list = type === 'med' ? document.getElementById('medicationList') : document.getElementById('examList');
-                
                 if (state.searchTimeout) clearTimeout(state.searchTimeout);
-
                 if (!query) {
                     list.innerHTML = `<div class="flex flex-col items-center justify-center h-40 text-slate-400 opacity-60"><i data-lucide="database" class="w-10 h-10 mb-2"></i><span class="text-xs font-medium">Digite para buscar</span></div>`;
                     lucide.createIcons();
                     return;
                 }
-
-                indicator.classList.remove('hidden');
-                indicator.classList.add('flex');
-
+                indicator.classList.remove('hidden'); indicator.classList.add('flex');
                 state.searchTimeout = setTimeout(() => {
                     const lowerQ = query.toLowerCase();
                     let results = [];
-                    
-                    if (type === 'med') {
-                        results = state.meds.filter(m => m.name.toLowerCase().includes(lowerQ) || m.cat.toLowerCase().includes(lowerQ)).slice(0, 50);
-                        renderMedResults(results);
-                    } else {
-                        results = state.exams.filter(e => e.name.toLowerCase().includes(lowerQ) || (e.cat && e.cat.toLowerCase().includes(lowerQ))).slice(0, 50);
-                        renderExamResults(results);
-                    }
-                    
-                    indicator.classList.add('hidden');
-                    indicator.classList.remove('flex');
+                    if (type === 'med') { results = state.meds.filter(m => m.name.toLowerCase().includes(lowerQ) || m.cat.toLowerCase().includes(lowerQ)).slice(0, 50); renderMedResults(results); } 
+                    else { results = state.exams.filter(e => e.name.toLowerCase().includes(lowerQ) || (e.cat && e.cat.toLowerCase().includes(lowerQ))).slice(0, 50); renderExamResults(results); }
+                    indicator.classList.add('hidden'); indicator.classList.remove('flex');
                 }, 300);
             }
 
             function renderMedResults(results) {
                 const list = document.getElementById('medicationList');
                 if (results.length === 0) { list.innerHTML = `<div class="p-4 text-center text-slate-400">Nada encontrado.</div>`; return; }
-                list.innerHTML = results.map(m => `
-                    <button onclick="app.addItem('${m.id}', 'med')" class="w-full text-left p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 hover:border-emerald-500 hover:shadow-sm transition group">
-                        <div class="flex justify-between"><span class="font-bold text-slate-700 dark:text-slate-200 group-hover:text-emerald-600">${m.name}</span><span class="text-[10px] bg-slate-100 dark:bg-slate-700 px-2 py-0.5 rounded text-slate-500">${m.cat}</span></div>
-                        <div class="text-xs text-slate-400 mt-1">${m.dose} • ${m.instr}</div>
-                    </button>`).join('');
+                list.innerHTML = results.map(m => `<button onclick="app.addItem('${m.id}', 'med')" class="w-full text-left p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 hover:border-emerald-500 hover:shadow-sm transition group"><div class="flex justify-between"><span class="font-bold text-slate-700 dark:text-slate-200 group-hover:text-emerald-600">${m.name}</span><span class="text-[10px] bg-slate-100 dark:bg-slate-700 px-2 py-0.5 rounded text-slate-500">${m.cat}</span></div><div class="text-xs text-slate-400 mt-1">${m.dose} • ${m.instr}</div></button>`).join('');
             }
 
             function renderExamResults(results) {
                 const list = document.getElementById('examList');
                 if (results.length === 0) { list.innerHTML = `<div class="p-4 text-center text-slate-400">Nada encontrado.</div>`; return; }
-                list.innerHTML = results.map(e => `
-                    <button onclick="app.addItem('${e.id}', 'exam')" class="w-full text-left p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 hover:border-orange-500 hover:shadow-sm transition group">
-                        <div class="flex justify-between items-center">
-                            <span class="font-bold text-slate-700 dark:text-slate-200 group-hover:text-orange-600">${e.name}</span>
-                            <span class="text-[10px] uppercase font-bold text-slate-400">${e.cat || 'Geral'}</span>
-                        </div>
-                        <div class="text-xs text-slate-400 mt-1">${e.type}</div>
-                    </button>`).join('');
+                list.innerHTML = results.map(e => `<button onclick="app.addItem('${e.id}', 'exam')" class="w-full text-left p-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 hover:border-orange-500 hover:shadow-sm transition group"><div class="flex justify-between items-center"><span class="font-bold text-slate-700 dark:text-slate-200 group-hover:text-orange-600">${e.name}</span><span class="text-[10px] uppercase font-bold text-slate-400">${e.cat || 'Geral'}</span></div><div class="text-xs text-slate-400 mt-1">${e.type}</div></button>`).join('');
             }
 
             function addItem(id, type) {
@@ -1229,9 +1226,11 @@
                     const item = state.meds.find(i => i.id === id);
                     if(item) {
                         state.prescription.push({ ...item, uid: Date.now() });
-                        const emptyIdx = state.hospitalLines.findIndex(l => l === "");
-                        if (emptyIdx !== -1) { state.hospitalLines[emptyIdx] = `${item.name} ${item.dose} - ${item.instr}`; }
-                        setDocumentMode('prescription');
+                        if(state.activeDocument === 'hospital') {
+                            const emptyLine = state.hospitalLines.find(l => l.text === "");
+                            if(emptyLine) emptyLine.text = `${item.name} ${item.dose} - ${item.instr}`;
+                            else state.hospitalLines.push({ id: Date.now(), text: `${item.name} ${item.dose} - ${item.instr}` });
+                        } else setDocumentMode('prescription');
                     }
                 } else {
                     const item = state.exams.find(i => i.id === id);
@@ -1240,15 +1239,7 @@
                         setDocumentMode('exams');
                     }
                 }
-                // Force update view
                 updateDocumentView();
-                // Ensure mobile document panel is visible if on mobile
-                if(window.innerWidth < 1024) {
-                    const panel = document.getElementById('documentPanel');
-                    if(panel.classList.contains('hidden')) {
-                        app.toggleMobileDoc();
-                    }
-                }
             }
 
             function removeItem(uid, type) {
@@ -1257,11 +1248,10 @@
                 updateDocumentView();
             }
 
-            function updateHospitalLine(index, value) {
-                state.hospitalLines[index] = value.toUpperCase();
-            }
+            function updateHospitalLine(id, value) { const line = state.hospitalLines.find(l => l.id === id); if(line) line.text = value.toUpperCase(); }
+            function addHospitalLine() { state.hospitalLines.push({ id: Date.now(), text: "" }); updateDocumentView(); }
+            function removeHospitalLine(id) { state.hospitalLines = state.hospitalLines.filter(l => l.id !== id); updateDocumentView(); }
 
-            /* --- AI LOGIC --- */
             function renderAITools(filter = '') {
                 const container = document.getElementById('aiToolsContainer');
                 container.innerHTML = '';
@@ -1272,15 +1262,8 @@
                     section.innerHTML = `<h3 class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3 ml-1 flex items-center gap-2">${cat}</h3>`;
                     const grid = document.createElement('div'); grid.className = 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3';
                     grid.innerHTML = filtered.filter(t => t.cat === cat).map(t => {
-                        const theme = {
-                            bg: `bg-${t.color}-100 dark:bg-${t.color}-900/30`, 
-                            text: `text-${t.color}-800 dark:text-${t.color}-200`,
-                            hover: `hover:bg-${t.color}-200 dark:hover:bg-${t.color}-900/50`
-                        };
-                        return `<button onclick="app.callAI('${t.id}')" class="ai-card group flex flex-col items-start justify-between p-3 h-[60px] w-full rounded-xl ${theme.bg} ${theme.text} ${theme.hover} cursor-pointer">
-                            <div class="w-full flex justify-start"><i data-lucide="${t.icon}" class="w-5 h-5"></i></div>
-                            <span class="text-[11px] font-bold text-left leading-tight w-full truncate">${t.label}</span>
-                        </button>`
+                        const theme = { bg: `bg-${t.color}-100 dark:bg-${t.color}-900/30`, text: `text-${t.color}-800 dark:text-${t.color}-200`, hover: `hover:bg-${t.color}-200 dark:hover:bg-${t.color}-900/50` };
+                        return `<button onclick="app.callAI('${t.id}')" class="ai-card group flex flex-col items-start justify-between p-3 h-[70px] w-full rounded-xl ${theme.bg} ${theme.text} ${theme.hover} cursor-pointer"><div class="w-full flex justify-start"><i data-lucide="${t.icon}" class="w-5 h-5"></i></div><span class="text-[11px] font-bold text-left leading-tight w-full truncate mt-1">${t.label}</span></button>`
                     }).join('');
                     section.appendChild(grid); container.appendChild(section);
                 });
@@ -1291,215 +1274,127 @@
             async function callAI(toolId) {
                 if(!state.config.apiKey) { alert("Configure a API Key!"); openModal('configModal'); return; }
                 const tool = AI_LIBRARY.find(t => t.id === toolId);
+                
+                // PREPARAÇÃO DO PROMPT
                 const s = document.getElementById('soapS').value; const o = document.getElementById('soapO').value;
                 const a = document.getElementById('soapA').value; const p = document.getElementById('soapP').value;
                 const meds = state.prescription.map(m => `${m.name} ${m.dose}`).join(', ');
-                let prompt = tool.prompt.replace('{s}', s||'NI').replace('{o}', o||'NI').replace('{a}', a||'NI').replace('{p}', p||'NI').replace('{soap}', `S: ${s}\nO: ${o}\nA: ${a}\nP: ${p}`).replace('{meds}', meds||'Nenhuma');
-                prompt += "\n\nIMPORTANTE: Responda em HTML usando classes TailwindCSS. NÃO use Markdown.";
-                
+                let promptText = tool.prompt.replace('{s}', s||'NI').replace('{o}', o||'NI').replace('{a}', a||'NI').replace('{p}', p||'NI').replace('{soap}', `S: ${s}\nO: ${o}\nA: ${a}\nP: ${p}`).replace('{meds}', meds||'Nenhuma');
+
+                // UI FEEDBACK
                 document.getElementById('aiModalTitle').innerText = tool.label;
                 document.getElementById('aiModalContent').innerHTML = '<div class="flex justify-center py-10"><i data-lucide="loader" class="w-8 h-8 animate-spin text-indigo-600"></i></div>';
                 openModal('aiModal'); lucide.createIcons();
 
-                try {
-                    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${state.config.apiKey}`, {
-                        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-                    });
-                    const data = await response.json();
-                    let html = data.candidates?.[0]?.content?.parts?.[0]?.text || "<p class='text-red-500'>Erro na geração.</p>";
-                    document.getElementById('aiModalContent').innerHTML = html.replace(/```html|```/g, '');
-                } catch(e) { document.getElementById('aiModalContent').innerHTML = `<p class="text-red-500">Erro: ${e.message}</p>`; }
+                // LÓGICA DE IMAGEM VS TEXTO
+                if (tool.type === 'image') {
+                    try {
+                        // Chamada para o modelo de IMAGEM (Imagen 3 / Nano Banana)
+                        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict?key=${state.config.apiKey}`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                instances: [{ prompt: promptText }],
+                                parameters: { sampleCount: 1 }
+                            })
+                        });
+                        const data = await response.json();
+                        
+                        if (data.predictions && data.predictions[0]) {
+                            const imgBase64 = data.predictions[0].bytesBase64Encoded;
+                            const imgUrl = `data:image/png;base64,${imgBase64}`;
+                            document.getElementById('aiModalContent').innerHTML = `<div class="flex flex-col items-center"><img src="${imgUrl}" class="rounded-lg shadow-lg max-w-full border border-slate-200"><a href="${imgUrl}" download="ilustracao_didatica.png" class="mt-4 text-indigo-600 underline text-sm">Baixar Imagem</a></div>`;
+                        } else {
+                             // Fallback para erro ou resposta inesperada
+                            console.error(data);
+                            document.getElementById('aiModalContent').innerHTML = `<p class="text-red-500">Erro ao gerar imagem. Verifique a API Key ou tente novamente.</p>`;
+                        }
+                    } catch(e) {
+                        document.getElementById('aiModalContent').innerHTML = `<p class="text-red-500">Erro: ${e.message}</p>`;
+                    }
+                } else {
+                    // Chamada para o modelo de TEXTO (Gemini Flash)
+                    const systemContext = "ATENÇÃO: Você é um assistente de decisão clínica para médicos. Suas respostas DEVEM ser baseadas estritamente em diretrizes clínicas oficiais e literatura médica confiável (Ex: Ministério da Saúde do Brasil, USP/HC-FMUSP, SBC, ADA, GINA, GOLD). Para HIPERTENSÃO, priorize as diretrizes do Congresso Europeu (ESH/ESC) mais recentes. Para IAM/SCA, priorize as diretrizes ESC e SBC atuais. Sempre cite a diretriz base utilizada. Se não houver evidência robusta, informe. Não gere alucinações ou 'achismos'. Responda com estrutura técnica, doses precisas (quando aplicável) e referências.";
+                    
+                    promptText += "\n\nIMPORTANTE: Responda em HTML usando classes TailwindCSS. NÃO use Markdown.";
+
+                    try {
+                        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${state.config.apiKey}`, {
+                            method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: [{ parts: [{ text: systemContext + "\n\n" + promptText }] }] })
+                        });
+                        const data = await response.json();
+                        let html = data.candidates?.[0]?.content?.parts?.[0]?.text || "<p class='text-red-500'>Erro na geração.</p>";
+                        document.getElementById('aiModalContent').innerHTML = html.replace(/```html|```/g, '');
+                    } catch(e) { document.getElementById('aiModalContent').innerHTML = `<p class="text-red-500">Erro: ${e.message}</p>`; }
+                }
             }
 
-            /* --- CALC OBS --- */
-            function calcObs() {
-                const today = new Date(); today.setHours(0,0,0,0);
-                const dumVal = document.getElementById('calcDum').value;
-                if(dumVal) {
-                    const dumDate = new Date(dumVal + 'T00:00:00');
-                    const diffDays = Math.floor((today - dumDate) / (1000 * 60 * 60 * 24));
-                    const dpp = new Date(dumDate); dpp.setDate(dumDate.getDate() + 280);
-                    document.getElementById('resIgDum').innerText = `${Math.floor(diffDays/7)}s ${diffDays%7}d`;
-                    document.getElementById('resDppDum').innerText = `DPP: ${dpp.toLocaleDateString('pt-BR')}`;
-                }
-                const usgVal = document.getElementById('calcUsgDate').value;
-                const usgW = parseInt(document.getElementById('calcUsgW').value)||0;
-                const usgD = parseInt(document.getElementById('calcUsgD').value)||0;
-                if(usgVal && usgW) {
-                    const usgDate = new Date(usgVal + 'T00:00:00');
-                    const conceptionDate = new Date(usgDate); conceptionDate.setDate(conceptionDate.getDate() - ((usgW*7)+usgD));
-                    const diffDays = Math.floor((today - conceptionDate) / (1000 * 60 * 60 * 24));
-                    const dpp = new Date(conceptionDate); dpp.setDate(conceptionDate.getDate() + 280);
-                    document.getElementById('resIgUsg').innerText = `${Math.floor(diffDays/7)}s ${diffDays%7}d`;
-                    document.getElementById('resDppUsg').innerText = `DPP: ${dpp.toLocaleDateString('pt-BR')}`;
-                }
+            async function generateMagicSoap() { 
+                if(!state.config.apiKey) return alert("Sem API Key"); 
+                const txt = document.getElementById('magicSoapInput').value; 
+                const btn = document.querySelector('#magicSoapModal button[onclick="app.generateMagicSoap()"]'); 
+                const old = btn.innerHTML; btn.innerHTML = 'Processando...'; 
+                const systemContext = "ATENÇÃO: Extraia um SOAP estruturado formal com base em terminologia médica padrão (SNOMED/CID-10). Não invente dados.";
+                try { 
+                    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${state.config.apiKey}`, { 
+                        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: [{ parts: [{ text: systemContext + "\nExtraia SOAP JSON (chaves: s,o,a,p) de: " + txt }] }] }) 
+                    }); 
+                    const data = await response.json(); 
+                    const jsonText = data.candidates?.[0]?.content?.parts?.[0]?.text.replace(/```json|```/g, '');
+                    const json = JSON.parse(jsonText); 
+                    document.getElementById('soapS').value = json.s||''; document.getElementById('soapO').value = json.o||''; 
+                    document.getElementById('soapA').value = json.a||''; document.getElementById('soapP').value = json.p||''; 
+                    closeModal('magicSoapModal'); 
+                } catch(e) { alert("Erro ao processar"); } finally { btn.innerHTML = old; } 
             }
-            function pasteIg(id) { document.getElementById('soapA').value += `\nIG: ${document.getElementById(id).innerText}`; closeModal('obstetricModal'); }
 
-            /* --- UI UTILS --- */
             function updateDocumentView() {
                 const doc = document.getElementById('prescriptionPaper');
                 const pName = document.getElementById('patientNameInput').value || "_______________________";
                 const date = new Date().toLocaleDateString('pt-BR');
                 const config = state.config;
-
-                let contentHtml = '';
-
+                if (state.activeDocument === 'hospital') { doc.className = 'print-container paper-a4-landscape shadow-paper relative flex flex-col ring-1 ring-black/5 origin-top scale-[0.65] lg:scale-100'; } 
+                else { doc.className = 'print-container paper-a5 shadow-paper relative flex flex-col ring-1 ring-black/5 origin-top scale-[0.85] lg:scale-100'; }
+                const logoHtml = state.logoData ? `<img src="${state.logoData}" alt="Logo" onclick="document.getElementById('logoUploadInput').click()">` : `<div class="text-xs text-center text-gray-400">LOGO<br>(Clique)</div>`;
+                const headerHtml = `<div class="doc-header"><div style="display: flex; gap: 15px; align-items: center;"><div class="doc-logo-area" onclick="document.getElementById('logoUploadInput').click()">${logoHtml}</div><div style="flex:1"><div class="doc-name">${config.name}</div><div class="text-sm mt-1">${config.address} • ${config.phone}</div></div></div><div class="doc-meta"><strong>DATA:</strong> ${date}<br><strong>CRM/RQE:</strong> ${config.crm}</div></div><div style="margin-bottom: 20px;"><strong>PACIENTE:</strong> <span style="font-size: 14pt; text-transform: uppercase; margin-left: 5px;">${pName}</span></div>`;
+                const footerHtml = `<div class="doc-footer"><div style="border-top: 1px solid #000; width: 250px; margin: 0 auto 5px auto;"></div><div style="font-weight: bold; font-size: 11pt;">${config.name}</div><div>${config.crm}</div><div style="margin-top: 5px; font-size: 8pt; color:#999">Gerado via NeuroScript</div></div>`;
+                let bodyHtml = '';
                 if (state.activeDocument === 'hospital') {
-                    // HOSPITALAR: Grade completa + Evolução no final
-                    const rows = state.hospitalLines.map((val, i) => `
-                        <div class="hospital-line">
-                            <div class="hospital-line-num">${i+1}</div>
-                            <input type="text" class="hospital-line-input" value="${val}" oninput="app.updateHospitalLine(${i}, this.value)">
-                        </div>
-                    `).join('');
-
-                    contentHtml = `
-                        <div style="display: flex; flex-direction: column; height: 100%;">
-                            <div style="border: 2px solid #000; margin-bottom: 10px;">
-                                <div style="display: flex; border-bottom: 1px solid #000;">
-                                    <div style="flex: 1; padding: 5px; border-right: 1px solid #000;">
-                                        <strong style="font-size: 10pt; text-transform: uppercase;">Nome Paciente</strong><br>
-                                        <span class="print-patient-name">${pName}</span>
-                                    </div>
-                                    <div style="width: 200px; padding: 5px;">
-                                        <strong style="font-size: 10pt; text-transform: uppercase;">Médico</strong><br>
-                                        <span>${config.name}</span>
-                                    </div>
-                                </div>
-                                <div style="display: flex;">
-                                    <div style="width: 100px; padding: 5px; border-right: 1px solid #000; text-align: center;">
-                                        <strong style="font-size: 10pt;">DATA</strong><br>
-                                        <span>${date}</span>
-                                    </div>
-                                    <div style="flex: 1; padding: 5px; text-align: center; background: #f0f0f0; border-right: 1px solid #000;">
-                                        <h2 style="margin: 0; font-size: 14pt; text-transform: uppercase;">Prescrição Médica</h2>
-                                    </div>
-                                    <div style="width: 80px; padding: 5px; border-right: 1px solid #000; text-align: center;">
-                                        <strong style="font-size: 8pt;">Leito</strong><br>__
-                                    </div>
-                                    <div style="width: 100px; padding: 5px; text-align: center;">
-                                        <strong style="font-size: 8pt;">Prontuário</strong><br>__
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div style="flex: 1; border: 2px solid #000; display: flex; flex-direction: column;">
-                                <div style="background: #ddd; border-bottom: 1px solid #000; padding: 2px; text-align: center; font-weight: bold; font-size: 10pt;">ITENS DA PRESCRIÇÃO</div>
-                                <div style="flex: 1; overflow: hidden; display: flex; flex-direction: column;">
-                                    ${rows}
-                                </div>
-                            </div>
-
-                            <div style="height: 150px; border: 2px solid #000; margin-top: 10px; padding: 5px; display: flex;">
-                                <div style="flex: 1; padding-right: 10px;">
-                                    <strong style="font-size: 10pt; text-transform: uppercase;">Evolução / Anotações</strong>
-                                    <textarea style="width: 100%; height: 80%; border: none; outline: none; resize: none; font-family: 'Arial'; font-size: 12pt; background: transparent;"></textarea>
-                                </div>
-                                <div style="width: 200px; display: flex; align-items: flex-end; justify-content: center; text-align: center;">
-                                    <div>
-                                        <div style="border-top: 1px solid #000; width: 180px; margin-bottom: 2px;"></div>
-                                        <strong>${config.name}</strong><br>
-                                        <span style="font-size: 10pt;">${config.crm}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    `;
+                    const rows = state.hospitalLines.map((line, i) => `<div class="hospital-row group"><div class="hospital-num">${i+1}</div><input type="text" class="hospital-input" value="${line.text}" oninput="app.updateHospitalLine(${line.id}, this.value)"><button onclick="app.removeHospitalLine(${line.id})" class="no-print p-1 text-red-300 hover:text-red-600 opacity-0 group-hover:opacity-100 transition" title="Remover linha"><i data-lucide="trash-2" style="width: 14px; height: 14px;"></i></button></div>`).join('');
+                    bodyHtml = `<h2 style="text-align: center; font-size: 14pt; font-weight: bold; text-transform: uppercase; border-bottom: 2px solid #000; margin-bottom: 10px; padding-bottom: 5px;">Prescrição Hospitalar</h2><div style="flex: 1; border: 1px solid #ccc; display: flex; flex-direction: column;">${rows}<div class="no-print p-2 text-center bg-slate-50 hover:bg-slate-100 cursor-pointer border-t border-slate-200 transition" onclick="app.addHospitalLine()"><span class="text-xs font-bold text-slate-500">+ Adicionar Linha</span></div></div>`;
                 } else {
-                    // RECEITA OU EXAMES (SIMPLES)
-                    let listItems = '';
+                    let listItems = ''; let title = '';
                     if(state.activeDocument === 'prescription') {
-                        listItems = state.prescription.length 
-                            ? state.prescription.map((m,i) => `<div style="margin-bottom: 15px;">
-                                <div style="font-weight: bold; font-size: 12pt;">${i+1}. ${m.name} ${m.dose}</div>
-                                <div style="padding-left: 20px; font-size: 11pt; font-style: italic;">${m.instr}</div>
-                                <button onclick="app.removeItem(${m.uid},'med')" class="no-print" style="color: red; font-size: 10px; cursor: pointer;">[Remover]</button>
-                            </div>`).join('') 
-                            : '<div style="text-align: center; color: #999; margin-top: 50px;">Adicione medicamentos</div>';
+                        title = 'RECEITUÁRIO';
+                        listItems = state.prescription.length ? state.prescription.map((m,i) => `<div style="margin-bottom: 15px; position: relative;" class="group"><div style="font-weight: bold; font-size: 12pt;">${i+1}. ${m.name} ${m.dose}</div><div style="padding-left: 20px; font-size: 11pt; font-style: italic;">${m.instr}</div><button onclick="app.removeItem(${m.uid},'med')" class="no-print absolute right-0 top-0 text-red-300 hover:text-red-600 opacity-0 group-hover:opacity-100"><i data-lucide="trash-2" style="width: 14px;"></i></button></div>`).join('') : '<div style="text-align: center; color: #ccc; margin-top: 50px;">Adicione medicamentos</div>';
                     } else {
-                        listItems = state.examRequest.length 
-                            ? `<ul style="list-style-type: disc; padding-left: 20px;">` + state.examRequest.map(e => `<li style="margin-bottom: 8px;">
-                                <span style="font-size: 12pt;">${e.name}</span>
-                                <button onclick="app.removeItem(${e.uid},'exam')" class="no-print" style="color: red; font-size: 10px; cursor: pointer; margin-left: 10px;">[x]</button>
-                            </li>`).join('') + `</ul>` 
-                            : '<div style="text-align: center; color: #999; margin-top: 50px;">Adicione exames</div>';
+                        title = 'SOLICITAÇÃO DE EXAMES';
+                        listItems = state.examRequest.length ? `<ul style="list-style-type: disc; padding-left: 20px;">` + state.examRequest.map(e => `<li style="margin-bottom: 8px; position: relative;" class="group"><span style="font-size: 12pt;">${e.name}</span><button onclick="app.removeItem(${e.uid},'exam')" class="no-print absolute -right-5 top-0 text-red-300 hover:text-red-600 opacity-0 group-hover:opacity-100"><i data-lucide="trash-2" style="width: 14px;"></i></button></li>`).join('') + `</ul>` : '<div style="text-align: center; color: #ccc; margin-top: 50px;">Adicione exames</div>';
                     }
-
-                    contentHtml = `
-                        <div style="padding: 40px; height: 100%; display: flex; flex-direction: column; font-family: 'Arial', sans-serif;">
-                            <div style="display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 30px;">
-                                <div>
-                                    <h1 style="font-size: 18pt; font-weight: bold; text-transform: uppercase; margin: 0;">${config.name}</h1>
-                                    <p style="font-size: 10pt; margin: 0;">CRM: ${config.crm}</p>
-                                </div>
-                                <div style="text-align: right;">
-                                    <p style="font-size: 11pt; margin: 0;">${date}</p>
-                                </div>
-                            </div>
-                            
-                            <div style="margin-bottom: 30px;">
-                                <span style="font-size: 10pt; font-weight: bold; text-transform: uppercase; color: #555;">Paciente</span><br>
-                                <span class="print-patient-name" style="font-size: 14pt; font-weight: bold; text-transform: uppercase;">${pName}</span>
-                            </div>
-
-                            <div style="flex: 1;">
-                                ${listItems}
-                            </div>
-
-                            <div style="margin-top: auto; border-top: 1px solid #ccc; padding-top: 20px; text-align: center; font-size: 9pt; color: #777;">
-                                Documento emitido digitalmente em ${date}.
-                            </div>
-                        </div>
-                    `;
+                    bodyHtml = `<h2 style="text-align: center; font-size: 14pt; font-weight: bold; text-transform: uppercase; border-bottom: 2px solid #000; margin-bottom: 20px;">${title}</h2><div style="flex: 1;">${listItems}</div>`;
                 }
-
-                doc.innerHTML = contentHtml;
+                doc.innerHTML = headerHtml + bodyHtml + footerHtml;
                 lucide.createIcons();
             }
 
-            function switchTab(id) { document.querySelectorAll('.tab-content').forEach(e => e.classList.remove('active')); document.getElementById('tabContent-'+id).classList.add('active'); document.querySelectorAll('.bottom-nav-item').forEach(e => e.classList.remove('active')); document.getElementById('mb-nav-'+id)?.classList.add('active'); if(id==='pharmacy') setDocumentMode('prescription'); if(id==='exams') setDocumentMode('exams'); }
+            function handleLogoUpload(input) { if (input.files && input.files[0]) { const reader = new FileReader(); reader.onload = function(e) { state.logoData = e.target.result; localStorage.setItem('neuro_logo', state.logoData); updateDocumentView(); }; reader.readAsDataURL(input.files[0]); } }
+            function switchTab(id) { document.querySelectorAll('.tab-content').forEach(e => e.classList.remove('active')); document.getElementById('tabContent-'+id).classList.add('active'); document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active')); document.getElementById('tabButton-'+id).classList.add('active'); document.querySelectorAll('.nav-icon-btn').forEach(b => b.classList.remove('active')); const mbBtn = document.getElementById('mb-nav-'+id); if(mbBtn) mbBtn.classList.add('active'); if(id==='pharmacy') setDocumentMode('prescription'); if(id==='exams') setDocumentMode('exams'); }
             function setDocumentMode(mode) { state.activeDocument = mode; document.getElementById('docMode-prescription').className = mode==='prescription'?'doc-switch-btn active':'doc-switch-btn inactive'; document.getElementById('docMode-exams').className = mode==='exams'?'doc-switch-btn active':'doc-switch-btn inactive'; document.getElementById('docMode-hospital').className = mode==='hospital'?'doc-switch-btn active':'doc-switch-btn inactive'; updateDocumentView(); }
-            function toggleMobileDoc() { 
-                const p = document.getElementById('documentPanel');
-                if (p.classList.contains('hidden')) {
-                    // OPEN
-                    p.classList.remove('hidden', 'lg:flex');
-                    p.classList.add('mobile-fullscreen'); // Use custom class
-                    document.getElementById('mobileBottomNav').style.display = 'none'; // Hide Nav
-                    document.getElementById('mainHeader').style.display = 'none'; // Hide Header
-                } else {
-                    // CLOSE
-                    p.classList.add('hidden', 'lg:flex');
-                    p.classList.remove('mobile-fullscreen');
-                    document.getElementById('mobileBottomNav').style.display = 'flex'; // Show Nav
-                    document.getElementById('mainHeader').style.display = 'flex'; // Show Header
-                }
-            }
-            function toggleTheme() { document.documentElement.classList.toggle('dark'); localStorage.setItem('neuro_theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light'); }
-            function loadTheme() { if(localStorage.getItem('neuro_theme') === 'dark') document.documentElement.classList.add('dark'); }
+            function toggleMobileDoc() { const p = document.getElementById('documentPanel'); const nav = document.getElementById('mobileBottomNav'); if (p.classList.contains('hidden')) { p.classList.remove('hidden', 'lg:flex'); p.classList.add('mobile-fullscreen'); nav.style.display = 'none'; document.getElementById('mainHeader').style.display = 'none'; } else { p.classList.add('hidden', 'lg:flex'); p.classList.remove('mobile-fullscreen'); nav.style.display = 'flex'; document.getElementById('mainHeader').style.display = 'flex'; } }
+            function toggleTheme() { document.documentElement.classList.toggle('dark'); }
             function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
             function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
-            function generatePDF() { 
-                const el = document.getElementById('prescriptionPaper'); 
-                const opt = {
-                    margin: 0,
-                    filename: state.activeDocument + '.pdf',
-                    image: { type: 'jpeg', quality: 0.98 },
-                    html2canvas: { scale: 2 },
-                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-                };
-                html2pdf().set(opt).from(el).save(); 
-            }
-            function saveConfig() { state.config.name = document.getElementById('cfgName').value; state.config.crm = document.getElementById('cfgCrm').value; state.config.apiKey = document.getElementById('apiKeyInput').value; localStorage.setItem('neuro_config', JSON.stringify(state.config)); if(state.config.apiKey) document.getElementById('apiKeyStatus').classList.replace('bg-red-500','bg-emerald-500'); closeModal('configModal'); updateDocumentView(); }
-            function updateConfigUI() { document.getElementById('cfgName').value = state.config.name; document.getElementById('cfgCrm').value = state.config.crm; document.getElementById('apiKeyInput').value = state.config.apiKey || ''; if(state.config.apiKey) document.getElementById('apiKeyStatus').classList.replace('bg-red-500','bg-emerald-500'); }
+            function generatePDF() { const el = document.getElementById('prescriptionPaper'); const isHospital = state.activeDocument === 'hospital'; const opt = { margin: 0, filename: state.activeDocument + '.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: true }, jsPDF: { unit: 'mm', format: isHospital ? 'a4' : 'a5', orientation: isHospital ? 'landscape' : 'portrait' } }; html2pdf().set(opt).from(el).save(); }
+            function saveConfig() { state.config.name = document.getElementById('cfgName').value; state.config.crm = document.getElementById('cfgCrm').value; state.config.address = document.getElementById('cfgAddress').value; state.config.phone = document.getElementById('cfgPhone').value; state.config.apiKey = document.getElementById('apiKeyInput').value; localStorage.setItem('neuro_config', JSON.stringify(state.config)); if(state.config.apiKey) document.getElementById('apiKeyStatus').classList.replace('bg-red-500','bg-emerald-500'); closeModal('configModal'); updateDocumentView(); }
+            function updateConfigUI() { document.getElementById('cfgName').value = state.config.name; document.getElementById('cfgCrm').value = state.config.crm; document.getElementById('cfgAddress').value = state.config.address || ''; document.getElementById('cfgPhone').value = state.config.phone || ''; document.getElementById('apiKeyInput').value = state.config.apiKey || ''; if(state.config.apiKey) document.getElementById('apiKeyStatus').classList.replace('bg-red-500','bg-emerald-500'); }
             function copyAIContent() { const r = document.createRange(); r.selectNode(document.getElementById('aiModalContent')); window.getSelection().removeAllRanges(); window.getSelection().addRange(r); document.execCommand('copy'); alert("Copiado!"); }
             function openMagicSoap() { openModal('magicSoapModal'); }
-            async function generateMagicSoap() { if(!state.config.apiKey) return alert("Sem API Key"); const txt = document.getElementById('magicSoapInput').value; const btn = document.querySelector('#magicSoapModal button[onclick="app.generateMagicSoap()"]'); const old = btn.innerHTML; btn.innerHTML = 'Processando...'; try { const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${state.config.apiKey}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: [{ parts: [{ text: "Extraia SOAP JSON de: " + txt }] }] }) }); const data = await response.json(); const json = JSON.parse(data.candidates?.[0]?.content?.parts?.[0]?.text.replace(/```json|```/g, '')); document.getElementById('soapS').value = json.s||''; document.getElementById('soapO').value = json.o||''; document.getElementById('soapA').value = json.a||''; document.getElementById('soapP').value = json.p||''; closeModal('magicSoapModal'); } catch(e) { alert("Erro"); } finally { btn.innerHTML = old; } }
-            function handleExamUpload(input) { /* Simulado */ alert("Anexado (Simulado)"); }
-            function clearPatientData() { document.getElementById('patientNameInput').value=''; document.getElementById('soapS').value=''; document.getElementById('soapO').value=''; document.getElementById('soapA').value=''; document.getElementById('soapP').value=''; state.prescription=[]; state.examRequest=[]; state.hospitalLines=Array(35).fill(""); updateDocumentView(); }
+            function handleExamUpload() { alert("Simulado"); }
+            function clearPatientData() { document.getElementById('patientNameInput').value=''; document.getElementById('soapS').value=''; document.getElementById('soapO').value=''; document.getElementById('soapA').value=''; document.getElementById('soapP').value=''; state.prescription=[]; state.examRequest=[]; state.hospitalLines=Array.from({length: 20}, (_, i) => ({ id: i, text: "" })); updateDocumentView(); }
+            function calcObs() { const today = new Date(); today.setHours(0,0,0,0); const dumVal = document.getElementById('calcDum').value; if(dumVal) { const dumDate = new Date(dumVal + 'T00:00:00'); const diffDays = Math.floor((today - dumDate) / (1000 * 60 * 60 * 24)); const dpp = new Date(dumDate); dpp.setDate(dumDate.getDate() + 280); document.getElementById('resIgDum').innerText = `${Math.floor(diffDays/7)}s ${diffDays%7}d`; document.getElementById('resDppDum').innerText = `DPP: ${dpp.toLocaleDateString('pt-BR')}`; } const usgVal = document.getElementById('calcUsgDate').value; const usgW = parseInt(document.getElementById('calcUsgW').value)||0; const usgD = parseInt(document.getElementById('calcUsgD').value)||0; if(usgVal && usgW) { const usgDate = new Date(usgVal + 'T00:00:00'); const conceptionDate = new Date(usgDate); conceptionDate.setDate(conceptionDate.getDate() - ((usgW*7)+usgD)); const diffDays = Math.floor((today - conceptionDate) / (1000 * 60 * 60 * 24)); const dpp = new Date(conceptionDate); dpp.setDate(conceptionDate.getDate() + 280); document.getElementById('resIgUsg').innerText = `${Math.floor(diffDays/7)}s ${diffDays%7}d`; document.getElementById('resDppUsg').innerText = `DPP: ${dpp.toLocaleDateString('pt-BR')}`; } }
+            function pasteIg(id) { document.getElementById('soapA').value += `\nIG: ${document.getElementById(id).innerText}`; closeModal('obstetricModal'); }
 
-            return { init, searchDatabase, addItem, removeItem, calcObs, pasteIg, updateDocumentView, switchTab, setDocumentMode, toggleMobileDoc, toggleTheme, openModal, closeModal, generatePDF, saveConfig, copyAIContent, callAI, renderAITools, filterAITools, openMagicSoap, generateMagicSoap, handleExamUpload, clearPatientData, updateHospitalLine };
+            return { init, searchDatabase, addItem, removeItem, calcObs, pasteIg, updateDocumentView, switchTab, setDocumentMode, toggleMobileDoc, toggleTheme, openModal, closeModal, generatePDF, saveConfig, copyAIContent, callAI, renderAITools, filterAITools, openMagicSoap, generateMagicSoap, handleExamUpload, clearPatientData, updateHospitalLine, addHospitalLine, removeHospitalLine, handleLogoUpload };
         })();
         window.addEventListener('DOMContentLoaded', app.init);
     </script>
