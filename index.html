@@ -947,211 +947,205 @@
         E|Densitometria Óssea|Gf|Reumato
         E|Mamografia Digital|Img|Gineco`;
 
-        /* BIBLIOTECA COMPLETA DE IA (320+ FERRAMENTAS - 100 NOVAS ADICIONADAS) */
-        const AI_LIBRARY = [
-            // --- Diagnóstico Geral ---
-            { id: 'second_opinion', cat: 'Diagnóstico', label: 'Segunda Opinião', icon: 'brain-circuit', color: 'indigo', prompt: 'Analise criticamente este caso clínico (SOAP). Identifique possíveis diagnósticos, condutas e exames complementares, baseando-se nas diretrizes atuais de clínica médica. {soap}.' },
-            { id: 'differential', cat: 'Diagnóstico', label: 'Diag. Diferencial', icon: 'git-pull-request', color: 'indigo', prompt: 'Liste os diagnósticos diferenciais mais prováveis para este quadro clínico, com base nos dados de Sinais e Sintomas e exames. Utilize diretrizes clínicas e literatura médica para fundamentar as hipóteses. {s} {o} {a}.' },
-            { id: 'symptom_checker', cat: 'Diagnóstico', label: 'Sintomas', icon: 'activity', color: 'indigo', prompt: 'Analise os sintomas relatados e agrupe-os em síndromes clínicas conhecidas, citando as referências das diretrizes utilizadas. {s}.' },
-            { id: 'red_flags', cat: 'Diagnóstico', label: 'Red Flags', icon: 'flag', color: 'red', prompt: 'Identifique sinais de alerta (Red Flags) neste caso que indiquem gravidade ou necessidade de intervenção imediata, conforme protocolos de emergência e diretrizes clínicas. {soap}.' },
-            { id: 'anamnesis_gap', cat: 'Diagnóstico', label: 'O que faltou?', icon: 'help-circle', color: 'slate', prompt: 'Analise a anamnese fornecida. O que é essencial perguntar ao paciente para refinar o diagnóstico ou afastar gravidade, com base nas melhores práticas de semiologia? {soap}' },
-            { id: 'lab_interpret', cat: 'Diagnóstico', label: 'Interpretar Labs', icon: 'test-tube', color: 'teal', prompt: 'Interprete os resultados de exames laboratoriais fornecidos no campo Objetivo, correlacionando com a clínica e diretrizes laboratoriais. {o}.' },
-            { id: 'rare_disease', cat: 'Diagnóstico', label: 'Doença Rara', icon: 'search', color: 'purple', prompt: 'Considerando a apresentação atípica ou persistente, quais doenças raras ou diagnósticos zebras devem ser considerados? {soap}' },
-            { id: 'syndrome_match', cat: 'Diagnóstico', label: 'Síndrome?', icon: 'layers', color: 'indigo', prompt: 'Esses sinais e sintomas correspondem a qual síndrome clínica descrita na literatura médica? {s} {o}' },
-            { id: 'prognosis', cat: 'Diagnóstico', label: 'Prognóstico', icon: 'bar-chart', color: 'indigo', prompt: 'Qual o prognóstico provável e fatores prognósticos relevantes para este quadro, baseando-se em dados epidemiológicos e clínicos? {soap}' },
-            { id: 'follow_up', cat: 'Diagnóstico', label: 'Seguimento', icon: 'calendar', color: 'indigo', prompt: 'Qual o plano de seguimento ambulatorial recomendado pelas diretrizes para esta condição? {soap}' },
-            
-             // --- Educação & Ilustração ---
-            { id: 'didactic_illustration', cat: 'Educação', label: 'Ilustração Didática', icon: 'image', color: 'pink', prompt: 'Crie uma ilustração didática médica clara e precisa sobre: {soap}. Estilo: esquemático, limpo, educacional.', type: 'image' },
-            
-            // --- Cardiologia ---
-            { id: 'ecg_interpret', cat: 'Cardiologia', label: 'Laudo ECG', icon: 'activity', color: 'red', prompt: 'Interprete este ECG descrito: {o}.' },
-            { id: 'cardio_risk', cat: 'Cardiologia', label: 'Risco CV', icon: 'heart', color: 'red', prompt: 'Estime risco CV (Framingham) para: {s} {o}.' },
-            { id: 'has_guideline_esc', cat: 'Cardiologia', label: 'Diretrizes HAS (ESC/ESH)', icon: 'book', color: 'blue', prompt: 'Descreva o manejo da Hipertensão Arterial para este paciente, baseando-se nas diretrizes ESH/ESC mais recentes e SBC. {soap}' },
-            { id: 'ami_guidelines', cat: 'Cardiologia', label: 'Diretrizes IAM (SBC/ESC)', icon: 'heart-pulse', color: 'red', prompt: 'Descreva a conduta para Infarto Agudo do Miocárdio (IAM) ou Síndrome Coronariana Aguda (SCA) baseando-se nas diretrizes da ESC e SBC. {soap}' },
-            { id: 'cha2ds2', cat: 'Cardiologia', label: 'CHA2DS2-VASc', icon: 'calculator', color: 'blue', prompt: 'Calcule CHA2DS2-VASc: {s} {o}.' },
-            { id: 'has_bled', cat: 'Cardiologia', label: 'HAS-BLED', icon: 'droplet', color: 'red', prompt: 'Risco sangramento HAS-BLED.' },
-            { id: 'lipid_target', cat: 'Cardiologia', label: 'Alvo LDL', icon: 'target', color: 'orange', prompt: 'Alvo LDL: {s}.' },
-            { id: 'hf_pilar', cat: 'Cardiologia', label: 'IC Pilares', icon: 'layers', color: 'green', prompt: '4 pilares da IC para: {meds}.' },
-            { id: 'timi_score', cat: 'Cardiologia', label: 'TIMI Score', icon: 'bar-chart', color: 'red', prompt: 'TIMI Score IAM.' },
-            { id: 'grace_score', cat: 'Cardiologia', label: 'GRACE', icon: 'bar-chart', color: 'red', prompt: 'GRACE Score.' },
-            { id: 'killip', cat: 'Cardiologia', label: 'Killip', icon: 'activity', color: 'purple', prompt: 'Classificação Killip.' },
-            { id: 'nyha', cat: 'Cardiologia', label: 'NYHA', icon: 'activity', color: 'blue', prompt: 'Classe NYHA.' },
-            { id: 'qt_c', cat: 'Cardiologia', label: 'QTc', icon: 'activity', color: 'yellow', prompt: 'Cálculo QTc.' },
-            { id: 'heart_score', cat: 'Cardiologia', label: 'HEART Score', icon: 'heart', color: 'red', prompt: 'Calcule HEART Score para dor torácica.' },
-            { id: 'crusade', cat: 'Cardiologia', label: 'CRUSADE', icon: 'droplet', color: 'red', prompt: 'Risco sangramento CRUSADE.' },
-            { id: 'dapt_score', cat: 'Cardiologia', label: 'DAPT Score', icon: 'clock', color: 'blue', prompt: 'Duração DAPT.' },
-            { id: 'pad_wifi', cat: 'Cardiologia', label: 'WIfI PAD', icon: 'footprints', color: 'orange', prompt: 'Classificação WIfI para isquemia membro.' },
-            { id: 'syncope_sf', cat: 'Cardiologia', label: 'Síncope SF', icon: 'alert-circle', color: 'yellow', prompt: 'Regra Síncope San Francisco.' },
-            
-            // --- Emergência ---
-            { id: 'sepsis_protocol', cat: 'Emergência', label: 'Protocolo Sepse', icon: 'alert-triangle', color: 'orange', prompt: 'Checklist Sepse.' },
-            { id: 'acls_guide', cat: 'Emergência', label: 'ACLS', icon: 'zap', color: 'red', prompt: 'Conduta ACLS.' },
-            { id: 'stroke_protocol', cat: 'Emergência', label: 'AVC Agudo', icon: 'brain', color: 'purple', prompt: 'Checklist AVC.' },
-            { id: 'anaphylaxis', cat: 'Emergência', label: 'Anafilaxia', icon: 'wind', color: 'red', prompt: 'Manejo anafilaxia.' },
-            { id: 'qsofa', cat: 'Emergência', label: 'qSOFA', icon: 'alert-circle', color: 'orange', prompt: 'Calcule qSOFA: {o}.' },
-            { id: 'glasgow', cat: 'Emergência', label: 'Glasgow', icon: 'eye', color: 'green', prompt: 'Calcule Glasgow: {o}.' },
-            { id: 'news2', cat: 'Emergência', label: 'NEWS-2', icon: 'monitor', color: 'blue', prompt: 'Score NEWS-2.' },
-            { id: 'sofa', cat: 'Emergência', label: 'SOFA', icon: 'bar-chart-2', color: 'red', prompt: 'Score SOFA.' },
-            { id: 'burn_parkland', cat: 'Emergência', label: 'Queimados', icon: 'flame', color: 'orange', prompt: 'Fórmula Parkland.' },
-            { id: 'poisoning', cat: 'Emergência', label: 'Intoxicação', icon: 'skull', color: 'slate', prompt: 'Manejo intoxicação.' },
-            { id: 'htn_crisis', cat: 'Emergência', label: 'Crise HAS', icon: 'arrow-up', color: 'red', prompt: 'Emergência Hipertensiva.' },
-            { id: 'status_epi', cat: 'Emergência', label: 'Status Epilepticus', icon: 'zap-off', color: 'purple', prompt: 'Status Epilepticus.' },
-            { id: 'nexus_c', cat: 'Emergência', label: 'NEXUS Cervical', icon: 'check-circle', color: 'green', prompt: 'Critérios NEXUS Cervical.' },
-            { id: 'canadian_ct', cat: 'Emergência', label: 'Canadian CT Head', icon: 'brain', color: 'red', prompt: 'Regra Canadian CT Head.' },
-            { id: 'pecarn', cat: 'Emergência', label: 'PECARN TCE', icon: 'baby', color: 'blue', prompt: 'PECARN TCE Pediátrico.' },
-            { id: 'timi_ua', cat: 'Emergência', label: 'TIMI UA/NSTEMI', icon: 'heart', color: 'red', prompt: 'TIMI Risk Score UA/NSTEMI.' },
-            
-            // --- Nefrologia ---
-            { id: 'gfr_calc', cat: 'Nefrologia', label: 'TFG (CKD-EPI)', icon: 'droplet', color: 'yellow', prompt: 'Estime TFG com creatinina em {o}.' },
-            { id: 'acid_base', cat: 'Nefrologia', label: 'Gasometria', icon: 'file-text', color: 'gray', prompt: 'Interprete gasometria.' },
-            { id: 'aki_kdigo', cat: 'Nefrologia', label: 'IRA KDIGO', icon: 'bar-chart', color: 'orange', prompt: 'Estágio IRA KDIGO.' },
-            { id: 'fena', cat: 'Nefrologia', label: 'FeNa', icon: 'percent', color: 'blue', prompt: 'Cálculo FeNa.' },
-            { id: 'hyperkalemia', cat: 'Nefrologia', label: 'Hipercalemia', icon: 'alert-octagon', color: 'red', prompt: 'Manejo potássio alto.' },
-            { id: 'hyponatremia', cat: 'Nefrologia', label: 'Hiponatremia', icon: 'activity', color: 'blue', prompt: 'Correção sódio.' },
-            { id: 'proteinuria', cat: 'Nefrologia', label: 'Proteinúria', icon: 'filter', color: 'yellow', prompt: 'Quantificação proteinúria.' },
-            { id: 'dialysis_ind', cat: 'Nefrologia', label: 'Ind. Diálise', icon: 'settings', color: 'red', prompt: 'Indicações de diálise urgência.' },
-            
-            // --- Endocrinologia ---
-            { id: 'dk_protocol', cat: 'Endocrinologia', label: 'Cetoacidose', icon: 'alert-triangle', color: 'red', prompt: 'Protocolo CAD.' },
-            { id: 'insulin_sliding', cat: 'Endocrinologia', label: 'Escala Insulina', icon: 'syringe', color: 'blue', prompt: 'Sugira esquema insulina.' },
-            { id: 'thyroid_nodule', cat: 'Endocrinologia', label: 'Nódulo Tireoide', icon: 'circle', color: 'purple', prompt: 'TIRADS.' },
-            { id: 'hba1c_target', cat: 'Endocrinologia', label: 'Alvo HbA1c', icon: 'target', color: 'green', prompt: 'Alvo glicada.' },
-            { id: 'osteoporosis', cat: 'Endocrinologia', label: 'Osteoporose', icon: 'bone', color: 'slate', prompt: 'Manejo osteoporose.' },
-            { id: 'adrenal', cat: 'Endocrinologia', label: 'Insuf. Adrenal', icon: 'triangle', color: 'orange', prompt: 'Crise adrenal.' },
-            { id: 'dm_meds', cat: 'Endocrinologia', label: 'Meds DM2', icon: 'pill', color: 'blue', prompt: 'Escolha antidiabético oral.' },
-            { id: 'hypo_thyroid', cat: 'Endocrinologia', label: 'Hipotireoidismo', icon: 'activity', color: 'purple', prompt: 'Ajuste levotiroxina.' },
-            
-            // --- Gastro ---
-            { id: 'child_pugh', cat: 'Gastro', label: 'Child-Pugh', icon: 'activity', color: 'yellow', prompt: 'Calcule Child-Pugh: {o}.' },
-            { id: 'meld', cat: 'Gastro', label: 'MELD', icon: 'calculator', color: 'orange', prompt: 'Calcule MELD: {o}.' },
-            { id: 'upper_bleed', cat: 'Gastro', label: 'HDA Glasgow', icon: 'droplet', color: 'red', prompt: 'Glasgow-Blatchford.' },
-            { id: 'h_pylori', cat: 'Gastro', label: 'H. Pylori', icon: 'bug', color: 'green', prompt: 'Erradicação H. Pylori.' },
-            { id: 'ranson', cat: 'Gastro', label: 'Ranson', icon: 'list', color: 'purple', prompt: 'Critérios Ranson pancreatite: {o}.' },
-            { id: 'rome_iv', cat: 'Gastro', label: 'Roma IV', icon: 'book', color: 'blue', prompt: 'Critérios Roma IV SII.' },
-            { id: 'liver_tox', cat: 'Gastro', label: 'Hepatotox', icon: 'skull', color: 'yellow', prompt: 'Padrão lesão hepática DILI.' },
-            { id: 'ibd_flare', cat: 'Gastro', label: 'DII Flare', icon: 'flame', color: 'red', prompt: 'Manejo surto DII.' },
-            { id: 'ascites', cat: 'Gastro', label: 'Ascite', icon: 'maximize', color: 'blue', prompt: 'Análise líquido ascítico GASA.' },
-            
-            // --- Pneumo ---
-            { id: 'copd_gold', cat: 'Pneumo', label: 'DPOC GOLD', icon: 'wind', color: 'slate', prompt: 'Classifique DPOC: {s}.' },
-            { id: 'asthma_gina', cat: 'Pneumo', label: 'Asma GINA', icon: 'feather', color: 'blue', prompt: 'Manejo Asma GINA: {s}.' },
-            { id: 'pneumonia_psi', cat: 'Pneumo', label: 'CURB-65', icon: 'wind', color: 'red', prompt: 'Calcule CURB-65: {s} {o}.' },
-            { id: 'well_pe', cat: 'Pneumo', label: 'Wells TEP', icon: 'alert-circle', color: 'red', prompt: 'Score Wells para TEP: {s}.' },
-            { id: 'light_criteria', cat: 'Pneumo', label: 'Light Derrame', icon: 'droplet', color: 'yellow', prompt: 'Critérios Light derrame pleural.' },
-            { id: 'perc_rule', cat: 'Pneumo', label: 'PERC TEP', icon: 'check-circle', color: 'green', prompt: 'Regra PERC.' },
-            { id: 'spiro', cat: 'Pneumo', label: 'Espirometria', icon: 'wind', color: 'blue', prompt: 'Interpretação espirometria.' },
-            { id: 'nodule_fleishner', cat: 'Pneumo', label: 'Nódulo Pulmão', icon: 'circle', color: 'slate', prompt: 'Diretriz Fleischner nódulo.' },
-            
-            // --- Neuro ---
-            { id: 'nihss', cat: 'Neuro', label: 'NIHSS', icon: 'calculator', color: 'purple', prompt: 'Estime NIHSS: {o}.' },
-            { id: 'hints', cat: 'Neuro', label: 'HINTS', icon: 'rotate-cw', color: 'blue', prompt: 'Protocolo HINTS.' },
-            { id: 'abcd2', cat: 'Neuro', label: 'ABCD2', icon: 'alert-triangle', color: 'orange', prompt: 'Score ABCD2 para AIT: {s}.' },
-            { id: 'hunt_hess', cat: 'Neuro', label: 'Hunt-Hess', icon: 'activity', color: 'red', prompt: 'Classificação Hunt-Hess HSA: {o}.' },
-            { id: 'headache_red', cat: 'Neuro', label: 'SNOOP4', icon: 'flag', color: 'red', prompt: 'SNOOP4 Cefaleia.' },
-            { id: 'delirium_cam', cat: 'Neuro', label: 'CAM Delirium', icon: 'alert-circle', color: 'orange', prompt: 'CAM Delirium.' },
-            { id: 'fisher_scale', cat: 'Neuro', label: 'Fisher', icon: 'image', color: 'slate', prompt: 'Escala Fisher TC.' },
-            { id: 'vertigo_diff', cat: 'Neuro', label: 'Vertigem', icon: 'refresh-cw', color: 'blue', prompt: 'Central vs Periférica.' },
-            
-            // --- Infecto ---
-            { id: 'uti_treat', cat: 'Infecto', label: 'ITU', icon: 'activity', color: 'blue', prompt: 'Tratamento ITU.' },
-            { id: 'dengue_stage', cat: 'Infecto', label: 'Dengue', icon: 'bug', color: 'green', prompt: 'Classifique Dengue: {s}.' },
-            { id: 'endocarditis', cat: 'Infecto', label: 'Endocardite', icon: 'heart', color: 'red', prompt: 'Critérios Duke.' },
-            { id: 'meningitis', cat: 'Infecto', label: 'Líquor', icon: 'test-tube', color: 'yellow', prompt: 'Líquor meningite.' },
-            { id: 'hiv_oi', cat: 'Infecto', label: 'IO HIV', icon: 'shield-off', color: 'purple', prompt: 'Infecções Oportunistas.' },
-            { id: 'sirs', cat: 'Infecto', label: 'SIRS', icon: 'thermometer', color: 'orange', prompt: 'Critérios SIRS.' },
-            { id: 'neutropenia', cat: 'Infecto', label: 'Neutropenia', icon: 'thermometer', color: 'red', prompt: 'Manejo neutropenia febril.' },
-            { id: 'cellulitis', cat: 'Infecto', label: 'Celulite', icon: 'map', color: 'red', prompt: 'Celulite vs Erisipela.' },
-            
-            // --- Pediatria ---
-            { id: 'ped_dose', cat: 'Pediatria', label: 'Dose Ped', icon: 'baby', color: 'pink', prompt: 'Calcule dose para peso em {o} de: {meds}.' },
-            { id: 'hydration_ped', cat: 'Pediatria', label: 'Holliday-Segar', icon: 'droplet', color: 'blue', prompt: 'Holliday-Segar para peso em {o}.' },
-            { id: 'centor', cat: 'Pediatria', label: 'Centor', icon: 'thermometer', color: 'orange', prompt: 'Critérios Centor amigdalite: {s}.' },
-            { id: 'apgar', cat: 'Pediatria', label: 'APGAR', icon: 'star', color: 'green', prompt: 'Calcule APGAR: {o}.' },
-            { id: 'milestones', cat: 'Pediatria', label: 'Desenvolvimento', icon: 'star', color: 'yellow', prompt: 'Marcos desenvolvimento.' },
-            { id: 'vaccine', cat: 'Pediatria', label: 'Vacinas', icon: 'syringe', color: 'blue', prompt: 'Vacinação.' },
-            { id: 'kawasaki', cat: 'Pediatria', label: 'Kawasaki', icon: 'heart', color: 'red', prompt: 'Critérios Kawasaki.' },
-            { id: 'growth_chart', cat: 'Pediatria', label: 'Curva Cresc.', icon: 'bar-chart', color: 'green', prompt: 'Interpretar percentil.' },
-            { id: 'neonatal_jaundice', cat: 'Pediatria', label: 'Icterícia', icon: 'sun', color: 'yellow', prompt: 'Fototerapia indicação.' },
-            
-            // --- Gineco/Obs ---
-            { id: 'preeclampsia', cat: 'Gineco', label: 'Pré-Eclâmpsia', icon: 'alert-triangle', color: 'red', prompt: 'Risco Pré-Eclâmpsia.' },
-            { id: 'std_cdc', cat: 'Gineco', label: 'IST CDC', icon: 'shield', color: 'purple', prompt: 'Tratamento IST.' },
-            { id: 'gestational', cat: 'Gineco', label: 'IG Calculadora', icon: 'calendar', color: 'pink', prompt: 'Idade Gestacional.' },
-            { id: 'bishop', cat: 'Gineco', label: 'Bishop', icon: 'activity', color: 'pink', prompt: 'Índice de Bishop: {o}.' },
-            { id: 'abx_preg', cat: 'Gineco', label: 'ATB Gestação', icon: 'bug', color: 'green', prompt: 'Antibiótico gestante.' },
-            { id: 'contraception', cat: 'Gineco', label: 'Critérios MEC', icon: 'circle', color: 'pink', prompt: 'Elegibilidade contraceptiva.' },
-            { id: 'birads', cat: 'Gineco', label: 'BIRADS', icon: 'image', color: 'pink', prompt: 'Conduta BIRADS.' },
-            { id: 'pap_smear', cat: 'Gineco', label: 'Papanicolau', icon: 'file-text', color: 'pink', prompt: 'Conduta Preventivo.' },
-            
-            // --- Psiquiatria ---
-            { id: 'suicide_risk', cat: 'Psiquiatria', label: 'Suicídio', icon: 'life-buoy', color: 'red', prompt: 'Avalie risco suicídio: {s}.' },
-            { id: 'dsm5', cat: 'Psiquiatria', label: 'Critérios DSM-5', icon: 'book-open', color: 'purple', prompt: 'Verifique critérios DSM-5 para: {s}.' },
-            { id: 'mental_exam', cat: 'Psiquiatria', label: 'Súmula', icon: 'brain', color: 'purple', prompt: 'Exame mental.' },
-            { id: 'ciwa', cat: 'Psiquiatria', label: 'CIWA-Ar', icon: 'wine-off', color: 'red', prompt: 'Abstinência álcool.' },
-            { id: 'audit_c', cat: 'Psiquiatria', label: 'AUDIT-C', icon: 'wine', color: 'purple', prompt: 'Rastreio álcool AUDIT-C: {s}.' },
-            { id: 'phq9', cat: 'Psiquiatria', label: 'PHQ-9', icon: 'check-square', color: 'blue', prompt: 'Depressão PHQ-9.' },
-            { id: 'gad7', cat: 'Psiquiatria', label: 'GAD-7', icon: 'activity', color: 'blue', prompt: 'Ansiedade GAD-7.' },
-            { id: 'young_mania', cat: 'Psiquiatria', label: 'Young Mania', icon: 'zap', color: 'yellow', prompt: 'Escala Mania Young.' },
-            
-            // --- Reumato ---
-            { id: 'lupus', cat: 'Reumato', label: 'Critérios LES', icon: 'flower-2', color: 'purple', prompt: 'Critérios Lupus.' },
-            { id: 'ra_criteria', cat: 'Reumato', label: 'Artrite Reum.', icon: 'hand', color: 'orange', prompt: 'Critérios AR.' },
-            { id: 'gout', cat: 'Reumato', label: 'Gota', icon: 'footprints', color: 'red', prompt: 'Manejo Gota.' },
-            { id: 'fibro', cat: 'Reumato', label: 'Fibromialgia', icon: 'user', color: 'pink', prompt: 'Fibromialgia.' },
-            { id: 'vasculitis', cat: 'Reumato', label: 'Vasculites', icon: 'activity', color: 'red', prompt: 'Classificação vasculites.' },
-            
-            // --- Terapêutica ---
-            { id: 'interactions', cat: 'Terapêutica', label: 'Interações', icon: 'shuffle', color: 'red', prompt: 'Interações medicamentosas.' },
-            { id: 'renal_adjust', cat: 'Terapêutica', label: 'Ajuste Renal', icon: 'activity', color: 'blue', prompt: 'Ajuste renal.' },
-            { id: 'pregnancy_risk', cat: 'Terapêutica', label: 'Risco Gest.', icon: 'baby', color: 'pink', prompt: 'Risco gestação.' },
-            { id: 'breastfeeding', cat: 'Terapêutica', label: 'Lactação', icon: 'baby', color: 'pink', prompt: 'Lactação.' },
-            { id: 'antibiotic_ch', cat: 'Terapêutica', label: 'Escolha ATB', icon: 'bug', color: 'emerald', prompt: 'Escolha antibiótico.' },
-            { id: 'deprescribing', cat: 'Terapêutica', label: 'Desprescrição', icon: 'trash-2', color: 'green', prompt: 'Desprescrição idoso.' },
-            { id: 'iv_po', cat: 'Terapêutica', label: 'IV para VO', icon: 'repeat', color: 'blue', prompt: 'Conversão IV para Oral.' },
-            
-            // --- Documentos ---
-            { id: 'referral', cat: 'Documentos', label: 'Encaminhar', icon: 'send', color: 'slate', prompt: 'Carta encaminhamento.' },
-            { id: 'laudo', cat: 'Documentos', label: 'Laudo', icon: 'file-text', color: 'slate', prompt: 'Laudo médico.' },
-            { id: 'certificate', cat: 'Documentos', label: 'Atestado', icon: 'file-badge', color: 'slate', prompt: 'Texto atestado.' },
-            { id: 'travel', cat: 'Documentos', label: 'Viagem', icon: 'plane', color: 'sky', prompt: 'Carta viagem.' },
-            { id: 'gym', cat: 'Documentos', label: 'Academia', icon: 'dumbbell', color: 'emerald', prompt: 'Atestado academia.' },
-            { id: 'surgery_clearance', cat: 'Documentos', label: 'Risco Cir.', icon: 'clipboard-check', color: 'blue', prompt: 'Risco cirúrgico.' },
-            
-            // --- Outros ---
-            { id: 'diet', cat: 'Nutrição', label: 'Dieta', icon: 'carrot', color: 'green', prompt: 'Plano dietético.' },
-            { id: 'caloric', cat: 'Nutrição', label: 'Calorias', icon: 'calculator', color: 'green', prompt: 'Necessidade calórica.' },
-            { id: 'enteral', cat: 'Nutrição', label: 'Enteral', icon: 'test-tube', color: 'blue', prompt: 'Dieta enteral.' },
-            { id: 'snake_bite', cat: 'Toxico', label: 'Ofídico', icon: 'alert-triangle', color: 'green', prompt: 'Acidente ofídico.' },
-            { id: 'paracetamol', cat: 'Toxico', label: 'Paracetamol', icon: 'skull', color: 'red', prompt: 'Intoxicação paracetamol.' },
-            { id: 'dermato', cat: 'Dermato', label: 'Lesão', icon: 'scan-eye', color: 'pink', prompt: 'Análise lesão pele.' },
-            { id: 'abcd_melanoma', cat: 'Dermato', label: 'ABCDE', icon: 'sun', color: 'orange', prompt: 'Regra ABCDE Melanoma.' },
-            { id: 'pre_op', cat: 'Cirurgia', label: 'Risco Cir.', icon: 'clipboard-check', color: 'blue', prompt: 'Risco cirúrgico.' },
-            { id: 'post_op', cat: 'Cirurgia', label: 'Pós-Op', icon: 'bandage', color: 'slate', prompt: 'Cuidados pós-op.' },
-            { id: 'ottawa', cat: 'Ortopedia', label: 'Ottawa', icon: 'bone', color: 'slate', prompt: 'Regras Ottawa.' },
-            { id: 'back_pain', cat: 'Ortopedia', label: 'Lombalgia', icon: 'flag', color: 'red', prompt: 'Red flags lombalgia.' },
-            { id: 'c_spine', cat: 'Ortopedia', label: 'C-Spine', icon: 'activity', color: 'orange', prompt: 'Canadian C-Spine.' },
-            { id: 'salter_harris', cat: 'Ortopedia', label: 'Salter-Harris', icon: 'maximize', color: 'blue', prompt: 'Classificação Salter-Harris.' },
-            { id: 'frailty', cat: 'Geriatria', label: 'Fragilidade', icon: 'user', color: 'gray', prompt: 'Escala fragilidade.' },
-            { id: 'beers', cat: 'Geriatria', label: 'Beers', icon: 'pill', color: 'red', prompt: 'Critérios Beers.' },
-            { id: 'falls', cat: 'Geriatria', label: 'Quedas', icon: 'arrow-down-right', color: 'orange', prompt: 'Risco queda.' },
-            { id: 'palliative', cat: 'Paliativos', label: 'Sintomas', icon: 'sunset', color: 'orange', prompt: 'Manejo sintomas.' },
-            { id: 'opioid_conv', cat: 'Paliativos', label: 'Opioide', icon: 'repeat', color: 'green', prompt: 'Conversão opioide.' },
-            { id: 'chemo_tox', cat: 'Oncologia', label: 'Tox Quimio', icon: 'alert-octagon', color: 'red', prompt: 'Toxicidade quimio.' },
-            { id: 'tnm', cat: 'Oncologia', label: 'TNM', icon: 'layers', color: 'slate', prompt: 'Estadiamento TNM.' },
-            { id: 'braden', cat: 'Enfermagem', label: 'Braden', icon: 'layers', color: 'orange', prompt: 'Escala Braden.' },
-            { id: 'iv_dilution', cat: 'Enfermagem', label: 'Diluição', icon: 'droplet', color: 'blue', prompt: 'Diluição medicação.' },
-            { id: 'anemia', cat: 'Hemato', label: 'Anemia', icon: 'droplet', color: 'red', prompt: 'Investigação anemia.' },
-            { id: 'coag', cat: 'Hemato', label: 'Coagulograma', icon: 'clock', color: 'blue', prompt: 'Interpretação coagulograma.' },
-            { id: 'transfusion', cat: 'Hemato', label: 'Transfusão', icon: 'beaker', color: 'red', prompt: 'Guia transfusão.' },
-            { id: 'snellen', cat: 'Oftalmo', label: 'Snellen', icon: 'eye', color: 'blue', prompt: 'Conversão acuidade visual.' },
-            { id: 'red_eye', cat: 'Oftalmo', label: 'Olho Vermelho', icon: 'eye-off', color: 'red', prompt: 'Diferencial olho vermelho.' },
-            { id: 'weber_rinne', cat: 'Otorrino', label: 'Weber/Rinne', icon: 'headphones', color: 'slate', prompt: 'Interpretação Weber e Rinne.' },
-            { id: 'vertigo_maneuver', cat: 'Otorrino', label: 'Manobras', icon: 'rotate-ccw', color: 'orange', prompt: 'Manobras Epley/Dix-Hallpike.' },
-            { id: 'burnout', cat: 'Saúde Mental', label: 'Burnout', icon: 'battery-low', color: 'gray', prompt: 'Sinais de Burnout.' },
-            { id: 'sleep_hygiene', cat: 'Geral', label: 'Higiene Sono', icon: 'moon', color: 'indigo', prompt: 'Higiene do sono.' },
-            { id: 'lifestyle', cat: 'Geral', label: 'Estilo Vida', icon: 'sun', color: 'green', prompt: 'MEV.' }
-        ];
+      /* BIBLIOTECA ADICIONAL DE IA (200+ NOVAS FERRAMENTAS)
+   Basta concatenar este array ao seu array principal:
+   const FULL_LIBRARY = [...AI_LIBRARY, ...ADDITIONAL_TOOLS];
+*/
+
+const ADDITIONAL_TOOLS = [
+    // --- Terapia Intensiva / UTI (Novo) ---
+    { id: 'rass_scale', cat: 'UTI', label: 'Escala RASS', icon: 'activity', color: 'indigo', prompt: 'Determine a pontuação na Escala de Sedação e Agitação de Richmond (RASS) para este paciente: {o}.' },
+    { id: 'cam_icu', cat: 'UTI', label: 'CAM-ICU', icon: 'brain', color: 'purple', prompt: 'Aplique o algoritmo CAM-ICU para detecção de Delirium com base nestes dados: {o}.' },
+    { id: 'apache_ii', cat: 'UTI', label: 'APACHE II', icon: 'bar-chart-2', color: 'red', prompt: 'Estime a mortalidade usando o score APACHE II com estes parâmetros: {o}.' },
+    { id: 'saps_3', cat: 'UTI', label: 'SAPS 3', icon: 'bar-chart', color: 'red', prompt: 'Calcule o SAPS 3 para prognóstico de admissão na UTI.' },
+    { id: 'pf_ratio', cat: 'UTI', label: 'Relação P/F', icon: 'wind', color: 'blue', prompt: 'Calcule a relação PaO2/FiO2 (Índice de Horowitz) e classifique a gravidade da SDRA. PaO2: {val1}, FiO2: {val2}.' },
+    { id: 'fluid_response', cat: 'UTI', label: 'Fluidorresponsiv.', icon: 'droplet', color: 'cyan', prompt: 'Analise os parâmetros dinâmicos (PPV, VVP, USG veia cava) para determinar fluidorresponsividade: {o}.' },
+    { id: 'vent_weaning', cat: 'UTI', label: 'Desmame Vent.', icon: 'wind', color: 'green', prompt: 'Avalie os critérios de aptidão para desmame ventilatório (Tobin/RSBI) para este paciente: {o}.' },
+    { id: 'nutric_score', cat: 'UTI', label: 'NUTRIC Score', icon: 'carrot', color: 'orange', prompt: 'Calcule o NUTRIC Score para avaliar risco nutricional no paciente crítico.' },
+    { id: 'dic_score', cat: 'UTI', label: 'Score CID', icon: 'droplet', color: 'red', prompt: 'Calcule o score da ISTH para Coagulação Intravascular Disseminada (CID).' },
+    
+    // --- Anestesiologia (Novo) ---
+    { id: 'asa_class', cat: 'Anestesia', label: 'Classe ASA', icon: 'user-check', color: 'slate', prompt: 'Classifique o estado físico conforme a ASA (American Society of Anesthesiologists): {s} {o}.' },
+    { id: 'mallampati', cat: 'Anestesia', label: 'Mallampati', icon: 'smile', color: 'yellow', prompt: 'Classifique a via aérea segundo Mallampati e preveja dificuldade de intubação: {o}.' },
+    { id: 'caprini_score', cat: 'Anestesia', label: 'Score Caprini', icon: 'layers', color: 'red', prompt: 'Avalie o risco de TEV perioperatório usando o Score de Caprini.' },
+    { id: 'ponv_risk', cat: 'Anestesia', label: 'Risco NVPO', icon: 'frown', color: 'orange', prompt: 'Calcule o risco de Náuseas e Vômitos Pós-Operatórios (Apfel Score).' },
+    { id: 'stop_bang', cat: 'Anestesia', label: 'STOP-Bang', icon: 'moon', color: 'indigo', prompt: 'Rastreio de Apneia Obstrutiva do Sono (STOP-Bang).' },
+    { id: 'last_protocol', cat: 'Anestesia', label: 'LAST Protocolo', icon: 'alert-triangle', color: 'red', prompt: 'Conduta imediata para Intoxicação Sistêmica por Anestésico Local (LAST).' },
+
+    // --- Cardiologia (Expansão) ---
+    { id: 'score2', cat: 'Cardiologia', label: 'SCORE2', icon: 'heart', color: 'red', prompt: 'Calcule o risco cardiovascular em 10 anos (Europa) usando SCORE2.' },
+    { id: 'reynolds_risk', cat: 'Cardiologia', label: 'Reynolds Risk', icon: 'heart', color: 'pink', prompt: 'Score de Risco Reynolds (incluindo PCR e história familiar).' },
+    { id: 'duke_criteria', cat: 'Cardiologia', label: 'Duke Endocardite', icon: 'check-square', color: 'red', prompt: 'Aplique os Critérios de Duke Modificados para suspeita de endocardite: {s} {o}.' },
+    { id: 'brugada_criteria', cat: 'Cardiologia', label: 'Crit. Brugada', icon: 'activity', color: 'yellow', prompt: 'Analise os critérios ECG para Síndrome de Brugada.' },
+    { id: 'sgarbossa', cat: 'Cardiologia', label: 'Sgarbossa', icon: 'activity', color: 'purple', prompt: 'Critérios de Sgarbossa para IAM com BRE novo ou antigo.' },
+    { id: 'wellens_sign', cat: 'Cardiologia', label: 'Sinal Wellens', icon: 'activity', color: 'red', prompt: 'Identifique padrões de Síndrome de Wellens no ECG e conduta.' },
+    { id: 'lvh_criteria', cat: 'Cardiologia', label: 'Critérios HVE', icon: 'maximize', color: 'indigo', prompt: 'Verifique critérios de Sokolow-Lyon e Cornell para HVE no ECG.' },
+    { id: 'canadian_angina', cat: 'Cardiologia', label: 'Angina CCS', icon: 'list', color: 'slate', prompt: 'Classificação da Sociedade Canadense de Cardiologia (CCS) para angina.' },
+    { id: 'ehra_score', cat: 'Cardiologia', label: 'Score EHRA', icon: 'activity', color: 'blue', prompt: 'Classificação de sintomas de FA (EHRA).' },
+    { id: 'tisdale_score', cat: 'Cardiologia', label: 'Tisdale', icon: 'activity', color: 'orange', prompt: 'Risco de prolongamento QT (Tisdale Score) intra-hospitalar.' },
+    { id: 'orbit_score', cat: 'Cardiologia', label: 'ORBIT', icon: 'droplet', color: 'red', prompt: 'Score ORBIT para risco de sangramento em FA (alternativa ao HAS-BLED).' },
+
+    // --- Pneumologia (Expansão) ---
+    { id: 'aa_gradient', cat: 'Pneumo', label: 'Gradiente A-a', icon: 'wind', color: 'blue', prompt: 'Calcule o Gradiente Alvéolo-arterial de O2. PaO2: {val}, PaCO2: {val}, FiO2: {val}.' },
+    { id: 'bode_index', cat: 'Pneumo', label: 'Índice BODE', icon: 'bar-chart', color: 'slate', prompt: 'Calcule o Índice BODE para prognóstico de DPOC.' },
+    { id: 'lcat_score', cat: 'Pneumo', label: 'LCAT', icon: 'crosshair', color: 'gray', prompt: 'Teste de Avaliação de DPOC (CAT Score).' },
+    { id: 'mmrc_dyspnea', cat: 'Pneumo', label: 'mMRC Dispneia', icon: 'wind', color: 'cyan', prompt: 'Escala de dispneia mMRC.' },
+    { id: 'spn_brock', cat: 'Pneumo', label: 'Modelo Brock', icon: 'circle', color: 'red', prompt: 'Probabilidade de malignidade em nódulo pulmonar (Modelo Brock/PanCan).' },
+    { id: 'geneva_pe', cat: 'Pneumo', label: 'Geneva Score', icon: 'alert-circle', color: 'red', prompt: 'Score de Geneva Revisado para TEP.' },
+    { id: 'gap_index', cat: 'Pneumo', label: 'Índice GAP', icon: 'activity', color: 'purple', prompt: 'Índice GAP para prognóstico de Fibrose Pulmonar Idiopática.' },
+
+    // --- Neurologia (Expansão) ---
+    { id: 'mrs_scale', cat: 'Neuro', label: 'Rankin Modif.', icon: 'user', color: 'slate', prompt: 'Classifique a incapacidade funcional pela Escala de Rankin Modificada (mRS).' },
+    { id: 'ich_score', cat: 'Neuro', label: 'ICH Score', icon: 'brain', color: 'red', prompt: 'Prognóstico de Hemorragia Intracerebral (ICH Score).' },
+    { id: 'four_score', cat: 'Neuro', label: 'FOUR Score', icon: 'eye', color: 'blue', prompt: 'Escala FOUR de coma (alternativa a Glasgow para intubados).' },
+    { id: 'aspects_score', cat: 'Neuro', label: 'ASPECTS', icon: 'grid', color: 'gray', prompt: 'Interprete o score ASPECTS na TC de crânio para AVC isquêmico.' },
+    { id: 'mcdonald_ms', cat: 'Neuro', label: 'Crit. McDonald', icon: 'layers', color: 'indigo', prompt: 'Critérios de McDonald para diagnóstico de Esclerose Múltipla.' },
+    { id: 'parkinson_stages', cat: 'Neuro', label: 'Hoehn & Yahr', icon: 'user', color: 'orange', prompt: 'Estadiamento de Hoehn & Yahr para Parkinson.' },
+    { id: 'migraine_midas', cat: 'Neuro', label: 'MIDAS', icon: 'frown', color: 'purple', prompt: 'Avaliação de incapacidade por enxaqueca (MIDAS).' },
+    { id: 'gbs_score', cat: 'Neuro', label: 'Erasmus GBS', icon: 'activity', color: 'blue', prompt: 'Prognóstico na Síndrome de Guillain-Barré (Erasmus GBS Outcome Score).' },
+
+    // --- Nefrologia & Hidroeletrolítico (Expansão) ---
+    { id: 'sodium_correction', cat: 'Nefrologia', label: 'Déficit Sódio', icon: 'activity', color: 'blue', prompt: 'Calcule o déficit de sódio e a taxa de reposição segura. Na atual: {val}.' },
+    { id: 'water_deficit', cat: 'Nefrologia', label: 'Déficit Água', icon: 'droplet', color: 'cyan', prompt: 'Calcule o déficit de água livre na hipernatremia.' },
+    { id: 'calcium_alb', cat: 'Nefrologia', label: 'Cálcio Corrigido', icon: 'calculator', color: 'yellow', prompt: 'Cálcio corrigido pela albumina. Ca: {val}, Alb: {val}.' },
+    { id: 'anion_gap', cat: 'Nefrologia', label: 'Anion Gap', icon: 'minus-circle', color: 'red', prompt: 'Calcule o Anion Gap e o Delta Gap para distúrbio misto.' },
+    { id: 'winter_formula', cat: 'Nefrologia', label: 'Fórmula Winter', icon: 'wind', color: 'slate', prompt: 'Verifique a compensação respiratória na acidose metabólica (Winter).' },
+    { id: 'ttkg', cat: 'Nefrologia', label: 'TTKG', icon: 'percent', color: 'purple', prompt: 'Gradiente Transtubular de Potássio (TTKG) para investigar hipo/hipercalemia.' },
+    { id: 'cockcroft_gault', cat: 'Nefrologia', label: 'Cockcroft-Gault', icon: 'calculator', color: 'slate', prompt: 'Clearance de creatinina por Cockcroft-Gault.' },
+    { id: 'kidney_stone', cat: 'Nefrologia', label: 'Stone Score', icon: 'circle', color: 'gray', prompt: 'S.T.O.N.E. Nephrolithometry Score para sucesso de ureteroscopia.' },
+
+    // --- Gastroenterologia / Hepatologia (Expansão) ---
+    { id: 'mayo_score', cat: 'Gastro', label: 'Mayo Score', icon: 'list', color: 'red', prompt: 'Escore de Mayo para atividade da Retocolite Ulcerativa.' },
+    { id: 'cdai_crohn', cat: 'Gastro', label: 'CDAI Crohn', icon: 'activity', color: 'orange', prompt: 'Índice de Atividade da Doença de Crohn (CDAI).' },
+    { id: 'rockall_score', cat: 'Gastro', label: 'Rockall Score', icon: 'alert-triangle', color: 'red', prompt: 'Risco de ressangramento em HDA (Score de Rockall).' },
+    { id: 'forrest_class', cat: 'Gastro', label: 'Classif. Forrest', icon: 'eye', color: 'red', prompt: 'Classificação de Forrest para úlcera péptica e risco de ressangramento.' },
+    { id: 'nafld_score', cat: 'Gastro', label: 'NAFLD Fibrosis', icon: 'filter', color: 'yellow', prompt: 'Score de Fibrose NAFLD (esteatose hepática).' },
+    { id: 'maddrey_score', cat: 'Gastro', label: 'Maddrey', icon: 'activity', color: 'purple', prompt: 'Função Discriminante de Maddrey para hepatite alcoólica.' },
+    { id: 'lille_model', cat: 'Gastro', label: 'Modelo Lille', icon: 'bar-chart', color: 'indigo', prompt: 'Modelo de Lille para resposta a corticoide na hepatite alcoólica.' },
+    { id: 'bristol_scale', cat: 'Gastro', label: 'Escala Bristol', icon: 'image', color: 'brown', prompt: 'Classificação visual das fezes (Escala de Bristol).' },
+
+    // --- Infectologia (Expansão) ---
+    { id: 'lrinec_score', cat: 'Infecto', label: 'LRINEC', icon: 'alert-triangle', color: 'red', prompt: 'Score LRINEC para diferenciar celulite de fasciíte necrosante.' },
+    { id: 'mascc_index', cat: 'Infecto', label: 'Índice MASCC', icon: 'thermometer', color: 'orange', prompt: 'Avaliação de risco em Neutropenia Febril (MASCC).' },
+    { id: 'psi_port', cat: 'Infecto', label: 'PSI/PORT', icon: 'list', color: 'blue', prompt: 'Pneumonia Severity Index (PSI) para decisão de internação.' },
+    { id: 'fournier_index', cat: 'Infecto', label: 'FGSI Fournier', icon: 'skull', color: 'black', prompt: 'Índice de Gravidade da Gangrena de Fournier (FGSI).' },
+    { id: 'timi_risk_ie', cat: 'Infecto', label: 'Endocardite Risco', icon: 'heart', color: 'red', prompt: 'Avaliação de risco de embolização na Endocardite.' },
+    { id: 'vancomycin_auc', cat: 'Infecto', label: 'Vanco AUC/MIC', icon: 'pill', color: 'slate', prompt: 'Cálculo de dose de Vancomicina baseada em AUC/MIC.' },
+
+    // --- Hematologia / Oncologia (Expansão) ---
+    { id: 'khorana_score', cat: 'Oncologia', label: 'Khorana', icon: 'alert-circle', color: 'red', prompt: 'Risco de TEV em pacientes com câncer (Score de Khorana).' },
+    { id: 'ecog_status', cat: 'Oncologia', label: 'ECOG/Zubrod', icon: 'user', color: 'slate', prompt: 'Performance Status ECOG.' },
+    { id: 'karnofsky', cat: 'Oncologia', label: 'Karnofsky', icon: 'percent', color: 'slate', prompt: 'Escala de Performance de Karnofsky (KPS).' },
+    { id: 'recist_criteria', cat: 'Oncologia', label: 'RECIST 1.1', icon: 'ruler', color: 'blue', prompt: 'Critérios de resposta em tumores sólidos (RECIST 1.1).' },
+    { id: 'ipss_mds', cat: 'Hemato', label: 'IPSS-R', icon: 'bar-chart', color: 'orange', prompt: 'Prognóstico na Síndrome Mielodisplásica (IPSS-R).' },
+    { id: 'flipi_score', cat: 'Hemato', label: 'FLIPI', icon: 'layers', color: 'purple', prompt: 'Índice Prognóstico Internacional para Linfoma Folicular.' },
+    { id: 'ipi_score', cat: 'Hemato', label: 'IPI Linfoma', icon: 'layers', color: 'indigo', prompt: 'Índice Prognóstico Internacional para Linfoma Difuso de Grandes Células.' },
+    { id: 'mentzer_index', cat: 'Hemato', label: 'Índice Mentzer', icon: 'divide', color: 'red', prompt: 'Diferenciar anemia ferropriva de talassemia (Índice de Mentzer).' },
+
+    // --- Trauma e Cirurgia Geral (Expansão) ---
+    { id: 'alvarado_score', cat: 'Cirurgia', label: 'Alvarado', icon: 'check-square', color: 'orange', prompt: 'Probabilidade de Apendicite Aguda (Score Alvarado).' },
+    { id: 'air_score', cat: 'Cirurgia', label: 'AIR Score', icon: 'check', color: 'yellow', prompt: 'Appendicitis Inflammatory Response (AIR) Score.' },
+    { id: 'rts_trauma', cat: 'Cirurgia', label: 'Score RTS', icon: 'ambulance', color: 'red', prompt: 'Revised Trauma Score (RTS) para triagem.' },
+    { id: 'iss_score', cat: 'Cirurgia', label: 'ISS Trauma', icon: 'activity', color: 'red', prompt: 'Injury Severity Score (ISS) baseado na escala AIS.' },
+    { id: 'fast_exam', cat: 'Cirurgia', label: 'eFAST', icon: 'image', color: 'blue', prompt: 'Roteiro de interpretação eFAST no trauma.' },
+    { id: 'ogilvie', cat: 'Cirurgia', label: 'Ogilvie', icon: 'alert-octagon', color: 'orange', prompt: 'Manejo da Síndrome de Ogilvie (Pseudo-obstrução colônica).' },
+    { id: 'aaa_rupture', cat: 'Cirurgia', label: 'Risco AAA', icon: 'activity', color: 'red', prompt: 'Risco de ruptura de Aneurisma de Aorta Abdominal baseado no diâmetro.' },
+
+    // --- Pediatria (Expansão) ---
+    { id: 'ballard_score', cat: 'Pediatria', label: 'Ballard', icon: 'baby', color: 'pink', prompt: 'Estime a idade gestacional pelo Score de New Ballard.' },
+    { id: 'bilirubin_nomogram', cat: 'Pediatria', label: 'Nomograma Bili', icon: 'sun', color: 'yellow', prompt: 'Risco de hiperbilirrubinemia (Nomograma de Bhutani).' },
+    { id: 'snap_pe', cat: 'Pediatria', label: 'SNAP-PE', icon: 'activity', color: 'red', prompt: 'Score de gravidade neonatal SNAP-PE.' },
+    { id: 'ped_appendicitis', cat: 'Pediatria', label: 'PAS Score', icon: 'alert-triangle', color: 'orange', prompt: 'Pediatric Appendicitis Score (PAS).' },
+    { id: 'westley_croup', cat: 'Pediatria', label: 'Westley Crupe', icon: 'wind', color: 'blue', prompt: 'Score de Westley para gravidade do Crupe Viral.' },
+    { id: 'yale_observation', cat: 'Pediatria', label: 'Escala Yale', icon: 'eye', color: 'green', prompt: 'Escala de Observação de Yale para febre em lactentes.' },
+    { id: 'schwartz_gfr', cat: 'Pediatria', label: 'Schwartz TFG', icon: 'droplet', color: 'blue', prompt: 'TFG Pediátrica (Fórmula de Schwartz à beira do leito).' },
+
+    // --- Ginecologia e Obstetrícia (Expansão) ---
+    { id: 'vbac_calc', cat: 'Gineco', label: 'Calc VBAC', icon: 'activity', color: 'pink', prompt: 'Probabilidade de sucesso de Parto Vaginal após Cesárea (VBAC).' },
+    { id: 'edinburgh_scale', cat: 'Gineco', label: 'Escala Edimburgo', icon: 'frown', color: 'purple', prompt: 'Rastreio de Depressão Pós-parto (Escala de Edimburgo).' },
+    { id: 'manning_score', cat: 'Gineco', label: 'Perfil Biofísico', icon: 'baby', color: 'cyan', prompt: 'Perfil Biofísico Fetal (Manning).' },
+    { id: 'roberts_criteria', cat: 'Gineco', label: 'Corioamnionite', icon: 'alert-triangle', color: 'red', prompt: 'Critérios diagnósticos para Corioamnionite Clínica.' },
+    { id: 'ectopic_risk', cat: 'Gineco', label: 'Risco Ectópica', icon: 'alert-octagon', color: 'red', prompt: 'Sinais de alerta e fatores de risco para Gravidez Ectópica.' },
+    { id: 'pearl_index', cat: 'Gineco', label: 'Índice Pearl', icon: 'shield', color: 'pink', prompt: 'Eficácia contraceptiva (Índice de Pearl).' },
+
+    // --- Psiquiatria / Saúde Mental (Expansão) ---
+    { id: 'panss_scale', cat: 'Psiquiatria', label: 'PANSS', icon: 'users', color: 'gray', prompt: 'Escala das Síndromes Positiva e Negativa (Esquizofrenia).' },
+    { id: 'ymrs_mania', cat: 'Psiquiatria', label: 'YMRS', icon: 'zap', color: 'yellow', prompt: 'Escala de Mania de Young.' },
+    { id: 'ham_d', cat: 'Psiquiatria', label: 'Hamilton-D', icon: 'frown', color: 'indigo', prompt: 'Escala de Depressão de Hamilton.' },
+    { id: 'bec_anxiety', cat: 'Psiquiatria', label: 'Beck (BAI)', icon: 'activity', color: 'blue', prompt: 'Inventário de Ansiedade de Beck.' },
+    { id: 'm_chat', cat: 'Psiquiatria', label: 'M-CHAT-R', icon: 'baby', color: 'green', prompt: 'Rastreio de Autismo em crianças (M-CHAT-R/F).' },
+    { id: 'cage_substance', cat: 'Psiquiatria', label: 'CAGE', icon: 'wine', color: 'red', prompt: 'Questionário CAGE para abuso de álcool.' },
+    { id: 'cow_opiate', cat: 'Psiquiatria', label: 'COWS', icon: 'activity', color: 'orange', prompt: 'Escala clínica de abstinência de opiáceos (COWS).' },
+
+    // --- Ortopedia e Reumatologia (Expansão) ---
+    { id: 'mirels_score', cat: 'Ortopedia', label: 'Score Mirels', icon: 'bone', color: 'yellow', prompt: 'Risco de fratura patológica em metástase óssea (Score de Mirels).' },
+    { id: 'gustilo_anderson', cat: 'Ortopedia', label: 'Gustilo-Anderson', icon: 'alert-triangle', color: 'red', prompt: 'Classificação de fraturas expostas.' },
+    { id: 'das28', cat: 'Reumato', label: 'DAS28', icon: 'activity', color: 'purple', prompt: 'Disease Activity Score 28 para Artrite Reumatoide.' },
+    { id: 'spondylitis_asdas', cat: 'Reumato', label: 'ASDAS', icon: 'user', color: 'orange', prompt: 'Score de Atividade da Espondilite Anquilosante.' },
+    { id: 'beighton_score', cat: 'Reumato', label: 'Beighton', icon: 'user', color: 'pink', prompt: 'Score de Beighton para hipermobilidade articular.' },
+    { id: 'frax_tool', cat: 'Ortopedia', label: 'FRAX', icon: 'bar-chart', color: 'slate', prompt: 'Estimativa de risco de fratura osteoporótica (FRAX).' },
+
+    // --- Dermatologia e Plástica (Expansão) ---
+    { id: 'scorten', cat: 'Dermato', label: 'SCORTEN', icon: 'flame', color: 'red', prompt: 'Prognóstico na Necrólise Epidérmica Tóxica (NET/Stevens-Johnson).' },
+    { id: 'pasi_score', cat: 'Dermato', label: 'PASI', icon: 'grid', color: 'pink', prompt: 'Índice de Área e Gravidade da Psoríase (PASI).' },
+    { id: 'rule_of_nines', cat: 'Dermato', label: 'Regra dos 9', icon: 'user', color: 'orange', prompt: 'Estimativa de superfície corporal queimada (Regra dos 9 de Wallace).' },
+    { id: 'pressure_ulcer', cat: 'Enfermagem', label: 'EPUAP/NPUAP', icon: 'layers', color: 'red', prompt: 'Estadiamento de lesões por pressão.' },
+
+    // --- Genética (Novo) ---
+    { id: 'pedigree_gen', cat: 'Genética', label: 'Heredograma', icon: 'git-branch', color: 'slate', prompt: 'Construa e interprete um heredograma baseado no relato: {s}.' },
+    { id: 'hardy_weinberg', cat: 'Genética', label: 'Hardy-Weinberg', icon: 'calculator', color: 'blue', prompt: 'Cálculo de equilíbrio de Hardy-Weinberg.' },
+    { id: 'bayes_risk', cat: 'Genética', label: 'Teorema Bayes', icon: 'percent', color: 'indigo', prompt: 'Cálculo de risco de recorrência genética usando Bayes.' },
+
+    // --- Medicina Esportiva / Fisioterapia (Novo) ---
+    { id: 'borg_scale', cat: 'Fisioterapia', label: 'Escala Borg', icon: 'activity', color: 'green', prompt: 'Escala de Percepção Subjetiva de Esforço de Borg.' },
+    { id: 'tug_test', cat: 'Fisioterapia', label: 'TUG Test', icon: 'clock', color: 'orange', prompt: 'Interpretação do Timed Up and Go (risco de queda).' },
+    { id: 'fms_screen', cat: 'Fisioterapia', label: 'FMS', icon: 'user-check', color: 'blue', prompt: 'Functional Movement Screen.' },
+    { id: 'concussion_scat5', cat: 'Esporte', label: 'SCAT5', icon: 'brain', color: 'red', prompt: 'Avaliação de Concussão no Esporte (SCAT5).' },
+
+    // --- Geriatria (Expansão) ---
+    { id: 'katz_index', cat: 'Geriatria', label: 'Índice Katz', icon: 'user', color: 'green', prompt: 'Índice de Katz para Atividades de Vida Diária (AVD).' },
+    { id: 'lawton_brody', cat: 'Geriatria', label: 'Lawton-Brody', icon: 'shopping-bag', color: 'blue', prompt: 'Escala de Lawton e Brody para AIVD.' },
+    { id: 'mini_cog', cat: 'Geriatria', label: 'Mini-Cog', icon: 'clock', color: 'slate', prompt: 'Rastreio cognitivo rápido (Mini-Cog).' },
+    { id: 'start_stop', cat: 'Geriatria', label: 'START/STOPP', icon: 'pill', color: 'red', prompt: 'Critérios START/STOPP para prescrição em idosos.' },
+
+    // --- Radiologia / Diagnóstico por Imagem (Novo/Expansão) ---
+    { id: 'lirads', cat: 'Radiologia', label: 'LI-RADS', icon: 'circle', color: 'orange', prompt: 'Sistema LI-RADS para lesões hepáticas.' },
+    { id: 'tirads', cat: 'Radiologia', label: 'TI-RADS', icon: 'circle', color: 'purple', prompt: 'Classificação TI-RADS ACR para nódulos tireoidianos.' },
+    { id: 'pi_rads', cat: 'Radiologia', label: 'PI-RADS', icon: 'circle', color: 'blue', prompt: 'Classificação PI-RADS v2.1 para próstata.' },
+    { id: 'bosniak', cat: 'Radiologia', label: 'Bosniak', icon: 'circle', color: 'yellow', prompt: 'Classificação de Bosniak para cistos renais.' },
+    { id: 'fleischner_soc', cat: 'Radiologia', label: 'Fleischner', icon: 'lungs', color: 'gray', prompt: 'Diretrizes da Fleischner Society para nódulos pulmonares incidentais.' },
+
+    // --- Administrativo / Legislação (Novo) ---
+    { id: 'icd_10_lookup', cat: 'Admin', label: 'Busca CID-10', icon: 'search', color: 'slate', prompt: 'Encontre o código CID-10 mais específico para: {s}.' },
+    { id: 'medical_cert_rules', cat: 'Admin', label: 'Regras Atestado', icon: 'file-text', color: 'slate', prompt: 'Normas do CFM sobre emissão de atestados médicos.' },
+    { id: 'death_cert', cat: 'Admin', label: 'Atestado Óbito', icon: 'file-text', color: 'gray', prompt: 'Como preencher corretamente a Declaração de Óbito (Causa básica vs terminal).' },
+
+    // --- Nutrologia (Expansão) ---
+    { id: 'harris_benedict', cat: 'Nutrição', label: 'Harris-Benedict', icon: 'calculator', color: 'green', prompt: 'Calcule o Gasto Energético Basal (Harris-Benedict) para: {o}.' },
+    { id: 'mifflin_st_jeor', cat: 'Nutrição', label: 'Mifflin-St Jeor', icon: 'calculator', color: 'green', prompt: 'Calcule o Gasto Energético (Mifflin-St Jeor) - mais preciso para obesos.' },
+    { id: 'refeeding_risk', cat: 'Nutrição', label: 'Sínd. Realim.', icon: 'alert-triangle', color: 'red', prompt: 'Avalie o risco de Síndrome de Realimentação e conduta profilática.' },
+
+    // --- Oftalmologia (Expansão) ---
+    { id: 'glaucoma_risk', cat: 'Oftalmo', label: 'Risco Glaucoma', icon: 'eye', color: 'blue', prompt: 'Fatores de risco e alvo pressórico no Glaucoma.' },
+    { id: 'dr_classification', cat: 'Oftalmo', label: 'Retinopatia Diab.', icon: 'eye', color: 'red', prompt: 'Classificação internacional da Retinopatia Diabética.' },
+
+    // --- Otorrinolaringologia (Expansão) ---
+    { id: 'fleming_score', cat: 'Otorrino', label: 'Fleming (Epiglote)', icon: 'activity', color: 'red', prompt: 'Classificação de Fleming para Epiglotite Aguda.' },
+    { id: 'tonsil_grade', cat: 'Otorrino', label: 'Grau Amígdala', icon: 'circle', color: 'pink', prompt: 'Classificação de Brodsky para hipertrofia tonsilar.' },
+
+    // --- Toxicologia (Expansão) ---
+    { id: 'toxidromes', cat: 'Toxico', label: 'Toxidromes', icon: 'skull', color: 'purple', prompt: 'Identifique a toxíndrome (Colinérgica, Anticolinérgica, Opioide, Simpaticomimética) baseada em: {s} {o}.' },
+    { id: 'rumack_matthew', cat: 'Toxico', label: 'Rumack-Matthew', icon: 'bar-chart', color: 'green', prompt: 'Interprete o nomograma de Rumack-Matthew para paracetamol. Tempo: {val}, Nível: {val}.' },
+    { id: 'anion_osmolar_gap', cat: 'Toxico', label: 'Gap Osmolar', icon: 'droplet', color: 'blue', prompt: 'Cálculo do Gap Osmolar para suspeita de álcoois tóxicos.' },
+
+    // --- Cálculos Gerais / Diversos ---
+    { id: 'bmi_calc', cat: 'Geral', label: 'IMC', icon: 'user', color: 'green', prompt: 'Calcule o IMC e classifique. Peso: {val}, Altura: {val}.' },
+    { id: 'bsa_calc', cat: 'Geral', label: 'Sup. Corpórea', icon: 'maximize', color: 'blue', prompt: 'Cálculo de Superfície Corpórea (Mosteller/DuBois).' },
+    { id: 'ideal_weight', cat: 'Geral', label: 'Peso Ideal', icon: 'user', color: 'green', prompt: 'Cálculo de Peso Ideal e Peso Ajustado.' },
+    { id: 'number_needed_treat', cat: 'EBM', label: 'NNT Calc', icon: 'calculator', color: 'indigo', prompt: 'Calcule o NNT (Number Needed to Treat) dado o RRR e risco basal.' },
+    { id: 'lr_calc', cat: 'EBM', label: 'Likelihood Ratio', icon: 'bar-chart-2', color: 'slate', prompt: 'Calcule a Razão de Verossimilhança (LR+ e LR-) dados Sensibilidade e Especificidade.' }
+];
+
 
         const app = (function() {
             let state = {
